@@ -10,4 +10,11 @@ namespace Utils
         VeryHard,
         Unsolvable
     }
+    public enum PuzzleStatus
+    {
+        Untouched = 1,
+        Started,
+        Completed
+    }
 }
+
