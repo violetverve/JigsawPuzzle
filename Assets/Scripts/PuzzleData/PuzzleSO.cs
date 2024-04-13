@@ -13,10 +13,7 @@ namespace PuzzleData
         [SerializeField] private string _name;
 
         //[SerializeField] private List<GameObject> _list; //list for puzzle pieces 
-        [SerializeField] private List<GameObject> _completedList; //list for puzzle pieces that are completed
-
-        private PuzzleLevel _puzzleLevel = PuzzleLevel.VeryEasy; 
-        private PuzzleStatus status = PuzzleStatus.Untouched;
+        [SerializeField] private List<GameObject> _piecesList; //list for puzzle pieces that are completed
 
         public int Id => _id;
         public string Name => _name;
