@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: PuzzlesList
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlesList/StagesList
-  _puzzleList: []
+  _puzzleList:
+  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
