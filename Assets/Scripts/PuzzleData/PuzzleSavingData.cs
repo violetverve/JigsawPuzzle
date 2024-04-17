@@ -7,12 +7,12 @@ namespace PuzzleData
     public class PuzzleSavingData
     {
         private int _id;
-        private string[] _completedPieces; //ever puzzle piece will have theit own index(id)
+        private string[] _uncompletedPieces; //ever puzzle piece will have theit own index(id)
 
-        PuzzleSavingData(PuzzleSO puzzleData, string[] completedPieces)
+        PuzzleSavingData(PuzzleSO puzzleData, string[] uncompletedPieces)
         {
             _id = puzzleData.Id;
-            _completedPieces = completedPieces;
+            _uncompletedPieces = uncompletedPieces;
         }
     }
 
