@@ -14,4 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 1
   _name: Wood
-  _piecesList: []
+  _puzzlePicture: {fileID: 0}
+  _piecesList:
+  - {fileID: 11400000, guid: ca747c05c7bd28d40a0149f4e8d3409a, type: 2}
+  - {fileID: 11400000, guid: 57a2cb8971921194c859fd01b59ccb5e, type: 2}
+  - {fileID: 11400000, guid: 3980ef0ecd5414640bd742329034e2dd, type: 2}
+  - {fileID: 11400000, guid: 0e1428536af36e7419a31ca07a4f446c, type: 2}
+  - {fileID: 11400000, guid: 24dbe1279440f294abc86f62bb43dc4f, type: 2}
+  - {fileID: 11400000, guid: 2fc212bef96b8824d9f7d42efae28046, type: 2}
+  - {fileID: 11400000, guid: bd89e35ce56a98349846af0e522b5ade, type: 2}
+  - {fileID: 11400000, guid: 090605b0cb69c4f4493469304c220fdd, type: 2}
+  - {fileID: 11400000, guid: 79838728316d21e4c8105bd2a82b3d2c, type: 2}
+  - {fileID: 11400000, guid: 5fd7bfff971548246baa53161451126c, type: 2}
+  - {fileID: 11400000, guid: bd2efab38e8904a45bf6201032f45251, type: 2}

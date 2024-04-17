@@ -51,6 +51,10 @@ namespace Grid {
             newPiece.transform.localScale = Vector3.one * _pieceScale;
             newPiece.transform.position = position;
             newPiece.transform.parent = transform;
+
+            //Oleksandr Kovalenko addition
+            newPiece.AddComponent<PuzzleAssembler>();
+            //Oleksandr Kovalenko addition
         }
 
         private PieceConfiguration GeneratePieceConfiguration(int row, int col)

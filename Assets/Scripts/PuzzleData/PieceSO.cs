@@ -5,13 +5,20 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Piece Config", menuName = "Create SO/Piece Config")]
 public class PieceSO : ScriptableObject
 {
+    [SerializeField] private int _idColumn;
+    [SerializeField] private int _idRow;
+
+    [Space]
+
     [SerializeField] private Vector2 _correctCoords;
-    [SerializeField] private Vector2 _correctRotation;
+    [SerializeField] private Quaternion _correctRotation; 
 
     public Vector2 CorrectCoords => _correctCoords;
-    public Vector2 CorrectRotation => _correctRotation;
+    public Quaternion CorrectRotation => _correctRotation;
+    public int IdColumn => _idColumn;
+    public int IdRow => _idRow;
 
-    void Assemble(Vector2 correctCoords, Vector2 correctRotation)
+    public void Assemble(Vector2 correctCoords, Quaternion correctRotation)
     {
         _correctCoords = correctCoords;
         _correctRotation = correctRotation;
