@@ -13,12 +13,8 @@ namespace PuzzleData
         [SerializeField] private string _name;
         [SerializeField] private Material _puzzlePicture;
 
-        //[SerializeField] private List<GameObject> _list; //list for puzzle pieces 
-        [SerializeField] private List<PieceSO> _piecesList; //list for puzzle pieces that are completed
-
         public int Id => _id;
         public string Name => _name;
-        public List<PieceSO> pieces => _piecesList;
     }
 }
 

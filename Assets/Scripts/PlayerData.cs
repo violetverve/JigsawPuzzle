@@ -31,6 +31,10 @@ namespace Player
                 _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSavingData>>(PlayerPrefs.GetString(_savedPuzzlePref));
         }
 
+        public void SavePlayerPuzzleProgress(PuzzleSavingData puzzleToSave) 
+        {
+            _savedPuzzles.Add(puzzleToSave);
+        }
         public void SavePlayerPuzzleProgress()
         {
             string savedPuzzles = JsonConvert.SerializeObject(_savedPuzzles);

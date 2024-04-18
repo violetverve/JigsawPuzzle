@@ -10,19 +10,17 @@ public class PuzzleAssembler : MonoBehaviour
     [ContextMenu("Assemble")]
     private void Assemble()
     {
-        PieceSO pieceData = null;
-        foreach(var piecesData in _puzzleData.pieces)
-        {
-            var name = ToString();
-            var secondname = "PuzzlePiece " + piecesData.IdColumn + "_" + piecesData.IdRow + " ";
-            if (name.Contains(secondname))
-            {
-                pieceData = piecesData;
-                break;
-            }
-        }
+        //foreach()
+        //{
+        //    var name = ToString();
+        //    var secondname = "PuzzlePiece " + piecesData.IdColumn + "_" + piecesData.IdRow + " ";
+        //    if (name.Contains(secondname))
+        //    {
+       
+        //        break;
+        //    }
+        //}
 
-        pieceData.Assemble(transform.position, transform.rotation);
 
 
     }
