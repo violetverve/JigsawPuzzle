@@ -2077,8 +2077,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _puzzlePieceGenerator: {fileID: 11400000, guid: e344d7e503172e74c85635fe7ca218ee, type: 2}
-  _rows: 10
-  _columns: 10
+  _rows: 20
+  _columns: 20
   _spacing: 2
   _pieceScale: 0.25
 --- !u!4 &1690346333
@@ -2090,7 +2090,7 @@ Transform:
   m_GameObject: {fileID: 1690346331}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.6834176, y: 1.4249021, z: 0.060300305}
+  m_LocalPosition: {x: 0.18, y: 2.18, z: 0.060300305}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
