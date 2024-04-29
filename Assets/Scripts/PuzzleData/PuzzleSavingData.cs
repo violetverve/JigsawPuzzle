@@ -1,5 +1,6 @@
 
 using PuzzleData;
+using PuzzlePiece;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
@@ -16,12 +17,16 @@ namespace PuzzleData
         private int _width;
         //ever puzzle piece will have their own id(column and row) and rotation 
         private List<System.Numerics.Vector3> _uncompletedPieces;
+        //remember piece configuration of puzzle
+        private PieceConfiguration[,] _pieceConfigurations;
 
-        public PuzzleSavingData(int id, int height, int width)
+        public PuzzleSavingData(int id, int height, int width, PieceConfiguration[,] pieceConfigurations)
         {
             _id = id;
             _height = height;
             _width = width;
+            _pieceConfigurations = pieceConfigurations;
+
         }
 
         public void AddPieces(System.Numerics.Vector3 pieceData)
@@ -29,10 +34,11 @@ namespace PuzzleData
             _uncompletedPieces.Add(pieceData);
         }
 
+        public int ID => _id;
         public int Height => _height;
         public int Width => _width;
-
         public List<System.Numerics.Vector3> UncompletedPieces => _uncompletedPieces;
+        public PieceConfiguration[,] PieceConfigurations => _pieceConfigurations;
     }
 
 }

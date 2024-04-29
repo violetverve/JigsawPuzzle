@@ -23,27 +23,32 @@ namespace Player
             _hintsAmount = 3;
         }
 
+        #region Saving
         public void LoadAllPlayerData()
         {
             _coinsAmount = PlayerPrefs.GetInt(_coinsPrefs);
             _hintsAmount = PlayerPrefs.GetInt(_hintsPrefs);
-            if(_savedPuzzles != null)
-                _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSavingData>>(PlayerPrefs.GetString(_savedPuzzlePref));
+            _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSavingData>>(PlayerPrefs.GetString(_savedPuzzlePref));
         }
 
-        public void SavePlayerPuzzleProgress(PuzzleSavingData puzzleToSave) 
+        public void SavePlayerPuzzleProgress(PuzzleSavingData puzzleToSave)
         {
             _savedPuzzles.Add(puzzleToSave);
         }
         public void SavePlayerPuzzleProgress()
         {
-            string savedPuzzles = JsonConvert.SerializeObject(_savedPuzzles);
-            PlayerPrefs.SetString(_savedPuzzlePref, savedPuzzles);
+            if (_savedPuzzles != null)
+            {
+                string savedPuzzles = JsonConvert.SerializeObject(_savedPuzzles);
+                PlayerPrefs.SetString(_savedPuzzlePref, savedPuzzles);
+            }
         }
+        #endregion
 
+        #region AddingRemovingConsumables
         public void AddCoins(int reward)
         {
-            _coinsAmount += _coinsAmount;
+            _coinsAmount += reward;
             PlayerPrefs.SetInt(_coinsPrefs, _coinsAmount);
         }
         public void SpendCoins(int amount)
@@ -53,7 +58,7 @@ namespace Player
         }
         public void AddHints(int reward)
         {
-            _hintsAmount += _hintsAmount;
+            _hintsAmount += reward;
             PlayerPrefs.SetInt(_coinsPrefs, _hintsAmount);
         }
         public void SpendHints(int amount)
@@ -61,6 +66,7 @@ namespace Player
             _hintsAmount -= amount;
             PlayerPrefs.SetInt(_hintsPrefs, _hintsAmount);
         }
+        #endregion
 
         public int CoinsAmount => _coinsAmount;
         public int HintsAmount => _hintsAmount;
