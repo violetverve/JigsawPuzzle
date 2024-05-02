@@ -17,17 +17,11 @@ namespace Player
         private int _hintsAmount;
         private List<PuzzleSavingData> _savedPuzzles;
 
-        public PlayerData()
-        {
-            _coinsAmount = 1000;
-            _hintsAmount = 3;
-        }
-
         #region Saving
         public void LoadAllPlayerData()
         {
-            _coinsAmount = PlayerPrefs.GetInt(_coinsPrefs);
-            _hintsAmount = PlayerPrefs.GetInt(_hintsPrefs);
+            _coinsAmount = PlayerPrefs.GetInt(_coinsPrefs, 1000);
+            _hintsAmount = PlayerPrefs.GetInt(_hintsPrefs, 3);
             _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSavingData>>(PlayerPrefs.GetString(_savedPuzzlePref));
         }
 
