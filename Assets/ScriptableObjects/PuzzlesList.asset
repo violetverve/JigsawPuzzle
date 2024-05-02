@@ -12,4 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8640eaa2b25b8d24a9a758d66da51503, type: 3}
   m_Name: PuzzlesList
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlesList/StagesList
-  _puzzleList: []
+  _puzzleList:
+  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
+  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}
+  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
+  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}
+  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
+  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}
+  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
+  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}
+  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
+  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab66ba92641d28b43aef24321fc561a7, type: 3}
-  m_Name: WoodPuzzle
+  m_Name: MonsterPuzzle
   m_EditorClassIdentifier: 
-  _id: 1
-  _name: Bunny
-  _puzzleMaterial: {fileID: 2100000, guid: cb305feafe5dddc44b62e8b16845161d, type: 2}
-  _puzzleImage: {fileID: 21300000, guid: 67bfc93a6c2e8564f965d2436486da97, type: 3}
+  _id: 2
+  _name: Monster Puzzle
+  _puzzleMaterial: {fileID: 2100000, guid: 63311ac12fe33654ca47065cfd785a41, type: 2}
+  _puzzleImage: {fileID: 21300000, guid: eb92600f5acf10b468fb60b154e663b7, type: 3}
