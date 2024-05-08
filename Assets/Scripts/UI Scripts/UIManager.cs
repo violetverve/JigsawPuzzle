@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Player;
 
 namespace UIscripts
 {
@@ -19,15 +20,39 @@ namespace UIscripts
         [SerializeField] private GameObject _puzzleParent;
         [SerializeField] private PuzzlePanelUI _puzzlePrefab;
 
-        private void Awake()
+        [Space]
+
+        [SerializeField] private GameObject _playerPuzzleParent;
+
+        private void Start()
         {
             OpenCloseScript.OnClicked += TurnIterectableButton;
             LoadAllPuzzles();
+            LoadPlayerPuzzles();
+            
         }
 
         public void LoadAllPuzzles()
         {
             _puzzles.List.ForEach(puzzle => Instantiate(_puzzlePrefab, _puzzleParent.transform).SetImage(puzzle.PuzzleImage));                                      
+        }
+
+        public void LoadPlayerPuzzles()
+        {
+            if (PlayerData.Instance.SavedPuzzles != null)
+            {
+                foreach (var playerPuzzle in PlayerData.Instance.SavedPuzzles)
+                {
+                    foreach (var puzzle in _puzzles.List)
+                    {
+                        if (playerPuzzle.ID == puzzle.Id)
+                        {
+                            Instantiate(_puzzlePrefab, _playerPuzzleParent.transform).SetImage(puzzle.PuzzleImage);
+                        }
+                    }
+                }
+            }
+            
         }
 
         #region ButtonsInteraction

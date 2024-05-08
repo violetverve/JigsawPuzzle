@@ -18,12 +18,12 @@ namespace PuzzleData
         //remember piece configuration of puzzle
         private PieceConfiguration[,] _pieceConfiguration;
 
-        public PuzzleSavingData(int id, int height, int width, PieceConfiguration[,] pieceConfigurations)
+        public PuzzleSavingData(int id, int height, int width/*, PieceConfiguration[,] pieceConfigurations*/)
         {
             _id = id;
             _height = height;
             _width = width;
-            _pieceConfiguration = pieceConfigurations;
+            //_pieceConfiguration = pieceConfigurations;
         }
 
         public void AddPieces(Vector3 pieceData)

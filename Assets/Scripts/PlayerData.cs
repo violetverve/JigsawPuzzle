@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Player
 {
-    public class PlayerData
+    public class PlayerData : MonoBehaviour
     {
 
         private readonly string _coinsPrefs = "player_coins";
@@ -17,11 +17,28 @@ namespace Player
         private int _hintsAmount;
         private List<PuzzleSavingData> _savedPuzzles;
 
+        #region Singleton Pattern
+        public static PlayerData Instance { get; private set; }
+
+        private void Awake()
+        {
+            if(Instance != null && Instance != this)
+            {
+                Destroy(this);
+                return;
+            }
+            Instance = this;
+            LoadAllPlayerData();
+        }
+        #endregion
+
         #region Saving
         public void LoadAllPlayerData()
         {
             _coinsAmount = PlayerPrefs.GetInt(_coinsPrefs, 1000);
+            Debug.Log("Coins" + _coinsAmount);  
             _hintsAmount = PlayerPrefs.GetInt(_hintsPrefs, 3);
+            Debug.Log("Hints" + _hintsAmount);
             _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSavingData>>(PlayerPrefs.GetString(_savedPuzzlePref));
         }
 
