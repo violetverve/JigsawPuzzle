@@ -105,6 +105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _puzzleUIImage: {fileID: 8571102992433832122}
+  _lockImage: {fileID: 1891542864217604888}
 --- !u!1 &901539815791781519
 GameObject:
   m_ObjectHideFlags: 0

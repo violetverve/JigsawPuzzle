@@ -34,7 +34,7 @@ namespace UIscripts
 
         public void LoadAllPuzzles()
         {
-            _puzzles.List.ForEach(puzzle => Instantiate(_puzzlePrefab, _puzzleParent.transform).SetImage(puzzle.PuzzleImage));                                      
+            _puzzles.List.ForEach(puzzle => Instantiate(_puzzlePrefab, _puzzleParent.transform).LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.IsLocked));
         }
 
         public void LoadPlayerPuzzles()
@@ -47,7 +47,7 @@ namespace UIscripts
                     {
                         if (playerPuzzle.ID == puzzle.Id)
                         {
-                            Instantiate(_puzzlePrefab, _playerPuzzleParent.transform).SetImage(puzzle.PuzzleImage);
+                            Instantiate(_puzzlePrefab, _playerPuzzleParent.transform).LoadPuzzlePanel(puzzle.PuzzleImage, false);
                         }
                     }
                 }
