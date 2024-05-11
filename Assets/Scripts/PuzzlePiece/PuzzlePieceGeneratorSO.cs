@@ -14,7 +14,7 @@ namespace PuzzlePiece
         [SerializeField] private int _pointsPerSpline = 40;
         [SerializeField] private Material _material;
 
-        public GameObject CreatePiece(PieceConfiguration pieceConfiguration, Vector2 gridPosition, Vector2 grid)
+        public GameObject CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid)
         {
             var points = GetPointsFromConfig(pieceConfiguration).Distinct();
 
@@ -24,6 +24,13 @@ namespace PuzzlePiece
 
             gameObject.AddComponent<MeshFilter>().mesh = mesh;
             gameObject.AddComponent<MeshRenderer>().material = _material;
+
+            BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
+            RectTransform rectTransform = gameObject.AddComponent<RectTransform>();
+
+            gameObject.AddComponent<Draggable>();
+            
+            var puzzlePieceComponent = gameObject.AddComponent<Piece>();
 
             return gameObject;
         } 
@@ -40,10 +47,10 @@ namespace PuzzlePiece
         }
 
 
-        private Vector2[] CalculateUVs(Vector3[] vertices, Vector2 gridPosition, Vector2 grid)
+        private Vector2[] CalculateUVs(Vector3[] vertices, Vector2Int gridPosition, Vector2Int grid)
         {
-            int totalColumns = (int)grid.x;
-            int totalRows = (int)grid.y;
+            int totalColumns = grid.x;
+            int totalRows = grid.y;
 
             float uvPieceWidth = 1f / totalColumns;
             float uvPieceHeight = 1f / totalRows;
@@ -68,7 +75,7 @@ namespace PuzzlePiece
 
             return uv;
         }
-        private Mesh GenerateMesh(IEnumerable<Vector2> points, Vector2 gridPosition, Vector2 grid)
+        private Mesh GenerateMesh(IEnumerable<Vector2> points, Vector2Int gridPosition, Vector2Int grid)
         {
             var vertices = points.Select(point => new Vector3(point.x, point.y, 0)).ToArray();
             var uv = CalculateUVs(vertices, gridPosition, grid);
