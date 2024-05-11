@@ -55,7 +55,7 @@ namespace UIscripts
             
         }
 
-        #region ButtonsInteraction
+        #region MenuButtonsInteraction
         private void TurnIterectableButton(Button button)
         {
             foreach(Button buttons in _buttonsInteractivity)
@@ -68,6 +68,12 @@ namespace UIscripts
         }
         #endregion
 
+        #region BuyPuzzleInteraction
+
+
+
+
+        #endregion
     }
 }
 

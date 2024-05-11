@@ -16,4 +16,4 @@ MonoBehaviour:
   _name: Monster Puzzle
   _puzzleMaterial: {fileID: 2100000, guid: 63311ac12fe33654ca47065cfd785a41, type: 2}
   _puzzleImage: {fileID: 21300000, guid: eb92600f5acf10b468fb60b154e663b7, type: 3}
-  isLocked: 1
+  _isLocked: 1
