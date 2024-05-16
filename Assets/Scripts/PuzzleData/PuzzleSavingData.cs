@@ -25,7 +25,10 @@ namespace PuzzleData
             _width = width;
             //_pieceConfiguration = pieceConfigurations;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pieceData"></param>
         public void AddPieces(Vector3 pieceData)
         { 
             _uncompletedPieces.Add(pieceData);

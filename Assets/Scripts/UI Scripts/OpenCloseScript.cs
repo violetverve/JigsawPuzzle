@@ -9,7 +9,7 @@ namespace UIscripts
 {
     public class OpenCloseScript : MonoBehaviour
     {
-        public static Action<Button> OnClicked; 
+         
         [SerializeField] private List<GameObject> _openList;
         [SerializeField] private List<GameObject> _closeList;
         private Button _button;
@@ -22,7 +22,7 @@ namespace UIscripts
         {
             Open();
             Close();
-            OnClicked?.Invoke(_button);
+            UIManager.OnPanelsChange?.Invoke(_button); 
         }
         private void Open()
         {

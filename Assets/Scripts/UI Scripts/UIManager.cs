@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Player;
+using System;
 
 namespace UIscripts
 {
@@ -24,17 +25,38 @@ namespace UIscripts
 
         [SerializeField] private GameObject _playerPuzzleParent;
 
-        private void Start()
+        [Space]
+
+        [SerializeField] private GameObject _puzzleToBuyPopUp;
+        [SerializeField] private PuzzlePanelUI _puzzleToBuyPopUpObject;
+
+        [Space]
+        [SerializeField] private TextMeshProUGUI _coinsText;
+
+        [Space]
+        [SerializeField] private GameObject _puzzleLoaderObject;
+        [SerializeField] private Image _puzzleToChoose;
+
+        public static Action<GameObject> OnCrossClick;
+        public static Action<Button> OnPanelsChange;
+        public static Action<int> OnLockedPanelClick;
+        public static Action<int> OnPanelClick;
+
+        private void Awake()
         {
-            OpenCloseScript.OnClicked += TurnIterectableButton;
+            OnPanelsChange += TurnIterectableButton;
+            OnCrossClick += CloseWindow;
+            OnLockedPanelClick += LoadBuyPanelPopUp;
+            OnPanelClick += LoadPuzzleDifficultyChooser;
             LoadAllPuzzles();
             LoadPlayerPuzzles();
+            LoadCoins();
             
         }
 
         public void LoadAllPuzzles()
         {
-            _puzzles.List.ForEach(puzzle => Instantiate(_puzzlePrefab, _puzzleParent.transform).LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.IsLocked));
+            _puzzles.List.ForEach(puzzle => Instantiate(_puzzlePrefab, _puzzleParent.transform).LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.IsLocked, puzzle.Id));
         }
 
         public void LoadPlayerPuzzles()
@@ -47,12 +69,11 @@ namespace UIscripts
                     {
                         if (playerPuzzle.ID == puzzle.Id)
                         {
-                            Instantiate(_puzzlePrefab, _playerPuzzleParent.transform).LoadPuzzlePanel(puzzle.PuzzleImage, false);
+                            Instantiate(_puzzlePrefab, _playerPuzzleParent.transform).LoadPuzzlePanel(puzzle.PuzzleImage, playerPuzzle.ID);
                         }
                     }
                 }
-            }
-            
+            }            
         }
 
         #region MenuButtonsInteraction
@@ -66,12 +87,46 @@ namespace UIscripts
             button.interactable = false;
             button.GetComponentInChildren<TextMeshProUGUI>().color = _buttonTextColorClicked;
         }
+
+        private void CloseWindow(GameObject ToClose)
+        {
+            ToClose.SetActive(false);
+        }
         #endregion
 
-        #region BuyPuzzleInteraction
+        #region ChoosePuzzleInteraction
+        public void LoadBuyPanelPopUp(int puzzleID)
+        {
+            foreach(var puzzle in _puzzles.List)
+            {
+                if(puzzleID == puzzle.Id)
+                {
+                    _puzzleToBuyPopUpObject.LoadPuzzlePanel(puzzle.PuzzleImage);
+                    _puzzleToBuyPopUp.SetActive(true);
+                    break;
+                }
+            }
+        }
+        public void LoadPuzzleDifficultyChooser(int puzzleID)
+        {
+            foreach (var puzzle in _puzzles.List)
+            {
+                if (puzzleID == puzzle.Id)
+                {
+                    _puzzleToChoose.sprite = puzzle.PuzzleImage;
+                    _puzzleLoaderObject.SetActive(true);
+                    break;
+                }
+            }
+        }
+        #endregion
 
+        #region CoinsLoading
 
-
+        public void LoadCoins()
+        {
+            _coinsText.text = PlayerData.Instance.CoinsAmount.ToString();
+        }
 
         #endregion
     }
