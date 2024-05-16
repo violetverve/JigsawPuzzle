@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Grid;
+using PuzzlePiece;
 
 
 public class ScrollViewController : MonoBehaviour
