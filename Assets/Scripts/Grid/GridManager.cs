@@ -7,6 +7,7 @@ namespace Grid
 {
     public class GridManager : MonoBehaviour
     {
+        private const string PUZZLE_GROUP = "PuzzleGroup";
         [SerializeField] private GridSO _gridSO;
 
         private void OnEnable()
@@ -29,15 +30,13 @@ namespace Grid
             ISnappable snappable = pieceTransform.GetComponent<ISnappable>();
 
             if (snappable == null) return;
-            Debug.Log("Snappable");
+
             if (snappable.TrySnapToGrid()) return;
-            Debug.Log("Not Snapped to Grid");
 
             Piece neighbourPiece = snappable.GetNeighbourPiece();
 
             if (neighbourPiece != null)
             {
-                Debug.Log("Neighbour Piece Found");
                 if (!snappable.TrySnapTogether(neighbourPiece))
                 {
                     CreateGroup(new List<Piece> { (Piece)snappable, neighbourPiece });
@@ -47,7 +46,7 @@ namespace Grid
     
         private void CreateGroup(List<Piece> pieces)
         {
-            GameObject groupObject = new GameObject("PuzzleGroup");
+            GameObject groupObject = new GameObject(PUZZLE_GROUP);
             groupObject.transform.SetParent(transform, true);
 
             PuzzleGroup group = groupObject.AddComponent<PuzzleGroup>();
