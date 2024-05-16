@@ -30,17 +30,27 @@ namespace UIscripts
         [SerializeField] private GameObject _puzzleToBuyPopUp;
         [SerializeField] private PuzzlePanelUI _puzzleToBuyPopUpObject;
 
+        [Space]
+        [SerializeField] private TextMeshProUGUI _coinsText;
+
+        [Space]
+        [SerializeField] private GameObject _puzzleLoaderObject;
+        [SerializeField] private Image _puzzleToChoose;
+
         public static Action<GameObject> OnCrossClick;
         public static Action<Button> OnPanelsChange;
+        public static Action<int> OnLockedPanelClick;
         public static Action<int> OnPanelClick;
 
         private void Awake()
         {
             OnPanelsChange += TurnIterectableButton;
             OnCrossClick += CloseWindow;
-            OnPanelClick += LoadBuyPanelPopUp;
+            OnLockedPanelClick += LoadBuyPanelPopUp;
+            OnPanelClick += LoadPuzzleDifficultyChooser;
             LoadAllPuzzles();
             LoadPlayerPuzzles();
+            LoadCoins();
             
         }
 
@@ -84,7 +94,7 @@ namespace UIscripts
         }
         #endregion
 
-        #region BuyPuzzleInteraction
+        #region ChoosePuzzleInteraction
         public void LoadBuyPanelPopUp(int puzzleID)
         {
             foreach(var puzzle in _puzzles.List)
@@ -97,6 +107,27 @@ namespace UIscripts
                 }
             }
         }
+        public void LoadPuzzleDifficultyChooser(int puzzleID)
+        {
+            foreach (var puzzle in _puzzles.List)
+            {
+                if (puzzleID == puzzle.Id)
+                {
+                    _puzzleToChoose.sprite = puzzle.PuzzleImage;
+                    _puzzleLoaderObject.SetActive(true);
+                    break;
+                }
+            }
+        }
+        #endregion
+
+        #region CoinsLoading
+
+        public void LoadCoins()
+        {
+            _coinsText.text = PlayerData.Instance.CoinsAmount.ToString();
+        }
+
         #endregion
     }
 }

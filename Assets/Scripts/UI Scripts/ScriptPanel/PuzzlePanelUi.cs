@@ -46,7 +46,14 @@ namespace UIscripts
         public void LoadPuzzlePopUp()
         {
            if(_locked)
+           {
+              UIManager.OnLockedPanelClick?.Invoke(_puzzleID);
+           }
+           else
+           {
                UIManager.OnPanelClick?.Invoke(_puzzleID);
+           }
+
         }
     }
 }
