@@ -9,6 +9,7 @@ namespace Grid
     {
         private const string PUZZLE_GROUP = "PuzzleGroup";
         [SerializeField] private GridSO _gridSO;
+        [SerializeField] private ScrollViewController _scrollViewController;
 
         private void OnEnable()
         {
@@ -20,28 +21,34 @@ namespace Grid
             Draggable.OnItemDropped -= HandleItemDropped;
         }
 
-        private void HandleItemDropped(Transform pieceTransform)
+        private void HandleItemDropped(ISnappable snappable)
         {
-            TrySnapToGrid(pieceTransform);
+            TrySnapToGrid(snappable);
         }
 
-        private void TrySnapToGrid(Transform pieceTransform)
+        private void TrySnapToGrid(ISnappable snappable)
         {
-            ISnappable snappable = pieceTransform.GetComponent<ISnappable>();
-
-            if (snappable == null) return;
-
             if (snappable.TrySnapToGrid()) return;
 
             Piece neighbourPiece = snappable.GetNeighbourPiece();
 
-            if (neighbourPiece != null)
+            if (CanSnap(neighbourPiece))
             {
                 if (!snappable.TrySnapTogether(neighbourPiece))
                 {
                     CreateGroup(new List<Piece> { (Piece)snappable, neighbourPiece });
                 }
             }
+        }
+
+        private bool CanSnap(Piece piece)
+        {
+            return piece != null && !IsInScrollView(piece);
+        }
+
+        private bool IsInScrollView(Piece piece)
+        {
+            return _scrollViewController.IsInScrollView(piece.Transform);
         }
     
         private void CreateGroup(List<Piece> pieces)

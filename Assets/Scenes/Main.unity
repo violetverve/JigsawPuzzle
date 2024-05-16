@@ -586,6 +586,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridSO: {fileID: 11400000, guid: 5659531d58d088d4cbfe8123ebd4b9e7, type: 2}
+  _scrollViewController: {fileID: 293246562}
 --- !u!1 &1969103288
 GameObject:
   m_ObjectHideFlags: 0
