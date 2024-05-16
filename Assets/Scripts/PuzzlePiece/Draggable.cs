@@ -7,9 +7,6 @@ namespace PuzzlePiece
 {
     public class Draggable : MonoBehaviour
     {
-        // public static event Action<Transform> OnItemDropped;
-        // public static event Action<Transform> OnItemPickedUp;
-
         public static event Action<ISnappable> OnItemDropped;
         public static event Action<ISnappable> OnItemPickedUp;
 
@@ -19,7 +16,6 @@ namespace PuzzlePiece
         private Vector3 _offset;
         private ISnappable _snappable;
         
-
 
         private void Awake()
         {
@@ -37,17 +33,12 @@ namespace PuzzlePiece
             _offset = transform.position - GetMouseWorldPos();
 
             OnItemPickedUp?.Invoke(_snappable);
-            
-            // OnItemPickedUp?.Invoke(transform);
-            
         }
 
         private void OnMouseUp()
         {
             _isDragging = false;
             OnItemDropped?.Invoke(_snappable);
-
-            // OnItemDropped?.Invoke(transform);
         }
 
         private void OnMouseDrag()
