@@ -14,6 +14,7 @@ public class ScrollViewController : MonoBehaviour
     [SerializeField] private ScrollRect _scrollRect;
     private float _pieceSize = 40;
     private float _originalPieceSize;
+    private bool _isOriginalPieceSizeSet;
     
     private void Start()
     {
@@ -32,18 +33,14 @@ public class ScrollViewController : MonoBehaviour
         Draggable.OnItemPickedUp -= HandleItemPickedUp;
     }
 
-    private void HandleItemPickedUp(Transform piece)
+    private void HandleItemPickedUp(ISnappable snappable)
     {
+        if (snappable is PuzzleGroup) return;
         _scrollRect.enabled = false;
 
-        TryRemovePieceFromScrollView(piece);
-    }
-
-    private void TryRemovePieceFromScrollView(Transform piece)
-    {
-        if (RectTransformUtility.RectangleContainsScreenPoint(transform as RectTransform, Input.mousePosition, Camera.main))
+        if (MouseOnScrollView())
         {
-            RemovePieceFromScrollView(piece);
+            RemovePieceFromScrollView(snappable.Transform);
         }
     }
 
@@ -53,15 +50,20 @@ public class ScrollViewController : MonoBehaviour
         
         piece.localScale = Vector3.one * _originalPieceSize;
 
-        RectTransform rectTransform = piece.GetComponent<RectTransform>();
+        RectTransform rectTransform = piece as RectTransform;
         
         rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
     }
 
-    private void HandleItemDropped(Transform piece)
+    private void HandleItemDropped(ISnappable snappable)
     {
-        TryAddPieceToScrollView(piece);
+        if (snappable is PuzzleGroup) return;
+
+        if (MouseOnScrollView())
+        {
+            AddPieceToScrollView(snappable.Transform);
+        }
 
         _scrollRect.enabled = true;
     }
@@ -78,10 +80,7 @@ public class ScrollViewController : MonoBehaviour
 
     public void AddPieceToScrollView(Transform piece)
     {
-        if (_originalPieceSize == 0)
-        {
-            _originalPieceSize = piece.transform.localScale.x;
-        }
+        SetOriginalPieceSize(piece);
 
         Vector3 position = piece.position;
  
@@ -93,24 +92,18 @@ public class ScrollViewController : MonoBehaviour
         piece.localScale = Vector3.one * _pieceSize;
     }
 
-    private RectTransform CreateUIWrapper()
+    private void SetOriginalPieceSize(Transform piece)
     {
-        GameObject uiWrapper = new GameObject("UIWrapper");
-        RectTransform rectTransform = uiWrapper.AddComponent<RectTransform>();
-        
-        rectTransform.SetParent(_content, false);
-        rectTransform.localScale = Vector3.one;
-        rectTransform.anchoredPosition = Vector3.zero;
-
-        return rectTransform;
+        if (!_isOriginalPieceSizeSet)
+        {
+            _originalPieceSize = piece.transform.localScale.x;
+            _isOriginalPieceSizeSet = true;
+        }
     }
 
-    public void TryAddPieceToScrollView(Transform piece)
+    private bool MouseOnScrollView()
     {
-        if (RectTransformUtility.RectangleContainsScreenPoint(transform as RectTransform, Input.mousePosition, Camera.main))
-        {
-            AddPieceToScrollView(piece);
-        }
+        return RectTransformUtility.RectangleContainsScreenPoint(transform as RectTransform, Input.mousePosition, Camera.main);
     }
 
     private int GetDropIndex(Vector3 dropScreenPosition)
@@ -139,6 +132,11 @@ public class ScrollViewController : MonoBehaviour
         {
             piece.SetAsLastSibling();
         }
+    }
+
+    public bool IsInScrollView(Transform piece)
+    {
+        return piece.parent == _content;
     }
 
 }
