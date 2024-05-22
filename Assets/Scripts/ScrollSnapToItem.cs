@@ -15,6 +15,8 @@ public class ScrollSnapToItem : MonoBehaviour
 
     [SerializeField] private float _snapForce;
 
+    [SerializeField] private List<ScrollElement> _scrollElementList;
+
     private float _snapSpeed;
     private bool _isSnapped;
 
@@ -27,33 +29,42 @@ public class ScrollSnapToItem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       int currentItem = Mathf.RoundToInt((0 - _contentPanel.localPosition.x / (_sampleListItem.rect.width + _horizontalLayoutGroup.spacing)));
-       if(currentItem < 0)
+        
+       int currentItemScaling = Mathf.RoundToInt((0 - _contentPanel.localPosition.x /  (_sampleListItem.rect.width + _horizontalLayoutGroup.spacing)) - 0.5f);
+       int currentItemSnapping = Mathf.RoundToInt(0 - _contentPanel.localPosition.x / (_sampleListItem.rect.width + _horizontalLayoutGroup.spacing));
+       Debug.Log(currentItemScaling);
+       Debug.Log(_contentPanel.localPosition.x);
+
+
+       if (currentItemSnapping > _scrollElementList.Count - 1)
        {
-            currentItem = 0;
+            currentItemSnapping = _scrollElementList.Count - 1;
        }
-       if(currentItem > 5)
+       if(currentItemSnapping < 0)
        {
-            currentItem = 5;
+            currentItemSnapping = 0;
        }
-       if(_scrollRect.velocity.magnitude < 200 && !_isSnapped)
-       {
+        _scrollElementList[currentItemScaling].SetBasicScrollElementParameters(_contentPanel.localPosition.x, currentItemScaling);
+        if (_scrollRect.velocity.magnitude < 200 && !_isSnapped)
+        {
             _scrollRect.velocity = Vector2.zero;
-            _snapSpeed += _snapForce * Time.deltaTime; 
+            _snapSpeed += _snapForce * Time.deltaTime;
             _contentPanel.localPosition = new Vector3(
-                Mathf.MoveTowards(_contentPanel.localPosition.x, 0 - (currentItem * (_sampleListItem.rect.width + _horizontalLayoutGroup.spacing)), _snapSpeed), 
-                _contentPanel.localPosition.y, 
-                _contentPanel.localPosition.z);
-            if(_contentPanel.localPosition.x == 0 - (currentItem * (_sampleListItem.rect.width + _horizontalLayoutGroup.spacing)))
+                Mathf.MoveTowards(_contentPanel.localPosition.x, 0 - (currentItemSnapping * (_sampleListItem.rect.width + _horizontalLayoutGroup.spacing)), _snapSpeed),
+                 _contentPanel.localPosition.y,
+                 _contentPanel.localPosition.z);
+            if (_contentPanel.localPosition.x == 0 - (currentItemSnapping * (_sampleListItem.rect.width + _horizontalLayoutGroup.spacing)))
             {
                 _isSnapped = true;
             }
-                   
-       }
-       if(_scrollRect.velocity.magnitude > 200)
-       {
+
+        }
+        if (_scrollRect.velocity.magnitude > 200)
+        {
             _isSnapped = false;
             _snapSpeed = 0;
-       }
+        }
+
+
     }
 }
