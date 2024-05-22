@@ -23,6 +23,7 @@ namespace Grid
 
         private void HandleItemDropped(ISnappable snappable)
         {
+            ClampToGrid(snappable);
             TrySnapToGrid(snappable);
         }
 
@@ -53,13 +54,65 @@ namespace Grid
     
         private void CreateGroup(List<Piece> pieces)
         {
+            Vector3 centerPoint = Vector3.zero;
+            foreach (Piece piece in pieces)
+            {
+                centerPoint += piece.transform.position;
+            }
+            centerPoint /= pieces.Count;
+
             GameObject groupObject = new GameObject(PUZZLE_GROUP);
-            groupObject.transform.SetParent(transform, true);
+            groupObject.transform.parent = transform;
+            groupObject.transform.position = centerPoint;
 
             PuzzleGroup group = groupObject.AddComponent<PuzzleGroup>();
             group.InitializeGroup(pieces);
         }
 
+        private void ClampToGrid(ISnappable snappable)
+        {
+            if (snappable is PuzzleGroup group)
+            {
+           
+                Bounds groupBounds = group.GetComponent<CompositeCollider2D>().bounds;
+
+                Vector3 groupPosition = groupBounds.center;
+
+                Vector2 groupSize = new Vector2(groupBounds.size.x, groupBounds.size.y);
+                
+                Vector3 clampedGroupPosition = GetClampedPosition(groupPosition, groupSize);
+
+                Vector3 offset = groupPosition - group.transform.position;
+
+                group.transform.position = clampedGroupPosition - offset;
+            }
+            else if (snappable is Piece piece)
+            {
+                if (!_scrollViewController.MouseOnScrollView())
+                {
+                    piece.transform.position = GetClampedPosition(piece.transform.position, _gridSO.CellSize * Vector2.one);
+                }
+            }
+        }
+
+        public Vector3 GetClampedPosition(Vector3 position, Vector2 size)
+        {
+            float cellSize = _gridSO.CellSize;
+
+            float halfCellWidth = size.x / 2;
+            float halfCellHeight = size.y / 2;
+
+            float startX = transform.position.x - (_gridSO.Width * cellSize) / 2 + halfCellWidth;
+            float startY = transform.position.y - (_gridSO.Height * cellSize) / 2 + halfCellHeight;
+            float endX = transform.position.x + (_gridSO.Width * cellSize) / 2 - halfCellWidth;
+            float endY = transform.position.y + (_gridSO.Height * cellSize) / 2 - halfCellHeight;
+
+            Vector3 clampedPosition = position;
+            clampedPosition.x = Mathf.Clamp(clampedPosition.x, startX, endX);
+            clampedPosition.y = Mathf.Clamp(clampedPosition.y, startY, endY);
+
+            return clampedPosition;
+        }
 
         void OnDrawGizmos()
         {

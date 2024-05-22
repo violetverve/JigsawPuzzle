@@ -12,7 +12,7 @@ namespace PuzzlePiece
         private Rigidbody2D _rigidbody;
         private PuzzleGroup _group;
         private BoxCollider2D _boxCollider;
-        private float _snapDistance = 0.275f;
+        private float _snapDistance = 0.4f;
 
         public Transform Transform => transform;
         public Vector3 CorrectPosition => _correctPosition;
@@ -69,6 +69,8 @@ namespace PuzzlePiece
             }
         }
 
+        # region Neighbours
+
         public List<Piece> GetNeighbours()
         {
             List<Piece> neighbours = new List<Piece>();
@@ -79,16 +81,38 @@ namespace PuzzlePiece
             {
                 if (hitCollider.gameObject == gameObject) continue;
 
-                Piece piece = hitCollider.transform.GetComponent<Piece>();
-                if (piece == null) continue;
-
-                if (IsNeighbour(piece.GridPosition))
-                {
-                    neighbours.Add(piece);
-                }
+                AddPieceIfNeighbour(neighbours, hitCollider);
+                AddGroupPiecesIfNeighbour(neighbours, hitCollider);
             }
 
             return neighbours;
+        }
+
+        private void AddPieceIfNeighbour(List<Piece> neighbours, Collider2D hitCollider)
+        {
+            Piece piece = hitCollider.transform.GetComponent<Piece>();
+            if (piece == null || piece == this) return;
+
+            if (IsNeighbour(piece.GridPosition))
+            {
+                neighbours.Add(piece);
+            }
+        }
+
+        private void AddGroupPiecesIfNeighbour(List<Piece> neighbours, Collider2D hitCollider)
+        {
+            PuzzleGroup group = hitCollider.GetComponent<PuzzleGroup>();
+            if (group != null)
+            {
+                foreach (Transform child in group.transform)
+                {
+                    Collider2D childCollider = child.GetComponent<Collider2D>();
+                    if (childCollider != null)
+                    {
+                        AddPieceIfNeighbour(neighbours, childCollider);
+                    }
+                }
+            }
         }
 
         public Piece GetNeighbourPiece()
@@ -102,6 +126,8 @@ namespace PuzzlePiece
             return Mathf.Abs(_gridPosition.x - otherGridPosition.x) == 1 && _gridPosition.y == otherGridPosition.y ||
                    Mathf.Abs(_gridPosition.y - otherGridPosition.y) == 1 && _gridPosition.x == otherGridPosition.x;
         }
+
+        # endregion
 
         public void SetGroup(PuzzleGroup group)
         {

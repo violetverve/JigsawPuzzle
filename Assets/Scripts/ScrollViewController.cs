@@ -101,7 +101,7 @@ public class ScrollViewController : MonoBehaviour
         }
     }
 
-    private bool MouseOnScrollView()
+    public bool MouseOnScrollView()
     {
         return RectTransformUtility.RectangleContainsScreenPoint(transform as RectTransform, Input.mousePosition, Camera.main);
     }

@@ -43,7 +43,6 @@ namespace Grid {
                     Vector3 position = new Vector3(startX + col * scale, 
                     startY + row * scale,
                     _zOffset);
-                    //zOffset * (row + 1 + col + 1));
                     var pieceConfiguration = GeneratePieceConfiguration(row, col);
                     _pieceConfigurations[row, col] = pieceConfiguration;
                     GeneratePiece(pieceConfiguration, position, row, col);
@@ -57,7 +56,10 @@ namespace Grid {
             Vector2Int grid = new Vector2Int(_gridSO.Height, _gridSO.Width);
             var newPiece = _puzzlePieceGenerator.CreatePiece(pieceConfiguration, gridPosition, grid);
             
+            // BoxCollider2D boxCollider = newPiece.GetComponent<BoxCollider2D>();
+            // Debug.Log("Before: " + boxCollider.size);
             newPiece.transform.localScale = Vector3.one * _pieceScale;
+            // Debug.Log("After: " + boxCollider.size);
 
             newPiece.transform.position = position;
 
