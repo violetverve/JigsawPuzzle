@@ -70,11 +70,9 @@ public class ScrollViewController : MonoBehaviour
 
     private void PopulateScrollView()
     {
-        var puzzleList = _gridGenerator.GeneratedPuzzles;
-
-        foreach (var puzzle in puzzleList)
+        foreach (var piece in _gridGenerator.GeneratedPieces)
         {
-            AddPieceToScrollView(puzzle.transform);
+            AddPieceToScrollView(piece.transform);
         }
     }
 
