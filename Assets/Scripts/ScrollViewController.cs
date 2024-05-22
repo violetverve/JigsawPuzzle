@@ -70,11 +70,9 @@ public class ScrollViewController : MonoBehaviour
 
     private void PopulateScrollView()
     {
-        var puzzleList = _gridGenerator.GeneratedPuzzles;
-
-        foreach (var puzzle in puzzleList)
+        foreach (var piece in _gridGenerator.GeneratedPieces)
         {
-            AddPieceToScrollView(puzzle.transform);
+            AddPieceToScrollView(piece.transform);
         }
     }
 
@@ -101,7 +99,7 @@ public class ScrollViewController : MonoBehaviour
         }
     }
 
-    private bool MouseOnScrollView()
+    public bool MouseOnScrollView()
     {
         return RectTransformUtility.RectangleContainsScreenPoint(transform as RectTransform, Input.mousePosition, Camera.main);
     }

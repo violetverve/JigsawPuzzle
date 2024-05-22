@@ -14,7 +14,7 @@ namespace PuzzlePiece
         [SerializeField] private int _pointsPerSpline = 40;
         [SerializeField] private Material _material;
 
-        public GameObject CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid)
+        public Piece CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid)
         {
             var points = GetPointsFromConfig(pieceConfiguration).Distinct();
 
@@ -30,9 +30,9 @@ namespace PuzzlePiece
 
             gameObject.AddComponent<Draggable>();
             
-            var puzzlePieceComponent = gameObject.AddComponent<Piece>();
+            var piece = gameObject.AddComponent<Piece>();
 
-            return gameObject;
+            return piece;
         } 
 
         private IEnumerable<Vector2> GetPointsFromConfig(PieceConfiguration pieceConfiguration)

@@ -23,6 +23,10 @@ namespace PuzzlePiece
             Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
             rb.bodyType = RigidbodyType2D.Kinematic;
 
+            CompositeCollider2D compositeCollider = gameObject.AddComponent<CompositeCollider2D>();
+            compositeCollider.geometryType = CompositeCollider2D.GeometryType.Polygons;
+            compositeCollider.generationType = CompositeCollider2D.GenerationType.Synchronous;
+
             _draggable = gameObject.AddComponent<Draggable>();
         }
    
@@ -123,6 +127,7 @@ namespace PuzzlePiece
                 _pieces.Add(piece);
             }
 
+            Destroy(otherGroup.gameObject);
         }
     }
 }
