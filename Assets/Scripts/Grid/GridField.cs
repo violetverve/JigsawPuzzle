@@ -16,8 +16,6 @@ namespace Grid
 
         public float CalculateWidth()
         {
-            // RectTransform rectTransform = GetComponent<RectTransform>();
-
             Vector3[] worldCorners = new Vector3[4];
             _rectTransform.GetWorldCorners(worldCorners);
 
