@@ -12,6 +12,7 @@ public class ScrollElement : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _scrollElementText;
     [SerializeField] private string _puzzleSize;
     [SerializeField] private float _scrollElementBasicSize;
+    [SerializeField] private int _scrollElementNumber;
 
 
     private Color _basicColor = Color.black;
@@ -19,19 +20,32 @@ public class ScrollElement : MonoBehaviour
     private void Awake()
     {
         _scrollElementText.text = _puzzleSize;
+        ScrollSnapToItem.ItemChanging += SetBasicScrollElementParameters;
     }
 
     public void SetScrollElementParameters()
     {
         _scrollElementTransform.localScale = new Vector2(_scrollElementBasicSize, _scrollElementBasicSize);
     }
-    public void SetBasicScrollElementParameters(float scrollPosition, int currentItem)
+    public void SetBasicScrollElementParameters(float scrollPosition, float sizeOfElement)
     {
-        
         float deltaNewSize = 1 - _scrollElementBasicSize;
-        float newSize = (deltaNewSize / 250) * (scrollPosition  % 250);
-        Debug.Log(new Vector3(1 + newSize, 1 + newSize));
-        _scrollElementTransform.localScale = new Vector3(1 + newSize, 1 + newSize);
+        float step = deltaNewSize / (sizeOfElement/2) ;
+        float relPosition = scrollPosition + _scrollElementNumber * sizeOfElement;
+        float newSize = step * relPosition;
+        Debug.Log(new Vector3(1 - newSize, 1 - newSize));
+        if (newSize > deltaNewSize)
+        {
+            newSize = deltaNewSize;
+        }
+        if(newSize < 0)
+        {
+            newSize = 0;
+        }
+        _scrollElementTransform.localScale = new Vector3(1 - newSize, 1 - newSize);
+        Debug.Log(new Vector3(1 - newSize, 1 - newSize));
+
+
     }
 
 }
