@@ -9,10 +9,8 @@ namespace Grid
     {
         [SerializeField] private int _width;
         [SerializeField] private int _height;
-        [SerializeField] private float _cellSize;
 
         public int Width => _width;
         public int Height => _height;
-        public float CellSize => _cellSize;
     }
 }

@@ -10,16 +10,11 @@ public class ScrollViewController : MonoBehaviour
 {
     [SerializeField] private Transform _gridParent;
     [SerializeField] private RectTransform _content;
-    [SerializeField] private GridGenerator _gridGenerator;
     [SerializeField] private ScrollRect _scrollRect;
     private float _pieceSize = 40;
     private float _originalPieceSize;
-    private bool _isOriginalPieceSizeSet;
-    
-    private void Start()
-    {
-        PopulateScrollView();
-    }
+    private bool _isOriginalPieceSizeSet;    
+
 
     private void OnEnable()
     {
@@ -68,9 +63,9 @@ public class ScrollViewController : MonoBehaviour
         _scrollRect.enabled = true;
     }
 
-    private void PopulateScrollView()
+    public void PopulateScrollView(List<Piece> pieces)
     {
-        foreach (var piece in _gridGenerator.GeneratedPieces)
+        foreach (var piece in pieces)
         {
             AddPieceToScrollView(piece.transform);
         }

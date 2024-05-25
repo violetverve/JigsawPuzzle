@@ -9,17 +9,22 @@ namespace Grid {
     public class GridGenerator : MonoBehaviour
     {
         [SerializeField] private PuzzlePieceGeneratorSO _puzzlePieceGenerator;
-        [SerializeField] private GridSO _gridSO;
+        private GridSO _gridSO;
         private float _pieceScale;
         private const float _pieceSize = 2f;
+        private float _cellSize;
         private PieceConfiguration[,] _pieceConfigurations;
         private List<Piece> _generatedPieces = new List<Piece>();
         public List<Piece> GeneratedPieces => _generatedPieces;
 
-        private void Awake()
-        {  
+        public void InitializeGrid(GridSO gridSO, float cellSize)
+        {
+            _gridSO = gridSO;
+            _cellSize = cellSize;
+
             _pieceConfigurations = new PieceConfiguration[_gridSO.Height, _gridSO.Width];
-            _pieceScale = _gridSO.CellSize / _pieceSize;
+         
+            _pieceScale = _cellSize / _pieceSize;
 
             GenerateGrid();
         }
@@ -42,18 +47,18 @@ namespace Grid {
 
         private Vector3 CalculateStartPosition()
         {
-            float gridWidth = _gridSO.Width * _gridSO.CellSize;
-            float gridHeight = _gridSO.Height * _gridSO.CellSize;
+            float gridWidth = _gridSO.Width * _cellSize;
+            float gridHeight = _gridSO.Height * _cellSize;
             
-            float startX = -(gridWidth / 2f) + (_gridSO.CellSize / 2f);
-            float startY = -(gridHeight / 2f) + (_gridSO.CellSize / 2f);
+            float startX = -(gridWidth / 2f) + (_cellSize / 2f);
+            float startY = -(gridHeight / 2f) + (_cellSize / 2f);
             return new Vector3(startX, startY, 0);
         }
 
         private Vector3 CalculatePiecePosition(Vector3 startPosition, int row, int col)
         {
-            float x = startPosition.x + col * _gridSO.CellSize;
-            float y = startPosition.y + row * _gridSO.CellSize;
+            float x = startPosition.x + col * _cellSize;
+            float y = startPosition.y + row * _cellSize;
             return new Vector3(x, y, 0);
         }
 

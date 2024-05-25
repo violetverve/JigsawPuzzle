@@ -5,6 +5,7 @@ namespace PuzzlePiece
 {
     public class PuzzleGroup : MonoBehaviour, ISnappable
     {
+        private const string PUZZLE_GROUP = "PuzzleGroup";
         private Draggable _draggable;
         private List<Piece> _pieces = new List<Piece>();
         public Transform Transform => transform;
@@ -29,6 +30,27 @@ namespace PuzzlePiece
 
             _draggable = gameObject.AddComponent<Draggable>();
         }
+
+        public static PuzzleGroup CreateGroup(List<Piece> pieces)
+        {
+            Vector3 centerPoint = Vector3.zero;
+            foreach (Piece piece in pieces)
+            {
+                centerPoint += piece.transform.position;
+            }
+            centerPoint /= pieces.Count;
+
+            Transform parent = pieces[0].transform.parent;
+
+            GameObject groupObject = new GameObject(PUZZLE_GROUP);
+            groupObject.transform.parent = parent;
+            groupObject.transform.position = centerPoint;
+
+            PuzzleGroup group = groupObject.AddComponent<PuzzleGroup>();
+            group.InitializeGroup(pieces);
+
+            return group;
+        }
    
         public bool TrySnapToGrid()
         {
@@ -47,9 +69,9 @@ namespace PuzzlePiece
             return snap;
         }
 
-        public bool TrySnapTogether(Piece otherPiece)
+        public ISnappable CombineWith(Piece otherPiece)
         {
-            SnapGroup(otherPiece);
+            SnapGroupPosition(otherPiece);
 
             PuzzleGroup neighbourGroup = otherPiece.Group;
 
@@ -62,7 +84,7 @@ namespace PuzzlePiece
                 AddPieceToGroup(otherPiece);
             }
 
-            return true;
+            return this;
         }
 
         public Piece GetNeighbourPiece()
@@ -82,13 +104,12 @@ namespace PuzzlePiece
             return null;
         }
 
-        public void SnapGroup(Piece referencePiece)
+        public void SnapGroupPosition(Piece referencePiece)
         {
-            foreach (Transform child in transform)
+            foreach (Piece piece in _pieces)
             {
-                Piece piece = child.GetComponent<Piece>();
                 Vector3 distance = piece.CorrectPosition - referencePiece.CorrectPosition;
-                child.position = referencePiece.transform.position + distance;
+                piece.transform.position = referencePiece.transform.position + distance;
             }
         }
 
@@ -129,5 +150,18 @@ namespace PuzzlePiece
 
             Destroy(otherGroup.gameObject);
         }
+
+        public void UpdateZPosition(int zPosition)
+        {
+            Vector3 position = transform.position;
+            position.z = zPosition;
+            transform.position = position;
+
+            foreach (Piece piece in _pieces)
+            {
+                piece.UpdateZPosition(zPosition);
+            }
+        }
+
     }
 }

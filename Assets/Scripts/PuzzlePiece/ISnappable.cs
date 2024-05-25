@@ -6,7 +6,8 @@ namespace PuzzlePiece {
     Transform Transform { get; }
     bool TrySnapToGrid();
     Piece GetNeighbourPiece();
-    bool TrySnapTogether(Piece otherPiece);
+    ISnappable CombineWith(Piece otherPiece);
+    void UpdateZPosition(int zPosition);
     } 
 }
 

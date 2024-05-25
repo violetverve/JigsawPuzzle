@@ -12,7 +12,7 @@ namespace PuzzlePiece
         private Rigidbody2D _rigidbody;
         private PuzzleGroup _group;
         private BoxCollider2D _boxCollider;
-        private float _snapDistance = 0.4f;
+        private float _snapDistance = 0.2f;
 
         public Transform Transform => transform;
         public Vector3 CorrectPosition => _correctPosition;
@@ -46,27 +46,25 @@ namespace PuzzlePiece
             return false;
         }
 
-        public void SnapToOtherPiece(Piece otherPiece)
+        public void SnapToOtherPiecePosition(Piece otherPiece)
         { 
             Vector3 distance = _correctPosition - otherPiece.CorrectPosition;
             transform.position = otherPiece.Transform.position + distance;
         }
 
-        public bool TrySnapTogether(Piece otherPiece)
+        public ISnappable CombineWith(Piece otherPiece)
         {
-            SnapToOtherPiece(otherPiece);
+            SnapToOtherPiecePosition(otherPiece);
 
             PuzzleGroup neighbourGroup = otherPiece.Group;
 
             if (neighbourGroup != null)
             {
                 neighbourGroup.AddPieceToGroup(this);
-                return true;
+                return neighbourGroup;
             } 
-            else
-            {
-                return false;
-            }
+
+            return PuzzleGroup.CreateGroup(new List<Piece> { this, otherPiece });
         }
 
         # region Neighbours
@@ -140,6 +138,13 @@ namespace PuzzlePiece
             _boxCollider.usedByComposite = true;
             Destroy(_rigidbody);
             Destroy(_draggable);
+        }
+
+        public void UpdateZPosition(int zPosition)
+        {
+            Vector3 position = transform.position;
+            position.z = zPosition;
+            transform.position = position;
         }
   
     }
