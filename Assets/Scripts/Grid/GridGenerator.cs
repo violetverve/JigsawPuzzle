@@ -29,6 +29,32 @@ namespace Grid {
             GenerateGrid();
         }
 
+        // To be used in puzzle preview
+        private GameObject GetPiecesOutline()
+        {
+            GameObject outline = new GameObject("Outline");
+
+            Vector3 startPosition = CalculateStartPosition();
+
+            for (int row = 0; row < _gridSO.Height; row++)
+            {
+                for (int col = 0; col < _gridSO.Width; col++)
+                {
+                    GameObject outlinePiece = new GameObject("OutlinePiece");
+
+                    Vector3 position = CalculatePiecePosition(startPosition, row, col);
+
+                    _puzzlePieceGenerator.CreateOutline(outlinePiece, _pieceConfigurations[row, col]);
+
+                    outlinePiece.transform.SetParent(outline.transform, true);
+                    outlinePiece.transform.localScale = Vector3.one * _pieceScale;
+                    outlinePiece.transform.position = position;
+                }
+            }
+
+            return outline;
+        }
+
         private void GenerateGrid()
         {
             Vector3 startPosition = CalculateStartPosition();
