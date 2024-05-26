@@ -14,7 +14,7 @@ namespace PuzzlePiece
         [SerializeField] private int _pointsPerSpline = 40;
         [SerializeField] private Material _material;
         [SerializeField] private Material _outlineMaterial;
-        [SerializeField] private float _outlineWidth = 0.03f;
+        [SerializeField] private float _outlineWidth = 0.01f;
 
 
         public Piece CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid)
