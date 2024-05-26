@@ -12,7 +12,9 @@ namespace PuzzlePiece
         private Rigidbody2D _rigidbody;
         private PuzzleGroup _group;
         private BoxCollider2D _boxCollider;
-        private float _snapDistance = 0.2f;
+        private float _snapDistance;
+        private float _snapRadius;
+        private Vector3 _boxColliderSize;
 
         public Transform Transform => transform;
         public Vector3 CorrectPosition => _correctPosition;
@@ -24,22 +26,25 @@ namespace PuzzlePiece
             _draggable = gameObject.GetComponent<Draggable>();
             _rigidbody = gameObject.GetComponent<Rigidbody2D>();
             _boxCollider = gameObject.GetComponent<BoxCollider2D>();
+
         }
 
         public void Initialize(Vector3 correctPosition, Vector2Int gridPosition)
         {
             _correctPosition = correctPosition;
             _gridPosition = gridPosition;
+
+            _boxColliderSize = _boxCollider.size * transform.localScale;
+            _snapDistance = Mathf.Max(_boxColliderSize.x, _boxColliderSize.y);
+            _snapRadius = (_snapDistance / 2) * 0.95f;
         }
 
         public bool TrySnapToGrid() 
         {
-            if (Vector2.Distance(transform.position, _correctPosition) < _snapDistance)
+            if (Vector2.Distance(transform.position, _correctPosition) < _snapRadius / 2f)
             {
                 transform.position = _correctPosition;
-
                 Destroy(_draggable);
-
                 return true;
             }
 
@@ -73,7 +78,7 @@ namespace PuzzlePiece
         {
             List<Piece> neighbours = new List<Piece>();
 
-            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, _snapDistance);
+            Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, _snapRadius);
 
             foreach (var hitCollider in hitColliders)
             {
@@ -91,7 +96,7 @@ namespace PuzzlePiece
             Piece piece = hitCollider.transform.GetComponent<Piece>();
             if (piece == null || piece == this) return;
 
-            if (IsNeighbour(piece.GridPosition))
+            if (IsNeighbourToCombine(piece))
             {
                 neighbours.Add(piece);
             }
@@ -113,6 +118,11 @@ namespace PuzzlePiece
             }
         }
 
+        private bool IsNeighbourToCombine(Piece piece)
+        {
+            return IsNeighbour(piece.GridPosition) && IsInSnappableRange(piece) && IsAlignedWithGrid(piece);
+        }
+
         public Piece GetNeighbourPiece()
         {
             List<Piece> neighbours = GetNeighbours();
@@ -123,6 +133,30 @@ namespace PuzzlePiece
         {
             return Mathf.Abs(_gridPosition.x - otherGridPosition.x) == 1 && _gridPosition.y == otherGridPosition.y ||
                    Mathf.Abs(_gridPosition.y - otherGridPosition.y) == 1 && _gridPosition.x == otherGridPosition.x;
+        }
+
+        # endregion
+        
+        # region SnappingConditions
+
+        private bool IsInSnappableRange(Piece piece)
+        {
+            float dist = Vector2.Distance(transform.position, piece.Transform.position);
+            return dist < _snapDistance && dist > _snapDistance / 2;
+        }
+
+        private bool IsAlignedWithGrid(Piece piece)
+        {
+            Vector2 gridDistance = _gridPosition - piece.GridPosition;
+            Vector2 realDistance = transform.position - piece.transform.position;
+
+            bool signsMatch = Mathf.Sign(gridDistance.x) == Mathf.Sign(realDistance.x) &&
+                              Mathf.Sign(gridDistance.y) == Mathf.Sign(realDistance.y);
+
+            float tolerance = 0.2f;
+            bool isPerpendicular = Mathf.Abs(realDistance.x) < tolerance || Mathf.Abs(realDistance.y) < tolerance;
+
+            return signsMatch && isPerpendicular;
         }
 
         # endregion
@@ -145,6 +179,15 @@ namespace PuzzlePiece
             Vector3 position = transform.position;
             position.z = zPosition;
             transform.position = position;
+        }
+
+        void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, _snapRadius);
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(transform.position, _boxColliderSize);
         }
   
     }
