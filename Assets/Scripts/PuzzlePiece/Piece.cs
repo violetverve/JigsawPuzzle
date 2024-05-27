@@ -15,6 +15,7 @@ namespace PuzzlePiece
         private float _snapDistance;
         private float _snapRadius;
         private Vector3 _boxColliderSize;
+        private bool _isEdgePiece;
 
         public Transform Transform => transform;
         public Vector3 CorrectPosition => _correctPosition;
@@ -29,10 +30,11 @@ namespace PuzzlePiece
 
         }
 
-        public void Initialize(Vector3 correctPosition, Vector2Int gridPosition)
+        public void Initialize(Vector3 correctPosition, Vector2Int gridPosition, bool isEdgePiece)
         {
             _correctPosition = correctPosition;
             _gridPosition = gridPosition;
+            _isEdgePiece = isEdgePiece;
 
             _boxColliderSize = _boxCollider.size * transform.localScale;
             _snapDistance = Mathf.Max(_boxColliderSize.x, _boxColliderSize.y);
@@ -41,14 +43,26 @@ namespace PuzzlePiece
 
         public bool TrySnapToGrid() 
         {
-            if (Vector2.Distance(transform.position, _correctPosition) < _snapRadius / 2f)
-            {
-                transform.position = _correctPosition;
-                Destroy(_draggable);
-                return true;
-            }
+            if (!CanSnapToGrid()) return false;
 
-            return false;
+            SnapToCorrectPosition();
+            Destroy(_draggable);
+            return true;
+        }
+
+        public bool CanSnapToGrid()
+        {
+            return _isEdgePiece && IsWithinSnapToGridRadius();
+        }
+
+        public void SnapToCorrectPosition()
+        {
+            transform.position = _correctPosition;
+        }
+
+        private bool IsWithinSnapToGridRadius()
+        {
+            return Vector2.Distance(transform.position, _correctPosition) < _snapRadius / 2f;
         }
 
         public void SnapToOtherPiecePosition(Piece otherPiece)
@@ -137,7 +151,7 @@ namespace PuzzlePiece
 
         # endregion
         
-        # region SnappingConditions
+        # region CombiningConditions
 
         private bool IsInSnappableRange(Piece piece)
         {

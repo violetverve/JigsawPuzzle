@@ -97,9 +97,14 @@ namespace Grid {
             newPiece.transform.localScale = Vector3.one * _pieceScale;
             newPiece.transform.position = position;
             newPiece.transform.SetParent(transform, true);
-            newPiece.Initialize(newPiece.transform.position, gridPosition);
+            newPiece.Initialize(newPiece.transform.position, gridPosition, IsEdgePiece(row, col));
             
             _generatedPieces.Add(newPiece);
+        }
+
+        private bool IsEdgePiece(int row, int col)
+        {
+            return row == 0 || col == 0 || row == _gridSO.Height - 1 || col == _gridSO.Width - 1;
         }
 
         private PieceConfiguration GeneratePieceConfiguration(int row, int col)

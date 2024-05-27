@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace PuzzlePiece
 {
@@ -54,17 +55,17 @@ namespace PuzzlePiece
    
         public bool TrySnapToGrid()
         {
-            bool snap = false;
+            bool snap = _pieces.Any(piece => piece.CanSnapToGrid()); 
 
-            foreach (Piece piece in _pieces)
+            if (snap)
             {
-                if (piece.TrySnapToGrid())
+                foreach (Piece piece in _pieces)
                 {
-                    snap = true;
+                    piece.SnapToCorrectPosition();
                 }
-            }
 
-            if (snap) Destroy(_draggable);
+                Destroy(_draggable);
+            }
             
             return snap;
         }
