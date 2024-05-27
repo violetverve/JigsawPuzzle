@@ -8,16 +8,9 @@ namespace Grid
     public class GridInteractionController : MonoBehaviour
     {
         [SerializeField] private ScrollViewController _scrollViewController;
-        private GridSO _gridSO;
-        private float _cellSize;
         private List<ISnappable> _snappables = new List<ISnappable>();
         private const int _correctPositionZ = 1;
 
-        public void InitializeGrid(GridSO gridSO, float cellSize)
-        {
-            _gridSO = gridSO;
-            _cellSize = cellSize;
-        }
 
         private void OnEnable()
         {
@@ -39,7 +32,6 @@ namespace Grid
 
         private void HandleItemDropped(ISnappable snappable)
         {
-            ClampToGrid(snappable);
             TrySnapToGrid(snappable);
         }
 
@@ -92,67 +84,6 @@ namespace Grid
         {
             return _scrollViewController.IsInScrollView(piece.Transform);
         }
-    
-
-        private void ClampToGrid(ISnappable snappable)
-        {
-            snappable.ClampToGrid(GetClampedPosition, _scrollViewController.MouseOnScrollView());
-        }
-
-        public Vector3 GetClampedPosition(Vector3 position, Vector2 size)
-        {
-            float halfObjectWidth = size.x / 2;
-            float halfObjectHeight = size.y / 2;
-
-            float startX = transform.position.x - (_gridSO.Width * _cellSize) / 2 + halfObjectWidth;
-            float startY = transform.position.y - (_gridSO.Height * _cellSize) / 2 + halfObjectHeight;
-            float endX = transform.position.x + (_gridSO.Width * _cellSize) / 2 - halfObjectWidth;
-            float endY = transform.position.y + (_gridSO.Height * _cellSize) / 2 - halfObjectHeight;
-
-            Vector3 clampedPosition = position;
-            clampedPosition.x = Mathf.Clamp(clampedPosition.x, startX, endX);
-            clampedPosition.y = Mathf.Clamp(clampedPosition.y, startY, endY);
-
-            return clampedPosition;
-        }
-
-        void OnDrawGizmos()
-        {
-            if (_gridSO != null)
-            {
-                // Use the grid settings to determine the range and spacing
-                int gridSizeX = _gridSO.Width;
-                int gridSizeY = _gridSO.Height;
-                float cellSize = _cellSize;
-
-                // Calculate the start and end points for the grid lines
-                float startX = -(gridSizeX * cellSize) / 2;
-                float startY = -(gridSizeY * cellSize) / 2;
-                float endX = (gridSizeX * cellSize) / 2;
-                float endY = (gridSizeY * cellSize) / 2;
-
-                Gizmos.color = Color.gray;
-
-                // Drawing the vertical lines
-                for (int i = 0; i <= gridSizeX; i++)
-                {
-                    float lineX = startX + (i * cellSize);
-                    Gizmos.DrawLine(
-                        new Vector3(lineX, startY, 0),
-                        new Vector3(lineX, endY, 0));
-                }
-
-                // Drawing the horizontal lines
-                for (int j = 0; j <= gridSizeY; j++)
-                {
-                    float lineY = startY + (j * cellSize);
-                    Gizmos.DrawLine(
-                        new Vector3(startX, lineY, 0),
-                        new Vector3(endX, lineY, 0));
-                }
-            }
-        }
-
 
     }
 }

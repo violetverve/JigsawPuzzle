@@ -11,29 +11,21 @@ namespace Grid
         [SerializeField] private GridSO _gridSO;
         [SerializeField] private ScrollViewController _scrollViewController;
         [SerializeField] private GridField _gridField;
-        private float _cellSize;
 
         public GridSO GridSO => _gridSO;
         public GridField GridField => _gridField;
-        public float CellSize => _cellSize;
+
         public ScrollViewController ScrollViewController => _scrollViewController;
 
         public void GenerateGrid(GridSO gridSO)
         {
             _gridSO = gridSO;
 
-            _cellSize = CalculateCellSize();
-
-            _gridInteractionController.InitializeGrid(_gridSO, _cellSize);
+            _gridField.Initialize(_gridSO);
   
-            _gridGenerator.InitializeGrid(_gridSO, _cellSize);
+            _gridGenerator.InitializeGrid(_gridSO);
 
             _scrollViewController.PopulateScrollView(_gridGenerator.GeneratedPieces);
-        }
-
-        private float CalculateCellSize()
-        {
-            return _gridField.CalculateWidth() / _gridSO.Width;
         }
 
     }

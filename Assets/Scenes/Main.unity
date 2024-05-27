@@ -417,6 +417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce9d1bf11855c324c896e20ca2ee18a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scrollViewController: {fileID: 293246562}
 --- !u!1 &1440517145
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,6 +780,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _puzzlePieceGenerator: {fileID: 11400000, guid: e344d7e503172e74c85635fe7ca218ee, type: 2}
+  _gridField: {fileID: 867313947}
 --- !u!4 &1690346333
 Transform:
   m_ObjectHideFlags: 0

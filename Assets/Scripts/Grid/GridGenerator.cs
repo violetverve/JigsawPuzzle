@@ -9,6 +9,7 @@ namespace Grid {
     public class GridGenerator : MonoBehaviour
     {
         [SerializeField] private PuzzlePieceGeneratorSO _puzzlePieceGenerator;
+        [SerializeField] private GridField _gridField;
         private GridSO _gridSO;
         private float _pieceScale;
         private const float _pieceSize = 2f;
@@ -16,15 +17,19 @@ namespace Grid {
         private PieceConfiguration[,] _pieceConfigurations;
         private List<Piece> _generatedPieces = new List<Piece>();
         public List<Piece> GeneratedPieces => _generatedPieces;
+        private Vector3 _startPosition;
 
-        public void InitializeGrid(GridSO gridSO, float cellSize)
+        public void InitializeGrid(GridSO gridSO)
         {
             _gridSO = gridSO;
-            _cellSize = cellSize;
+            
+            _cellSize = _gridField.CellSize;
 
             _pieceConfigurations = new PieceConfiguration[_gridSO.Height, _gridSO.Width];
          
             _pieceScale = _cellSize / _pieceSize;
+
+            _startPosition = CalculateStartPosition();
 
             GenerateGrid();
         }
@@ -34,15 +39,13 @@ namespace Grid {
         {
             GameObject outline = new GameObject("Outline");
 
-            Vector3 startPosition = CalculateStartPosition();
-
             for (int row = 0; row < _gridSO.Height; row++)
             {
                 for (int col = 0; col < _gridSO.Width; col++)
                 {
                     GameObject outlinePiece = new GameObject("OutlinePiece");
 
-                    Vector3 position = CalculatePiecePosition(startPosition, row, col);
+                    Vector3 position = CalculatePiecePosition(row, col);
 
                     _puzzlePieceGenerator.CreateOutline(outlinePiece, _pieceConfigurations[row, col]);
 
@@ -57,13 +60,11 @@ namespace Grid {
 
         private void GenerateGrid()
         {
-            Vector3 startPosition = CalculateStartPosition();
-
             for (int row = 0; row < _gridSO.Height; row++)
             {
                 for (int col = 0; col < _gridSO.Width; col++)
                 {
-                    Vector3 position = CalculatePiecePosition(startPosition, row, col);
+                    Vector3 position = CalculatePiecePosition(row, col);
                     var pieceConfiguration = GeneratePieceConfiguration(row, col);
                     _pieceConfigurations[row, col] = pieceConfiguration;
                     GeneratePiece(pieceConfiguration, position, row, col);
@@ -73,18 +74,18 @@ namespace Grid {
 
         private Vector3 CalculateStartPosition()
         {
-            float gridWidth = _gridSO.Width * _cellSize;
-            float gridHeight = _gridSO.Height * _cellSize;
-            
-            float startX = -(gridWidth / 2f) + (_cellSize / 2f);
-            float startY = -(gridHeight / 2f) + (_cellSize / 2f);
-            return new Vector3(startX, startY, 0);
+            Vector3 startCorner = _gridField.StartCorner;
+
+            float startX = startCorner.x + (_cellSize / 2f);
+            float startY = startCorner.y + (_cellSize / 2f);
+
+            return new Vector3(startX, startY, 0); 
         }
 
-        private Vector3 CalculatePiecePosition(Vector3 startPosition, int row, int col)
+        private Vector3 CalculatePiecePosition(int row, int col)
         {
-            float x = startPosition.x + col * _cellSize;
-            float y = startPosition.y + row * _cellSize;
+            float x = _startPosition.x + col * _cellSize;
+            float y = _startPosition.y + row * _cellSize;
             return new Vector3(x, y, 0);
         }
 
