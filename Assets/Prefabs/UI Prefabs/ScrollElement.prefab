@@ -223,10 +223,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1350ff00fb9b2844986222443be3d9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scrollElementColor: {r: 0, g: 0, b: 0, a: 0}
+  _scrollElementColorActive: {r: 0.50980395, g: 1, b: 0.2784314, a: 1}
+  _scrollElementColorBasic: {r: 0.76470596, g: 0.76470596, b: 0.76470596, a: 1}
   _scrollElementTransform: {fileID: 1592014343937653015}
   _scrollElementImage: {fileID: 4251005647312437012}
   _scrollElementText: {fileID: 5266768217108253834}
   _puzzleSize: 100
-  _scrollElementBasicSize: 0
   _scrollElementNumber: 0
+  _scrollElementSize: 200
+  _paddingScrollElement: 50
+  _basicScaleScrollElement: 0.75
+  _activeScaleScrollElement: 1
+  _scrollElementAnimationCurveSize:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _scrollElementAnimationCurveRedColor:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _scrollElementAnimationCurveBlueColor:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _scrollElementAnimationCurveGreenColor:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

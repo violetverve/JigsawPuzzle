@@ -18,7 +18,7 @@ public class ScrollSnapToItem : MonoBehaviour
 
     [SerializeField] private List<ScrollElement> _scrollElementList;
 
-    public static Action<float, float> ItemChanging;
+    public static Action<float> ItemChanging;
 
     private float _snapSpeed;
     private bool _isSnapped;
@@ -31,14 +31,10 @@ public class ScrollSnapToItem : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        
-       int currentItemScaling = Mathf.RoundToInt((0 - _contentPanel.localPosition.x /  (_sampleListItem.rect.width + _horizontalLayoutGroup.spacing)) - 0.5f);
+    {             
        int currentItemSnapping = Mathf.RoundToInt(0 - _contentPanel.localPosition.x / (_sampleListItem.rect.width + _horizontalLayoutGroup.spacing));
        //Debug.Log(currentItemScaling);
        //Debug.Log(_contentPanel.localPosition.x);
-
-
        if (currentItemSnapping > _scrollElementList.Count - 1)
        {
             currentItemSnapping = _scrollElementList.Count - 1;
@@ -47,7 +43,7 @@ public class ScrollSnapToItem : MonoBehaviour
        {
             currentItemSnapping = 0;
        }      
-       ItemChanging?.Invoke(_contentPanel.localPosition.x, _sampleListItem.rect.width + _horizontalLayoutGroup.spacing);
+       ItemChanging?.Invoke(_contentPanel.localPosition.x);
        if (_scrollRect.velocity.magnitude < 200 && !_isSnapped)
        {
             _scrollRect.velocity = Vector2.zero;
@@ -68,7 +64,5 @@ public class ScrollSnapToItem : MonoBehaviour
             _isSnapped = false;
             _snapSpeed = 0;
        }
-
-
     }
 }
