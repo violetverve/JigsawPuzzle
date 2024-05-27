@@ -30,7 +30,7 @@ public class ScrollElement : MonoBehaviour
     public void SetBasicScrollElementParameters(float scrollPosition, float sizeOfElement)
     {
         float deltaNewSize = 1 - _scrollElementBasicSize;
-        float step = deltaNewSize / (sizeOfElement/2) ;
+        float step = deltaNewSize / sizeOfElement;
         float relPosition = scrollPosition + _scrollElementNumber * sizeOfElement;
         float newSize = step * relPosition;
         Debug.Log(new Vector3(1 - newSize, 1 - newSize));
@@ -40,7 +40,12 @@ public class ScrollElement : MonoBehaviour
         }
         if(newSize < 0)
         {
-            newSize = 0;
+            newSize = Mathf.Abs(newSize);
+            if (newSize > deltaNewSize)
+            {
+                newSize = deltaNewSize;
+            }
+                
         }
         _scrollElementTransform.localScale = new Vector3(1 - newSize, 1 - newSize);
         Debug.Log(new Vector3(1 - newSize, 1 - newSize));
