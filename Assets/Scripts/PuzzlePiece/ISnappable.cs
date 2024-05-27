@@ -1,13 +1,14 @@
 using UnityEngine;
 
 namespace PuzzlePiece {
-   public interface ISnappable
+    public interface ISnappable
     {
     Transform Transform { get; }
     bool TrySnapToGrid();
     Piece GetNeighbourPiece();
     ISnappable CombineWith(Piece otherPiece);
     void UpdateZPosition(int zPosition);
+    void ClampToGrid(GetClampedPositionDelegate getClampedPosition, bool mouseOnScrollView);
     } 
 }
 

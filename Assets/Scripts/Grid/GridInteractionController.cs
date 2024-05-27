@@ -96,41 +96,18 @@ namespace Grid
 
         private void ClampToGrid(ISnappable snappable)
         {
-            if (snappable is PuzzleGroup group)
-            {
-           
-                Bounds groupBounds = group.GetComponent<CompositeCollider2D>().bounds;
-
-                Vector3 groupPosition = groupBounds.center;
-
-                Vector2 groupSize = new Vector2(groupBounds.size.x, groupBounds.size.y);
-                
-                Vector3 clampedGroupPosition = GetClampedPosition(groupPosition, groupSize);
-
-                Vector3 offset = groupPosition - group.transform.position;
-
-                group.transform.position = clampedGroupPosition - offset;
-            }
-            else if (snappable is Piece piece)
-            {
-                if (!_scrollViewController.MouseOnScrollView())
-                {
-                    piece.transform.position = GetClampedPosition(piece.transform.position, _cellSize * Vector2.one);
-                }
-            }
+            snappable.ClampToGrid(GetClampedPosition, _scrollViewController.MouseOnScrollView());
         }
 
         public Vector3 GetClampedPosition(Vector3 position, Vector2 size)
         {
-            float cellSize = _cellSize;
+            float halfObjectWidth = size.x / 2;
+            float halfObjectHeight = size.y / 2;
 
-            float halfCellWidth = size.x / 2;
-            float halfCellHeight = size.y / 2;
-
-            float startX = transform.position.x - (_gridSO.Width * cellSize) / 2 + halfCellWidth;
-            float startY = transform.position.y - (_gridSO.Height * cellSize) / 2 + halfCellHeight;
-            float endX = transform.position.x + (_gridSO.Width * cellSize) / 2 - halfCellWidth;
-            float endY = transform.position.y + (_gridSO.Height * cellSize) / 2 - halfCellHeight;
+            float startX = transform.position.x - (_gridSO.Width * _cellSize) / 2 + halfObjectWidth;
+            float startY = transform.position.y - (_gridSO.Height * _cellSize) / 2 + halfObjectHeight;
+            float endX = transform.position.x + (_gridSO.Width * _cellSize) / 2 - halfObjectWidth;
+            float endY = transform.position.y + (_gridSO.Height * _cellSize) / 2 - halfObjectHeight;
 
             Vector3 clampedPosition = position;
             clampedPosition.x = Mathf.Clamp(clampedPosition.x, startX, endX);

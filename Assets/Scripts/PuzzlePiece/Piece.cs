@@ -175,6 +175,17 @@ namespace PuzzlePiece
 
         # endregion
 
+        public void ClampToGrid(GetClampedPositionDelegate getClampedPosition, bool mouseOnScrollView)
+        {
+            if (mouseOnScrollView) return;
+            
+            Vector3 pieceCenter = _boxCollider.bounds.center;
+            Vector3 clampedPosition = getClampedPosition(pieceCenter, _boxColliderSize);
+            
+            Vector3 offset = pieceCenter - transform.position;
+            transform.position = clampedPosition - offset;
+        }
+
         public void SetGroup(PuzzleGroup group)
         {
             _group = group;
@@ -201,7 +212,7 @@ namespace PuzzlePiece
             Gizmos.DrawWireSphere(transform.position, _snapRadius);
 
             Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(transform.position, _boxColliderSize);
+            Gizmos.DrawWireCube(_boxCollider.bounds.center, _boxColliderSize);
         }
   
     }

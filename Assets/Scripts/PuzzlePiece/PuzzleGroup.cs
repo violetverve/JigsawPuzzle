@@ -8,6 +8,7 @@ namespace PuzzlePiece
     {
         private const string PUZZLE_GROUP = "PuzzleGroup";
         private Draggable _draggable;
+        private CompositeCollider2D _compositeCollider;
         private List<Piece> _pieces = new List<Piece>();
         public Transform Transform => transform;
         public List<Piece> Pieces => _pieces;
@@ -31,6 +32,7 @@ namespace PuzzlePiece
             compositeCollider.generationType = CompositeCollider2D.GenerationType.Synchronous;
 
             _draggable = gameObject.AddComponent<Draggable>();
+            _compositeCollider = compositeCollider;
         }
 
         public static PuzzleGroup CreateGroup(List<Piece> pieces)
@@ -148,6 +150,19 @@ namespace PuzzlePiece
                 piece.SetGroup(this);
                 _pieces.Add(piece);
             }
+        }
+
+        public void ClampToGrid(GetClampedPositionDelegate getClampedPosition, bool mouseOnScrollView)
+        {
+            Bounds groupBounds = _compositeCollider.bounds;
+
+            Vector2 groupSize = new Vector2(groupBounds.size.x, groupBounds.size.y);
+
+            Vector3 clampedPosition = getClampedPosition(groupBounds.center, groupSize);
+
+            Vector3 offset = groupBounds.center - transform.position;
+
+            transform.position = clampedPosition - offset;
         }
 
         public void UpdateZPosition(int zPosition)
