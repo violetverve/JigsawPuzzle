@@ -1,14 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace PuzzlePiece
 {
     public class PuzzleGroup : MonoBehaviour, ISnappable
     {
+        private const string PUZZLE_GROUP = "PuzzleGroup";
         private Draggable _draggable;
+        private CompositeCollider2D _compositeCollider;
         private List<Piece> _pieces = new List<Piece>();
         public Transform Transform => transform;
         public List<Piece> Pieces => _pieces;
+        public Draggable Draggable => _draggable;
 
 
         public void InitializeGroup(List<Piece> pieces)
@@ -23,29 +27,55 @@ namespace PuzzlePiece
             Rigidbody2D rb = gameObject.AddComponent<Rigidbody2D>();
             rb.bodyType = RigidbodyType2D.Kinematic;
 
+            CompositeCollider2D compositeCollider = gameObject.AddComponent<CompositeCollider2D>();
+            compositeCollider.geometryType = CompositeCollider2D.GeometryType.Polygons;
+            compositeCollider.generationType = CompositeCollider2D.GenerationType.Synchronous;
+
             _draggable = gameObject.AddComponent<Draggable>();
+            _compositeCollider = compositeCollider;
+        }
+
+        public static PuzzleGroup CreateGroup(List<Piece> pieces)
+        {
+            Vector3 centerPoint = Vector3.zero;
+            foreach (Piece piece in pieces)
+            {
+                centerPoint += piece.transform.position;
+            }
+            centerPoint /= pieces.Count;
+
+            Transform parent = pieces[0].transform.parent;
+
+            GameObject groupObject = new GameObject(PUZZLE_GROUP);
+            groupObject.transform.parent = parent;
+            groupObject.transform.position = centerPoint;
+
+            PuzzleGroup group = groupObject.AddComponent<PuzzleGroup>();
+            group.InitializeGroup(pieces);
+
+            return group;
         }
    
         public bool TrySnapToGrid()
         {
-            bool snap = false;
+            bool snap = _pieces.Any(piece => piece.CanSnapToGrid()); 
 
-            foreach (Piece piece in _pieces)
+            if (snap)
             {
-                if (piece.TrySnapToGrid())
+                foreach (Piece piece in _pieces)
                 {
-                    snap = true;
+                    piece.SnapToCorrectPosition();
                 }
-            }
 
-            if (snap) Destroy(_draggable);
+                Destroy(_draggable);
+            }
             
             return snap;
         }
 
-        public bool TrySnapTogether(Piece otherPiece)
+        public ISnappable CombineWith(Piece otherPiece)
         {
-            SnapGroup(otherPiece);
+            SnapGroupPosition(otherPiece);
 
             PuzzleGroup neighbourGroup = otherPiece.Group;
 
@@ -58,7 +88,7 @@ namespace PuzzlePiece
                 AddPieceToGroup(otherPiece);
             }
 
-            return true;
+            return this;
         }
 
         public Piece GetNeighbourPiece()
@@ -78,13 +108,12 @@ namespace PuzzlePiece
             return null;
         }
 
-        public void SnapGroup(Piece referencePiece)
+        private void SnapGroupPosition(Piece referencePiece)
         {
-            foreach (Transform child in transform)
+            foreach (Piece piece in _pieces)
             {
-                Piece piece = child.GetComponent<Piece>();
                 Vector3 distance = piece.CorrectPosition - referencePiece.CorrectPosition;
-                child.position = referencePiece.transform.position + distance;
+                piece.transform.position = referencePiece.transform.position + distance;
             }
         }
 
@@ -97,32 +126,56 @@ namespace PuzzlePiece
             _pieces.Add(piece);
         }
 
-
         private bool IsTheSameGroup(PuzzleGroup group)
         {
             return group == this;
         } 
 
-        public void MergeGroup(PuzzleGroup otherGroup)
+        private void MergeGroup(PuzzleGroup otherGroup)
         {
-            List<Transform> children = new List<Transform>();
-
-            foreach (Transform child in otherGroup.transform)
+            if (otherGroup.Draggable == null)
             {
-                children.Add(child);
+                Destroy(_draggable);
             }
-
-            foreach (Transform child in children)
-            {
-                child.SetParent(transform, true);
-            }
-
-            foreach (Piece piece in otherGroup.Pieces)
+        
+            UpdatePiecesGroup(otherGroup.Pieces);
+        
+            Destroy(otherGroup.gameObject);
+        }
+        
+        private void UpdatePiecesGroup(IEnumerable<Piece> pieces)
+        {
+            foreach (Piece piece in pieces)
             {
                 piece.SetGroup(this);
                 _pieces.Add(piece);
             }
-
         }
+
+        public void ClampToGrid(GetClampedPositionDelegate getClampedPosition, bool mouseOnScrollView)
+        {
+            Bounds groupBounds = _compositeCollider.bounds;
+
+            Vector2 groupSize = new Vector2(groupBounds.size.x, groupBounds.size.y);
+
+            Vector3 clampedPosition = getClampedPosition(groupBounds.center, groupSize);
+
+            Vector3 offset = groupBounds.center - transform.position;
+
+            transform.position = clampedPosition - offset;
+        }
+
+        public void UpdateZPosition(int zPosition)
+        {
+            Vector3 position = transform.position;
+            position.z = zPosition;
+            transform.position = position;
+
+            foreach (Piece piece in _pieces)
+            {
+                piece.UpdateZPosition(zPosition);
+            }
+        }
+
     }
 }

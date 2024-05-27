@@ -13,10 +13,13 @@ namespace PuzzlePiece
         [SerializeField] private SplineContainer _splineContainer;
         [SerializeField] private int _pointsPerSpline = 40;
         [SerializeField] private Material _material;
+        [SerializeField] private Material _outlineMaterial;
+        [SerializeField] private float _outlineWidth = 0.01f;
 
-        public GameObject CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid)
+
+        public Piece CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid)
         {
-            var points = GetPointsFromConfig(pieceConfiguration).Distinct();
+            var points = GetPointsFromConfig(pieceConfiguration);
 
             var gameObject = new GameObject($"PuzzlePiece {gridPosition.x}_{gridPosition.y}");
 
@@ -25,17 +28,38 @@ namespace PuzzlePiece
             gameObject.AddComponent<MeshFilter>().mesh = mesh;
             gameObject.AddComponent<MeshRenderer>().material = _material;
 
+            CreateOutline(gameObject, pieceConfiguration);
+
             BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
             RectTransform rectTransform = gameObject.AddComponent<RectTransform>();
 
             gameObject.AddComponent<Draggable>();
             
-            var puzzlePieceComponent = gameObject.AddComponent<Piece>();
+            var piece = gameObject.AddComponent<Piece>();
 
-            return gameObject;
-        } 
+            return piece;
+        }
 
-        private IEnumerable<Vector2> GetPointsFromConfig(PieceConfiguration pieceConfiguration)
+        public void CreateOutline(GameObject piece, PieceConfiguration pieceConfiguration)
+        {
+            var points = GetPointsFromConfig(pieceConfiguration).ToList();
+
+            points.Add(points[0]);
+
+            LineRenderer lineRenderer = piece.AddComponent<LineRenderer>();
+
+            lineRenderer.material = _outlineMaterial;
+            lineRenderer.widthMultiplier = _outlineWidth;
+            lineRenderer.positionCount = points.Count;
+            lineRenderer.useWorldSpace = false;
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                lineRenderer.SetPosition(i, points[i]);
+            }
+        }
+
+        public IEnumerable<Vector2> GetPointsFromConfig(PieceConfiguration pieceConfiguration)
         {
             return new List<Vector2>[]
             {
@@ -43,7 +67,7 @@ namespace PuzzlePiece
                 GetPointsFromFeature(pieceConfiguration.Top, FeaturePosition.Top),
                 GetPointsFromFeature(pieceConfiguration.Right, FeaturePosition.Right),
                 GetPointsFromFeature(pieceConfiguration.Bottom, FeaturePosition.Bottom)
-            }.SelectMany(points => points);
+            }.SelectMany(points => points).Distinct();
         }
 
 
@@ -75,6 +99,7 @@ namespace PuzzlePiece
 
             return uv;
         }
+
         private Mesh GenerateMesh(IEnumerable<Vector2> points, Vector2Int gridPosition, Vector2Int grid)
         {
             var vertices = points.Select(point => new Vector3(point.x, point.y, 0)).ToArray();

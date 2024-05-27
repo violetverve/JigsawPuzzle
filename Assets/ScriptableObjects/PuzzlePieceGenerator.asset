@@ -15,3 +15,5 @@ MonoBehaviour:
   _splineContainer: {fileID: 7175875128387082676, guid: ea8c3c3933df4594f8ec4b7eda84d37f, type: 3}
   _pointsPerSpline: 40
   _material: {fileID: 2100000, guid: cb305feafe5dddc44b62e8b16845161d, type: 2}
+  _outlineMaterial: {fileID: 2100000, guid: 4b67c2b9f2ec7c943884b182d31c4f17, type: 2}
+  _outlineWidth: 0.01

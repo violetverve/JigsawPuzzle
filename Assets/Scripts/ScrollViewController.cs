@@ -10,16 +10,11 @@ public class ScrollViewController : MonoBehaviour
 {
     [SerializeField] private Transform _gridParent;
     [SerializeField] private RectTransform _content;
-    [SerializeField] private GridGenerator _gridGenerator;
     [SerializeField] private ScrollRect _scrollRect;
     private float _pieceSize = 40;
     private float _originalPieceSize;
-    private bool _isOriginalPieceSizeSet;
-    
-    private void Start()
-    {
-        PopulateScrollView();
-    }
+    private bool _isOriginalPieceSizeSet;    
+
 
     private void OnEnable()
     {
@@ -68,13 +63,11 @@ public class ScrollViewController : MonoBehaviour
         _scrollRect.enabled = true;
     }
 
-    private void PopulateScrollView()
+    public void PopulateScrollView(List<Piece> pieces)
     {
-        var puzzleList = _gridGenerator.GeneratedPuzzles;
-
-        foreach (var puzzle in puzzleList)
+        foreach (var piece in pieces)
         {
-            AddPieceToScrollView(puzzle.transform);
+            AddPieceToScrollView(piece.transform);
         }
     }
 
@@ -101,7 +94,7 @@ public class ScrollViewController : MonoBehaviour
         }
     }
 
-    private bool MouseOnScrollView()
+    public bool MouseOnScrollView()
     {
         return RectTransformUtility.RectangleContainsScreenPoint(transform as RectTransform, Input.mousePosition, Camera.main);
     }
