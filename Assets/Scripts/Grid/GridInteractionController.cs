@@ -11,6 +11,7 @@ namespace Grid
         private GridSO _gridSO;
         private float _cellSize;
         private List<ISnappable> _snappables = new List<ISnappable>();
+        private const int _correctPositionZ = 1;
 
         public void InitializeGrid(GridSO gridSO, float cellSize)
         {
@@ -30,7 +31,7 @@ namespace Grid
             Draggable.OnItemPickedUp -= HandleItemPickedUp;
         }
 
-       private void HandleItemPickedUp(ISnappable snappable)
+        private void HandleItemPickedUp(ISnappable snappable)
         {
             MoveToTop(snappable);
             UpdateSnappablesZPositions();
@@ -48,7 +49,7 @@ namespace Grid
             {
                 _snappables.Remove(snappable);
             }
-
+            _snappables.Remove(snappable);
             _snappables.Add(snappable);
         }
 
@@ -65,6 +66,7 @@ namespace Grid
             if (snappable.TrySnapToGrid())
             {
                 _snappables.Remove(snappable);
+                snappable.UpdateZPosition(_correctPositionZ);
             }
 
             Piece neighbourPiece = snappable.GetNeighbourPiece();

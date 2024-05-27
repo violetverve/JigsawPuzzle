@@ -65,7 +65,7 @@ namespace PuzzlePiece
             return Vector2.Distance(transform.position, _correctPosition) < _snapRadius / 2f;
         }
 
-        public void SnapToOtherPiecePosition(Piece otherPiece)
+        private void SnapToOtherPiecePosition(Piece otherPiece)
         { 
             Vector3 distance = _correctPosition - otherPiece.CorrectPosition;
             transform.position = otherPiece.Transform.position + distance;

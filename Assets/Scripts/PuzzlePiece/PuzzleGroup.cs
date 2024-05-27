@@ -11,6 +11,7 @@ namespace PuzzlePiece
         private List<Piece> _pieces = new List<Piece>();
         public Transform Transform => transform;
         public List<Piece> Pieces => _pieces;
+        public Draggable Draggable => _draggable;
 
 
         public void InitializeGroup(List<Piece> pieces)
@@ -105,7 +106,7 @@ namespace PuzzlePiece
             return null;
         }
 
-        public void SnapGroupPosition(Piece referencePiece)
+        private void SnapGroupPosition(Piece referencePiece)
         {
             foreach (Piece piece in _pieces)
             {
@@ -123,33 +124,30 @@ namespace PuzzlePiece
             _pieces.Add(piece);
         }
 
-
         private bool IsTheSameGroup(PuzzleGroup group)
         {
             return group == this;
         } 
 
-        public void MergeGroup(PuzzleGroup otherGroup)
+        private void MergeGroup(PuzzleGroup otherGroup)
         {
-            List<Transform> children = new List<Transform>();
-
-            foreach (Transform child in otherGroup.transform)
+            if (otherGroup.Draggable == null)
             {
-                children.Add(child);
+                Destroy(_draggable);
             }
-
-            foreach (Transform child in children)
-            {
-                child.SetParent(transform, true);
-            }
-
-            foreach (Piece piece in otherGroup.Pieces)
+        
+            UpdatePiecesGroup(otherGroup.Pieces);
+        
+            Destroy(otherGroup.gameObject);
+        }
+        
+        private void UpdatePiecesGroup(IEnumerable<Piece> pieces)
+        {
+            foreach (Piece piece in pieces)
             {
                 piece.SetGroup(this);
                 _pieces.Add(piece);
             }
-
-            Destroy(otherGroup.gameObject);
         }
 
         public void UpdateZPosition(int zPosition)
