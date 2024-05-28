@@ -12,12 +12,11 @@ namespace PuzzlePiece
     {
         [SerializeField] private SplineContainer _splineContainer;
         [SerializeField] private int _pointsPerSpline = 40;
-        [SerializeField] private Material _material;
         [SerializeField] private Material _outlineMaterial;
         [SerializeField] private float _outlineWidth = 0.01f;
 
 
-        public Piece CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid)
+        public Piece CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid, Material material)
         {
             var points = GetPointsFromConfig(pieceConfiguration);
 
@@ -26,7 +25,7 @@ namespace PuzzlePiece
             var mesh = GenerateMesh(points, gridPosition, grid);
 
             gameObject.AddComponent<MeshFilter>().mesh = mesh;
-            gameObject.AddComponent<MeshRenderer>().material = _material;
+            gameObject.AddComponent<MeshRenderer>().material = material;
 
             CreateOutline(gameObject, pieceConfiguration);
 
@@ -46,7 +45,7 @@ namespace PuzzlePiece
 
             points.Add(points[0]);
 
-            LineRenderer lineRenderer = piece.AddComponent<LineRenderer>();
+            var lineRenderer = piece.AddComponent<LineRenderer>();
 
             lineRenderer.material = _outlineMaterial;
             lineRenderer.widthMultiplier = _outlineWidth;

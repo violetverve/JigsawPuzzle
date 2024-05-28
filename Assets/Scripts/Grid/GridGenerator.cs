@@ -18,10 +18,13 @@ namespace Grid {
         private List<Piece> _generatedPieces = new List<Piece>();
         public List<Piece> GeneratedPieces => _generatedPieces;
         private Vector3 _startPosition;
+        private Material _material;
 
-        public void InitializeGrid(GridSO gridSO)
+
+        public void InitializeGrid(GridSO gridSO, Material material)
         {
             _gridSO = gridSO;
+            _material = material;
             
             _cellSize = _gridField.CellSize;
 
@@ -93,7 +96,7 @@ namespace Grid {
         {
             Vector2Int gridPosition = new Vector2Int(col, row);
             Vector2Int grid = new Vector2Int(_gridSO.Height, _gridSO.Width);
-            var newPiece = _puzzlePieceGenerator.CreatePiece(pieceConfiguration, gridPosition, grid);
+            var newPiece = _puzzlePieceGenerator.CreatePiece(pieceConfiguration, gridPosition, grid, _material);
             
             newPiece.transform.localScale = Vector3.one * _pieceScale;
             newPiece.transform.position = position;

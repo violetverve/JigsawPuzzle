@@ -16,7 +16,7 @@ namespace GameManagement
         private void StartLevel(Level level)
         {
             _currentLevel = level;
-            _gridManager.GenerateGrid(_currentLevel.GridSO);
+            _gridManager.GenerateGrid(_currentLevel.GridSO, _currentLevel.PuzzleSO.PuzzleMaterial);
         }
     }
 }
