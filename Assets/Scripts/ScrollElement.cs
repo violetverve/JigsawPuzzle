@@ -1,3 +1,4 @@
+using Grid;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -31,7 +32,7 @@ public class ScrollElement : MonoBehaviour
         AdjustScrollElementAnimationCurveSize();
         AdjustScrollElementAnimationCurveColor();
 
-        _scrollElementText.text = _puzzleSize;
+
         ScrollSnapToItem.ItemChanging += SetBasicScrollElementParameters;
     }
 
@@ -65,14 +66,17 @@ public class ScrollElement : MonoBehaviour
 
 
     public void SetBasicScrollElementParameters(float scrollPosition)
-    {
-    
+    {  
         float relPosition = scrollPosition + _scrollElementNumber * (_paddingScrollElement + _scrollElementSize);      
-
         _scrollElementTransform.localScale = new Vector3(_scrollElementAnimationCurveSize.Evaluate(relPosition), _scrollElementAnimationCurveSize.Evaluate(relPosition));
-
         _scrollElementImage.color = new Color(_scrollElementAnimationCurveRedColor.Evaluate(relPosition), _scrollElementAnimationCurveGreenColor.Evaluate(relPosition), _scrollElementAnimationCurveBlueColor.Evaluate(relPosition));
-
     }
+
+    public void LoadScrollElement(GridSO difficultyGrid, int scrollnum)
+    {
+        _scrollElementText.text = difficultyGrid.PieceNums().ToString();
+        _scrollElementNumber = scrollnum;
+    }
+
 
 }

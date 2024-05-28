@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Player;
 using System;
+using PuzzleData;
+using GameManagement;
+using Grid;
 
 namespace UIscripts
 {
@@ -35,12 +38,23 @@ namespace UIscripts
 
         [Space]
         [SerializeField] private GameObject _puzzleLoaderObject;
-        [SerializeField] private Image _puzzleToChoose;
+        [SerializeField] private PuzzlePanelUI _puzzleToChoose;
 
         public static Action<GameObject> OnCrossClick;
         public static Action<Button> OnPanelsChange;
         public static Action<int> OnLockedPanelClick;
         public static Action<int> OnPanelClick;
+
+        private PuzzleSO _currentPuzzleSO;
+
+        [SerializeField] private GridSOList _diffucultiesList;
+        private GridSO _currentGridSO;
+
+        [Space]
+        [Header("Scroll")]
+
+        [SerializeField] private GameObject _scrollParent;
+        [SerializeField] private ScrollElement _scrollPrefab;
 
         private void Awake()
         {
@@ -48,6 +62,7 @@ namespace UIscripts
             OnCrossClick += CloseWindow;
             OnLockedPanelClick += LoadBuyPanelPopUp;
             OnPanelClick += LoadPuzzleDifficultyChooser;
+            ScrollSnapToItem.ScrollItemChanged += SetCurrentGridSO;
             LoadAllPuzzles();
             LoadPlayerPuzzles();
             LoadCoins();
@@ -74,6 +89,11 @@ namespace UIscripts
                     }
                 }
             }            
+        }
+
+        public void StartPuzzle()
+        {
+            LevelManager.LoadLevel?.Invoke(_currentGridSO, _currentPuzzleSO);
         }
 
         #region MenuButtonsInteraction
@@ -113,11 +133,21 @@ namespace UIscripts
             {
                 if (puzzleID == puzzle.Id)
                 {
-                    _puzzleToChoose.sprite = puzzle.PuzzleImage;
+                    _puzzleToChoose.LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.Id);
                     _puzzleLoaderObject.SetActive(true);
+                    _currentPuzzleSO = puzzle;
                     break;
                 }
             }
+            for (int i = 0; i < _diffucultiesList.GridDiffucultiesList.Count; i++)
+            {
+                Instantiate(_scrollPrefab, _scrollParent.transform).LoadScrollElement(_diffucultiesList.GridDiffucultiesList[i], i);
+            }
+        }
+
+        private void SetCurrentGridSO(int index)
+        {
+            _currentGridSO = _diffucultiesList.GridDiffucultiesList[index];
         }
         #endregion
 
@@ -129,6 +159,7 @@ namespace UIscripts
         }
 
         #endregion
+
     }
 }
 

@@ -7,9 +7,13 @@ namespace Grid
     [CreateAssetMenu(menuName = "Grid/GridSO")]
     public class GridSO : ScriptableObject
     {
-        [SerializeField] private int _width;
-        [SerializeField] private int _height;
-
+        [SerializeField, Min(2)] private int _width;
+        [SerializeField, Min(2)] private int _height;
+        
+        public int PieceNums()
+        { 
+            return _width * _height; 
+        }
         public int Width => _width;
         public int Height => _height;
     }
