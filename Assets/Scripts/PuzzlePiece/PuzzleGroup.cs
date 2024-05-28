@@ -165,6 +165,14 @@ namespace PuzzlePiece
             transform.position = clampedPosition - offset;
         }
 
+        public void AddToCollectedPieces(List<Piece> collectedPieces)
+        {
+            foreach (Piece piece in _pieces)
+            {
+                collectedPieces.Add(piece);
+            }
+        }
+
         public void UpdateZPosition(int zPosition)
         {
             Vector3 position = transform.position;

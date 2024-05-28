@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace PuzzlePiece {
@@ -9,6 +10,7 @@ namespace PuzzlePiece {
     ISnappable CombineWith(Piece otherPiece);
     void UpdateZPosition(int zPosition);
     void ClampToGrid(GetClampedPositionDelegate getClampedPosition, bool mouseOnScrollView);
+    void AddToCollectedPieces(List<Piece> collectedPieces);
     } 
 }
 

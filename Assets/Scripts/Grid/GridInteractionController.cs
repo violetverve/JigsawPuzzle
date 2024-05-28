@@ -9,7 +9,10 @@ namespace Grid
     {
         [SerializeField] private ScrollViewController _scrollViewController;
         private List<ISnappable> _snappables = new List<ISnappable>();
+        private List<Piece> _collectedPieces = new List<Piece>();
         private const int _correctPositionZ = 1;
+
+        public List<Piece> CollectedPieces => _collectedPieces;
 
 
         private void OnEnable()
@@ -32,15 +35,12 @@ namespace Grid
 
         private void HandleItemDropped(ISnappable snappable)
         {
-            TrySnapToGrid(snappable);
+            if (TrySnapToGrid(snappable)) return;
+            TryCombineWithOther(snappable);
         }
 
         private void MoveToTop(ISnappable snappable)
         {
-            if (_snappables.Contains(snappable))
-            {
-                _snappables.Remove(snappable);
-            }
             _snappables.Remove(snappable);
             _snappables.Add(snappable);
         }
@@ -53,26 +53,32 @@ namespace Grid
             }
         }
 
-        private void TrySnapToGrid(ISnappable snappable)
+        private bool TrySnapToGrid(ISnappable snappable)
         {
-            if (snappable.TrySnapToGrid())
-            {
-                _snappables.Remove(snappable);
-                snappable.UpdateZPosition(_correctPositionZ);
-            }
+            if (!snappable.TrySnapToGrid()) return false;
 
+            _snappables.Remove(snappable);
+            snappable.UpdateZPosition(_correctPositionZ);
+            snappable.AddToCollectedPieces(_collectedPieces);
+      
+            return true;
+        }
+
+        private bool TryCombineWithOther(ISnappable snappable)
+        {
             Piece neighbourPiece = snappable.GetNeighbourPiece();
 
-            if (CanSnap(neighbourPiece))
-            {
-                _snappables.Remove(snappable);
-                _snappables.Remove(neighbourPiece);
-                _snappables.Remove(neighbourPiece.Group);
+            if (!CanSnap(neighbourPiece)) return false;
+          
+            _snappables.Remove(snappable);
+            _snappables.Remove(neighbourPiece);
+            _snappables.Remove(neighbourPiece.Group);
 
-                ISnappable combined = snappable.CombineWith(neighbourPiece);
+            ISnappable combined = snappable.CombineWith(neighbourPiece);
 
-                _snappables.Add(combined);
-            }
+            _snappables.Add(combined);
+
+            return true;
         }
 
         private bool CanSnap(Piece piece)
