@@ -16,7 +16,6 @@ public class ScrollElement : MonoBehaviour
     [SerializeField] private string _puzzleSize;
     [SerializeField] private int _scrollElementNumber;
 
-
     [SerializeField] private float _scrollElementSize;
     [SerializeField] private float _paddingScrollElement;
     [SerializeField] private float _basicScaleScrollElement;
@@ -35,7 +34,6 @@ public class ScrollElement : MonoBehaviour
 
         ScrollSnapToItem.ItemChanging += SetBasicScrollElementParameters;
     }
-
     private void AdjustScrollElementAnimationCurveSize()
     {
         _scrollElementAnimationCurveSize.ClearKeys();
@@ -43,7 +41,6 @@ public class ScrollElement : MonoBehaviour
         _scrollElementAnimationCurveSize.AddKey(-1 * (_paddingScrollElement + _scrollElementSize), _basicScaleScrollElement);
         _scrollElementAnimationCurveSize.AddKey(0, _activeScaleScrollElement);
     }
-
     private void AdjustScrollElementAnimationCurveColor()
     {
         _scrollElementAnimationCurveRedColor.ClearKeys();
@@ -62,16 +59,12 @@ public class ScrollElement : MonoBehaviour
         _scrollElementAnimationCurveGreenColor.AddKey(-1 * (_paddingScrollElement + _scrollElementSize), _scrollElementColorBasic.g);
         _scrollElementAnimationCurveGreenColor.AddKey(0, _scrollElementColorActive.g);
     }
-
-
-
     public void SetBasicScrollElementParameters(float scrollPosition)
     {  
         float relPosition = scrollPosition + _scrollElementNumber * (_paddingScrollElement + _scrollElementSize);      
         _scrollElementTransform.localScale = new Vector3(_scrollElementAnimationCurveSize.Evaluate(relPosition), _scrollElementAnimationCurveSize.Evaluate(relPosition));
         _scrollElementImage.color = new Color(_scrollElementAnimationCurveRedColor.Evaluate(relPosition), _scrollElementAnimationCurveGreenColor.Evaluate(relPosition), _scrollElementAnimationCurveBlueColor.Evaluate(relPosition));
     }
-
     public void LoadScrollElement(GridSO difficultyGrid, int scrollnum)
     {
         _scrollElementText.text = difficultyGrid.PieceNums().ToString();
