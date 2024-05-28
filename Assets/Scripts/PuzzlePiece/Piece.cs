@@ -186,6 +186,11 @@ namespace PuzzlePiece
             transform.position = clampedPosition - offset;
         }
 
+        public void AddToCollectedPieces(List<Piece> collectedPieces)
+        {
+            collectedPieces.Add(this);
+        }
+
         public void SetGroup(PuzzleGroup group)
         {
             _group = group;

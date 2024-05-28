@@ -12,56 +12,82 @@ namespace PuzzlePiece
     {
         [SerializeField] private SplineContainer _splineContainer;
         [SerializeField] private int _pointsPerSpline = 40;
-        [SerializeField] private Material _material;
         [SerializeField] private Material _outlineMaterial;
         [SerializeField] private float _outlineWidth = 0.01f;
+        private Dictionary<PieceConfiguration, Mesh> _meshCache = new Dictionary<PieceConfiguration, Mesh>();
 
 
-        public Piece CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid)
+        public Piece CreatePiece(PieceConfiguration pieceConfiguration, Vector2Int gridPosition, Vector2Int grid, Material material)
         {
             var points = GetPointsFromConfig(pieceConfiguration);
 
-            var gameObject = new GameObject($"PuzzlePiece {gridPosition.x}_{gridPosition.y}");
+            var pieceObject = CreatePieceObject(gridPosition);
 
-            var mesh = GenerateMesh(points, gridPosition, grid);
-
-            gameObject.AddComponent<MeshFilter>().mesh = mesh;
-            gameObject.AddComponent<MeshRenderer>().material = _material;
-
-            CreateOutline(gameObject, pieceConfiguration);
-
-            BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
-            RectTransform rectTransform = gameObject.AddComponent<RectTransform>();
-
-            gameObject.AddComponent<Draggable>();
+            if (!_meshCache.TryGetValue(pieceConfiguration, out var mesh))
+            {
+                mesh = GenerateMesh(points, gridPosition, grid);
+                _meshCache[pieceConfiguration] = mesh;
+            }
             
-            var piece = gameObject.AddComponent<Piece>();
+            AddMeshComponents(pieceObject, material, mesh);
+            CreateOutline(pieceObject, points);
+            AddRequiredComponents(pieceObject);
+            
+            var piece = pieceObject.AddComponent<Piece>();
 
             return piece;
         }
 
+        private GameObject CreatePieceObject(Vector2Int gridPosition)
+        {
+            return new GameObject(GeneratePieceName(gridPosition));
+        }
+
+        private string GeneratePieceName(Vector2Int gridPosition)
+        {
+            return $"PuzzlePiece {gridPosition.x}_{gridPosition.y}";
+        }
+
+        private void AddMeshComponents(GameObject pieceObject, Material material, Mesh mesh)
+        {
+            var meshFilter = pieceObject.AddComponent<MeshFilter>();
+            var meshRenderer = pieceObject.AddComponent<MeshRenderer>();
+            meshFilter.mesh = mesh;
+            meshRenderer.material = material;
+        }
+
+        private void AddRequiredComponents(GameObject pieceObject)
+        {
+            pieceObject.AddComponent<BoxCollider2D>();
+            pieceObject.AddComponent<RectTransform>();
+            pieceObject.AddComponent<Draggable>();
+        }
+
         public void CreateOutline(GameObject piece, PieceConfiguration pieceConfiguration)
         {
-            var points = GetPointsFromConfig(pieceConfiguration).ToList();
+            CreateOutline(piece, GetPointsFromConfig(pieceConfiguration));
+        }
 
-            points.Add(points[0]);
-
-            LineRenderer lineRenderer = piece.AddComponent<LineRenderer>();
+        private void CreateOutline(GameObject piece, IEnumerable<Vector2> points)
+        {
+            var lineRenderer = piece.AddComponent<LineRenderer>(); 
 
             lineRenderer.material = _outlineMaterial;
             lineRenderer.widthMultiplier = _outlineWidth;
-            lineRenderer.positionCount = points.Count;
+            lineRenderer.positionCount = points.Count();
             lineRenderer.useWorldSpace = false;
+            lineRenderer.loop = true;
 
-            for (int i = 0; i < points.Count; i++)
+            int index = 0;
+            foreach (var point in points)
             {
-                lineRenderer.SetPosition(i, points[i]);
+                lineRenderer.SetPosition(index++, point);
             }
         }
 
         public IEnumerable<Vector2> GetPointsFromConfig(PieceConfiguration pieceConfiguration)
         {
-            return new List<Vector2>[]
+            return new []
             {
                 GetPointsFromFeature(pieceConfiguration.Left, FeaturePosition.Left),
                 GetPointsFromFeature(pieceConfiguration.Top, FeaturePosition.Top),
@@ -69,7 +95,6 @@ namespace PuzzlePiece
                 GetPointsFromFeature(pieceConfiguration.Bottom, FeaturePosition.Bottom)
             }.SelectMany(points => points).Distinct();
         }
-
 
         private Vector2[] CalculateUVs(Vector3[] vertices, Vector2Int gridPosition, Vector2Int grid)
         {
@@ -116,54 +141,49 @@ namespace PuzzlePiece
             mesh.RecalculateBounds();
 
             return mesh;
-        }
+        } 
 
-        private List<Vector2> GetPointsFromFeature(FeatureType featureType, FeaturePosition featurePosition)
+        private IEnumerable<Vector2> GetPointsFromFeature(FeatureType featureType, FeaturePosition featurePosition)
         {
             var points2D = InitializePointsByFeatureType(featureType);
-            points2D = ApplyFeaturePositionTransformations(points2D, featurePosition);
-            return points2D;
+            return ApplyFeaturePositionTransformations(points2D, featurePosition);
         }
 
-        private List<Vector2> InitializePointsByFeatureType(FeatureType featureType)
+        private IEnumerable<Vector2> InitializePointsByFeatureType(FeatureType featureType)
         {
             if (featureType == FeatureType.Hole || featureType == FeatureType.Knob)
             {
                 var points = GetSplinePoints2D(_splineContainer.Spline);
                 return featureType == FeatureType.Hole
-                    ? points.Select(p => new Vector2(-p.x, -p.y)).Reverse().ToList()
+                    ? points.Select(p => new Vector2(-p.x, -p.y)).Reverse()
                     : points;
             }
             else
             {
-                return new List<Vector2> { new Vector2(-1, 0), new Vector2(1, 0) };
+                return new List<Vector2> {new Vector2(-1, 0), new Vector2(1, 0)};
             }
-        }        
+        }   
 
-        private List<Vector2> ApplyFeaturePositionTransformations(List<Vector2> points, FeaturePosition featurePosition)
+        private IEnumerable<Vector2> ApplyFeaturePositionTransformations(IEnumerable<Vector2> points, FeaturePosition featurePosition)
         {
-            return points.Select(p => featurePosition switch
+            return points.Select(point => featurePosition switch
             {
-                FeaturePosition.Top => new Vector2(p.x, p.y + 1),
-                FeaturePosition.Bottom => new Vector2(-p.x, -p.y - 1),
-                FeaturePosition.Left => new Vector2(-p.y - 1, p.x),
-                FeaturePosition.Right => new Vector2(p.y + 1, -p.x),
-                _ => p
-            }).ToList();
+                FeaturePosition.Top => new Vector2(point.x, point.y + 1),
+                FeaturePosition.Bottom => new Vector2(-point.x, -point.y - 1),
+                FeaturePosition.Left => new Vector2(-point.y - 1, point.x),
+                FeaturePosition.Right => new Vector2(point.y + 1, -point.x),
+                _ => point
+            });
         }
 
-        private List<Vector2> GetSplinePoints2D(Spline spline)
+        private IEnumerable<Vector2> GetSplinePoints2D(Spline spline)
         {
-            var points = new List<Vector2>();
-
             for (int i = 0; i <= _pointsPerSpline; i++)
             {
-                float t = i / (float)_pointsPerSpline;
-                Vector3 position = spline.EvaluatePosition(t);
-                points.Add(new Vector2(position.x, position.y));
+                float interpolationFactor = i / (float)_pointsPerSpline;
+                Vector3 position = spline.EvaluatePosition(interpolationFactor);
+                yield return new Vector2(position.x, position.y);
             }
-
-            return points;
         }
 
     }

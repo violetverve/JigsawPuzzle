@@ -17,13 +17,13 @@ namespace Grid
 
         public ScrollViewController ScrollViewController => _scrollViewController;
 
-        public void GenerateGrid(GridSO gridSO)
+        public void GenerateGrid(GridSO gridSO, Material material)
         {
             _gridSO = gridSO;
 
             _gridField.Initialize(_gridSO);
-  
-            _gridGenerator.InitializeGrid(_gridSO);
+
+            _gridGenerator.InitializeGrid(_gridSO, material);
 
             _scrollViewController.PopulateScrollView(_gridGenerator.GeneratedPieces);
         }
