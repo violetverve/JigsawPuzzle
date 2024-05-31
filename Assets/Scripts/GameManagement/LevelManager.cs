@@ -7,6 +7,7 @@ namespace GameManagement
     {
         [SerializeField] private Level _currentLevel;
         [SerializeField] private GridManager _gridManager;
+        [SerializeField] private ProgressManager _progressManager;
         
         public void StartCurrentLevel()
         {
@@ -17,6 +18,7 @@ namespace GameManagement
         {
             _currentLevel = level;
             _gridManager.GenerateGrid(_currentLevel.GridSO, _currentLevel.PuzzleSO.PuzzleMaterial);
+            _progressManager.SetNumberOfPieces(_currentLevel.GridSO.Width * _currentLevel.GridSO.Height);
         }
     }
 }

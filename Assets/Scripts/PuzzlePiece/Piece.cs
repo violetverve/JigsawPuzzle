@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace PuzzlePiece
 {
@@ -17,10 +18,12 @@ namespace PuzzlePiece
         private Vector3 _boxColliderSize;
         private bool _isEdgePiece;
 
+        public static event Action<List<Piece>> OnCollectedNewPieces;
         public Transform Transform => transform;
         public Vector3 CorrectPosition => _correctPosition;
         public Vector2Int GridPosition => _gridPosition;
         public PuzzleGroup Group => _group;
+        public Draggable Draggable => _draggable;
 
         private void Awake()
         {
@@ -47,6 +50,8 @@ namespace PuzzlePiece
 
             SnapToCorrectPosition();
             Destroy(_draggable);
+
+            OnCollectedNewPieces?.Invoke(new List<Piece> { this });
             return true;
         }
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 namespace PuzzlePiece
 {
@@ -10,6 +11,8 @@ namespace PuzzlePiece
         private Draggable _draggable;
         private CompositeCollider2D _compositeCollider;
         private List<Piece> _pieces = new List<Piece>();
+
+        public static event Action<List<Piece>> OnCollectedNewPieces;
         public Transform Transform => transform;
         public List<Piece> Pieces => _pieces;
         public Draggable Draggable => _draggable;
@@ -17,6 +20,8 @@ namespace PuzzlePiece
 
         public void InitializeGroup(List<Piece> pieces)
         {
+            _draggable = gameObject.AddComponent<Draggable>();
+
             List<Piece> piecesToAdd = pieces;
 
             foreach (Piece piece in piecesToAdd)
@@ -31,7 +36,6 @@ namespace PuzzlePiece
             compositeCollider.geometryType = CompositeCollider2D.GeometryType.Polygons;
             compositeCollider.generationType = CompositeCollider2D.GenerationType.Synchronous;
 
-            _draggable = gameObject.AddComponent<Draggable>();
             _compositeCollider = compositeCollider;
         }
 
@@ -68,6 +72,8 @@ namespace PuzzlePiece
                 }
 
                 Destroy(_draggable);
+
+                OnCollectedNewPieces.Invoke(_pieces);
             }
             
             return snap;
@@ -119,6 +125,17 @@ namespace PuzzlePiece
 
         public void AddPieceToGroup(Piece piece)
         {
+            if (piece.Draggable == null)
+            {
+                Destroy(_draggable);
+                OnCollectedNewPieces.Invoke(_pieces);
+            }
+
+            if (_draggable == null)
+            {
+                OnCollectedNewPieces.Invoke(new List<Piece> { piece });
+            }
+
             piece.SetGroup(this);
 
             piece.SetupForGroup();
@@ -131,12 +148,18 @@ namespace PuzzlePiece
             return group == this;
         } 
 
+
         private void MergeGroup(PuzzleGroup otherGroup)
         {
             if (otherGroup.Draggable == null)
             {
                 Destroy(_draggable);
+                OnCollectedNewPieces.Invoke(_pieces);
             }
+            // else 
+            // {
+            //     OnCollectedNewPieces.Invoke(_pieces);
+            // }
         
             UpdatePiecesGroup(otherGroup.Pieces);
         

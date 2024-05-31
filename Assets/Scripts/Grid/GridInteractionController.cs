@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PuzzlePiece;
+using System;
 
 namespace Grid
 {
@@ -12,6 +13,7 @@ namespace Grid
         private List<Piece> _collectedPieces = new List<Piece>();
         private const int _correctPositionZ = 1;
 
+        public static event Action<int> OnProgressUpdate;
         public List<Piece> CollectedPieces => _collectedPieces;
 
 
@@ -19,12 +21,16 @@ namespace Grid
         {
             Draggable.OnItemDropped += HandleItemDropped;
             Draggable.OnItemPickedUp += HandleItemPickedUp;
+            PuzzleGroup.OnCollectedNewPieces += HandleCollectedNewPieces;
+            Piece.OnCollectedNewPieces += HandleCollectedNewPieces;
         }
 
         private void OnDisable()
         {
             Draggable.OnItemDropped -= HandleItemDropped;
             Draggable.OnItemPickedUp -= HandleItemPickedUp;
+            PuzzleGroup.OnCollectedNewPieces -= HandleCollectedNewPieces;
+            Piece.OnCollectedNewPieces -= HandleCollectedNewPieces;
         }
 
         private void HandleItemPickedUp(ISnappable snappable)
@@ -56,11 +62,10 @@ namespace Grid
         private bool TrySnapToGrid(ISnappable snappable)
         {
             if (!snappable.TrySnapToGrid()) return false;
-
+            
             _snappables.Remove(snappable);
             snappable.UpdateZPosition(_correctPositionZ);
-            snappable.AddToCollectedPieces(_collectedPieces);
-      
+
             return true;
         }
 
@@ -79,6 +84,13 @@ namespace Grid
             _snappables.Add(combined);
 
             return true;
+        }
+
+        private void HandleCollectedNewPieces(List<Piece> pieces)
+        {
+            _collectedPieces.AddRange(pieces);
+        
+            OnProgressUpdate?.Invoke(_collectedPieces.Count);
         }
 
         private bool CanSnap(Piece piece)
