@@ -1,3 +1,4 @@
+using GameManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +18,11 @@ namespace Grid
 
         public ScrollViewController ScrollViewController => _scrollViewController;
 
-        public void GenerateGrid(GridSO gridSO, Material material)
+        public void Awake()
+        {
+            LevelManager.LoadCurrentLevel += GenerateGrid;
+        }
+        private void GenerateGrid(GridSO gridSO, Material material)
         {
             _gridSO = gridSO;
 

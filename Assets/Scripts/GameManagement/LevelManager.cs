@@ -2,23 +2,30 @@ using UnityEngine;
 using Grid;
 using System;
 using PuzzleData;
+using UnityEditor.SearchService;
+using UnityEngine.SceneManagement;
+using Player;
 
 namespace GameManagement
 {
     public class LevelManager : MonoBehaviour
     {
-        [SerializeField] private GridManager _gridManager;
+        public static Action<GridSO, Material> LoadCurrentLevel;
 
-        public static Action<GridSO, PuzzleSO> LoadLevel;
+        [SerializeField] private PuzzleList _puzzleList;
 
         private void Awake()
+        {           
+
+        }
+        private void Start()
         {
-            LoadLevel += StartLevel;
+            StartLevel(PlayerData.Instance.CurrentPuzzle.Grid, FindPuzzle.FindPuzzleWithID(PlayerData.Instance.CurrentPuzzle.ID, _puzzleList));
         }
         #region PuzzlePlay
-        private void StartLevel(GridSO gridSO, PuzzleSO puzzleSO)
+        public void StartLevel(GridSO gridSO, PuzzleSO puzzleSO)
         {
-            _gridManager.GenerateGrid(gridSO, puzzleSO.PuzzleMaterial);
+            LoadCurrentLevel?.Invoke(gridSO, puzzleSO.PuzzleMaterial);
         }
         #endregion
     }

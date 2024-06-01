@@ -9,6 +9,7 @@ using System;
 using PuzzleData;
 using GameManagement;
 using Grid;
+using UnityEngine.SceneManagement;
 
 namespace UIscripts
 {
@@ -66,7 +67,7 @@ namespace UIscripts
             LoadAllPuzzles();
             LoadPlayerPuzzles();
             LoadCoins();
-            
+            SetCurrentGridSO(0);
         }
 
         public void LoadAllPuzzles()
@@ -93,8 +94,8 @@ namespace UIscripts
 
         public void StartPuzzle()
         {
-            Debug.Log("Starting Level");
-            LevelManager.LoadLevel?.Invoke(_currentGridSO, _currentPuzzleSO);          
+            PlayerData.Instance.SetCurrentPuzzle(new PuzzleSavingData(_currentPuzzleSO.Id, _currentGridSO));
+            SceneManager.LoadScene("Main");
         }
 
         #region MenuButtonsInteraction
