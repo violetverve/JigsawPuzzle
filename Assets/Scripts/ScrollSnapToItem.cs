@@ -34,7 +34,7 @@ public class ScrollSnapToItem : MonoBehaviour
 
     void Start()
     {
-        _isSnapped = false;
+        
     }
 
     void Update()

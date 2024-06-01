@@ -7,15 +7,17 @@ using UnityEngine.UI;
 
 public class ScrollElement : MonoBehaviour
 {
+    [Header("Element Colors")]
     [SerializeField] private Color _scrollElementColorActive;
     [SerializeField] private Color _scrollElementColorBasic;
 
+    [Header("Element Components")]
     [SerializeField] private RectTransform _scrollElementTransform;
     [SerializeField] private Image _scrollElementImage;
     [SerializeField] private TextMeshProUGUI _scrollElementText;
-    [SerializeField] private string _puzzleSize;
-    [SerializeField] private int _scrollElementNumber;
+    private int _scrollElementNumber;
 
+    [Header("Element Parameters")]
     [SerializeField] private float _scrollElementSize;
     [SerializeField] private float _paddingScrollElement;
     [SerializeField] private float _basicScaleScrollElement;

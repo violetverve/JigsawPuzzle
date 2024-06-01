@@ -93,7 +93,8 @@ namespace UIscripts
 
         public void StartPuzzle()
         {
-            LevelManager.LoadLevel?.Invoke(_currentGridSO, _currentPuzzleSO);
+            Debug.Log("Starting Level");
+            LevelManager.LoadLevel?.Invoke(_currentGridSO, _currentPuzzleSO);          
         }
 
         #region MenuButtonsInteraction
