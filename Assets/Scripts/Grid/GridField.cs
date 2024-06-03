@@ -53,11 +53,18 @@ namespace Grid
         private void OnEnable()
         {
             Draggable.OnItemDropped += HandleItemDropped;
+            GridInteractionController.OnISnappableRotated += HandleISnapableRotated;
         }
 
         private void OnDisable()
         {
             Draggable.OnItemDropped -= HandleItemDropped;
+            GridInteractionController.OnISnappableRotated -= HandleISnapableRotated;
+        }
+
+        private void HandleISnapableRotated(ISnappable snappable)
+        {
+            ClampToGrid(snappable);
         }
 
         private void HandleItemDropped(ISnappable snappable)
@@ -65,6 +72,7 @@ namespace Grid
             ClampToGrid(snappable);
         }
 
+        # region GridClamping
         private void ClampToGrid(ISnappable snappable)
         {
             snappable.ClampToGrid(GetClampedPosition, _scrollViewController.MouseOnScrollView());
@@ -86,6 +94,8 @@ namespace Grid
 
             return clampedPosition;
         }
+
+        # endregion
 
         void OnDrawGizmos()
         {

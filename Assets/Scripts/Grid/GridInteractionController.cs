@@ -14,6 +14,8 @@ namespace Grid
         private const int _correctPositionZ = 1;
 
         public static event Action<int> OnProgressUpdate;
+        public static event Action<ISnappable> OnISnappableRotated;
+        
         public List<Piece> CollectedPieces => _collectedPieces;
 
 
@@ -23,6 +25,7 @@ namespace Grid
             Draggable.OnItemPickedUp += HandleItemPickedUp;
             PuzzleGroup.OnCollectedNewPieces += HandleCollectedNewPieces;
             Piece.OnCollectedNewPieces += HandleCollectedNewPieces;
+            Clickable.OnItemClicked += HandleItemClicked;
         }
 
         private void OnDisable()
@@ -31,6 +34,21 @@ namespace Grid
             Draggable.OnItemPickedUp -= HandleItemPickedUp;
             PuzzleGroup.OnCollectedNewPieces -= HandleCollectedNewPieces;
             Piece.OnCollectedNewPieces -= HandleCollectedNewPieces;
+            Clickable.OnItemClicked -= HandleItemClicked;
+        }
+
+        private void HandleItemClicked(ISnappable snappable, Vector3 mousePosition)
+        {
+            StartCoroutine(HandleItemClickedCoroutine(snappable, mousePosition));
+        }
+
+        private IEnumerator HandleItemClickedCoroutine(ISnappable snappable, Vector3 mousePosition)
+        {
+            snappable.Rotate(mousePosition);
+
+            yield return new WaitForSeconds(0.1f);
+
+            OnISnappableRotated?.Invoke(snappable);
         }
 
         private void HandleItemPickedUp(ISnappable snappable)
@@ -74,7 +92,9 @@ namespace Grid
             Piece neighbourPiece = snappable.GetNeighbourPiece();
 
             if (!CanSnap(neighbourPiece)) return false;
-          
+
+            if (!snappable.HaveSameRotation(neighbourPiece)) return false;
+
             _snappables.Remove(snappable);
             _snappables.Remove(neighbourPiece);
             _snappables.Remove(neighbourPiece.Group);

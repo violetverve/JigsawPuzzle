@@ -40,7 +40,6 @@ namespace PuzzlePiece
             
             AddMeshComponents(pieceObject, material, mesh);
             CreateOutline(pieceObject, points);
-            AddRequiredComponents(pieceObject);
             
             var piece = pieceObject.AddComponent<Piece>();
 
@@ -63,13 +62,6 @@ namespace PuzzlePiece
             var meshRenderer = pieceObject.AddComponent<MeshRenderer>();
             meshFilter.mesh = mesh;
             meshRenderer.material = material;
-        }
-
-        private void AddRequiredComponents(GameObject pieceObject)
-        {
-            pieceObject.AddComponent<BoxCollider2D>();
-            pieceObject.AddComponent<RectTransform>();
-            pieceObject.AddComponent<Draggable>();
         }
 
         public void CreateOutline(GameObject piece, PieceConfiguration pieceConfiguration)
