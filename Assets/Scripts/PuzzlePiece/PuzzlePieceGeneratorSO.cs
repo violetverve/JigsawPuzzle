@@ -27,11 +27,19 @@ namespace PuzzlePiece
             {
                 mesh = GenerateMesh(points, gridPosition, grid);
                 _meshCache[pieceConfiguration] = mesh;
+            } 
+            else 
+            {
+                mesh = new Mesh
+                {
+                    vertices = mesh.vertices,
+                    triangles = mesh.triangles,
+                    uv = CalculateUVs(mesh.vertices, gridPosition, grid)
+                };
             }
             
             AddMeshComponents(pieceObject, material, mesh);
             CreateOutline(pieceObject, points);
-            AddRequiredComponents(pieceObject);
             
             var piece = pieceObject.AddComponent<Piece>();
 
@@ -54,13 +62,6 @@ namespace PuzzlePiece
             var meshRenderer = pieceObject.AddComponent<MeshRenderer>();
             meshFilter.mesh = mesh;
             meshRenderer.material = material;
-        }
-
-        private void AddRequiredComponents(GameObject pieceObject)
-        {
-            pieceObject.AddComponent<BoxCollider2D>();
-            pieceObject.AddComponent<RectTransform>();
-            pieceObject.AddComponent<Draggable>();
         }
 
         public void CreateOutline(GameObject piece, PieceConfiguration pieceConfiguration)

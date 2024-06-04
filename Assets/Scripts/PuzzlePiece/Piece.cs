@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace PuzzlePiece
 {
@@ -9,7 +10,7 @@ namespace PuzzlePiece
         private Vector3 _correctPosition;
         private Vector2Int _gridPosition;
         private Draggable _draggable;
-        private Rigidbody2D _rigidbody;
+        private Clickable _clickable;
         private PuzzleGroup _group;
         private BoxCollider2D _boxCollider;
         private float _snapDistance;
@@ -17,17 +18,19 @@ namespace PuzzlePiece
         private Vector3 _boxColliderSize;
         private bool _isEdgePiece;
 
+        public static event Action<List<Piece>> OnCollectedNewPieces;
         public Transform Transform => transform;
         public Vector3 CorrectPosition => _correctPosition;
         public Vector2Int GridPosition => _gridPosition;
         public PuzzleGroup Group => _group;
+        public Draggable Draggable => _draggable;
 
         private void Awake()
         {
-            _draggable = gameObject.GetComponent<Draggable>();
-            _rigidbody = gameObject.GetComponent<Rigidbody2D>();
-            _boxCollider = gameObject.GetComponent<BoxCollider2D>();
-
+            _boxCollider = gameObject.AddComponent<BoxCollider2D>();
+            gameObject.AddComponent<RectTransform>();
+            _draggable = gameObject.AddComponent<Draggable>();
+            _clickable = gameObject.AddComponent<Clickable>();
         }
 
         public void Initialize(Vector3 correctPosition, Vector2Int gridPosition, bool isEdgePiece)
@@ -47,12 +50,20 @@ namespace PuzzlePiece
 
             SnapToCorrectPosition();
             Destroy(_draggable);
+            Destroy(_clickable);
+
+            OnCollectedNewPieces?.Invoke(new List<Piece> { this });
             return true;
         }
 
         public bool CanSnapToGrid()
         {
-            return _isEdgePiece && IsWithinSnapToGridRadius();
+            return _isEdgePiece && IsWithinSnapToGridRadius() && IsInCorrectRotation();
+        }
+
+        private bool IsInCorrectRotation()
+        {
+            return transform.rotation.eulerAngles.z == 0;
         }
 
         public void SnapToCorrectPosition()
@@ -65,9 +76,12 @@ namespace PuzzlePiece
             return Vector2.Distance(transform.position, _correctPosition) < _snapRadius / 2f;
         }
 
-        private void SnapToOtherPiecePosition(Piece otherPiece)
+        public void SnapToOtherPiecePosition(Piece otherPiece)
         { 
             Vector3 distance = _correctPosition - otherPiece.CorrectPosition;
+            
+            distance = Transform.rotation * distance;
+
             transform.position = otherPiece.Transform.position + distance;
         }
 
@@ -164,14 +178,22 @@ namespace PuzzlePiece
             Vector2 gridDistance = _gridPosition - piece.GridPosition;
             Vector2 realDistance = transform.position - piece.transform.position;
 
-            bool signsMatch = Mathf.Sign(gridDistance.x) == Mathf.Sign(realDistance.x) &&
-                              Mathf.Sign(gridDistance.y) == Mathf.Sign(realDistance.y);
+            float rotationAngle = piece.transform.eulerAngles.z * Mathf.Deg2Rad;
+
+            Vector2 rotatedRealDistance = new Vector2(
+                realDistance.x * Mathf.Cos(rotationAngle) + realDistance.y * Mathf.Sin(rotationAngle),
+                -realDistance.x * Mathf.Sin(rotationAngle) + realDistance.y * Mathf.Cos(rotationAngle)
+            );
+
+            bool signsMatch = Mathf.Sign(gridDistance.x) == Mathf.Sign(rotatedRealDistance.x) &&
+                              Mathf.Sign(gridDistance.y) == Mathf.Sign(rotatedRealDistance.y);
 
             float tolerance = 0.2f;
-            bool isPerpendicular = Mathf.Abs(realDistance.x) < tolerance || Mathf.Abs(realDistance.y) < tolerance;
+            bool isPerpendicular = Mathf.Abs(rotatedRealDistance.x) < tolerance || Mathf.Abs(rotatedRealDistance.y) < tolerance;
 
             return signsMatch && isPerpendicular;
         }
+
 
         # endregion
 
@@ -180,7 +202,10 @@ namespace PuzzlePiece
             if (mouseOnScrollView) return;
             
             Vector3 pieceCenter = _boxCollider.bounds.center;
-            Vector3 clampedPosition = getClampedPosition(pieceCenter, _boxColliderSize);
+
+            Vector3 pieceSize =  new Vector2(_boxCollider.size.x, _boxCollider.size.y) * transform.localScale;
+
+            Vector3 clampedPosition = getClampedPosition(pieceCenter, pieceSize);
             
             Vector3 offset = pieceCenter - transform.position;
             transform.position = clampedPosition - offset;
@@ -200,8 +225,8 @@ namespace PuzzlePiece
         public void SetupForGroup()
         {
             _boxCollider.usedByComposite = true;
-            Destroy(_rigidbody);
             Destroy(_draggable);
+            Destroy(_clickable);
         }
 
         public void UpdateZPosition(int zPosition)
@@ -219,6 +244,37 @@ namespace PuzzlePiece
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(_boxCollider.bounds.center, _boxColliderSize);
         }
+
+        # region Rotation
+        public void Rotate(Vector3 mouseWorldPos)
+        {
+            float rotationAngle = -90;
+            transform.Rotate(0, 0, rotationAngle);
+        }
+
+        public bool HaveSameRotation(Piece piece)
+        {
+            return transform.rotation.eulerAngles.z == piece.transform.rotation.eulerAngles.z;
+        }
+    
+        public bool IsPointOnPiece(Vector3 point)
+        {
+            Vector2 mousePos = new Vector2(point.x, point.y);
+        
+            Vector2 colliderPos = _boxCollider.transform.position;
+            Vector2 colliderSize = _boxColliderSize;
+            Vector2 min = colliderPos - colliderSize / 2;
+            Vector2 max = colliderPos + colliderSize / 2;
+        
+            return IsWithinRange(mousePos.x, min.x, max.x) && IsWithinRange(mousePos.y, min.y, max.y);
+        }
+        
+        private bool IsWithinRange(float value, float min, float max)
+        {
+            return value >= min && value <= max;
+        }
+
+        # endregion
   
     }
 }
