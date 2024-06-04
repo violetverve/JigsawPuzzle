@@ -21,6 +21,7 @@ namespace GameManagement
         private void Start()
         {
             StartLevel(PlayerData.Instance.CurrentPuzzle.Grid, FindPuzzle.FindPuzzleWithID(PlayerData.Instance.CurrentPuzzle.ID, _puzzleList));
+            //_progressManager.SetNumberOfPieces(PlayerData.Instance.CurrentPuzzle.Grid.Width * PlayerData.Instance.CurrentPuzzle.Grid.Height);
         }
         #region PuzzlePlay
         public void StartLevel(GridSO gridSO, PuzzleSO puzzleSO)
