@@ -34,7 +34,7 @@ public class ScrollElement : MonoBehaviour
         AdjustScrollElementAnimationCurveColor();
 
 
-        ScrollSnapToItem.ItemChanging += SetBasicScrollElementParameters;
+        PuzzlePrepareUI.ItemChanging += SetBasicScrollElementParameters;
     }
     private void AdjustScrollElementAnimationCurveSize()
     {

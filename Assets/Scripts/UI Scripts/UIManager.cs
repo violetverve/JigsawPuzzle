@@ -35,7 +35,7 @@ namespace UIscripts
         [SerializeField] private PuzzlePanelUI _puzzleToBuyPopUpObject;
 
         [Space]
-        [SerializeField] private TextMeshProUGUI _coinsText;
+        [SerializeField] private List<TextMeshProUGUI> _coinsText;
 
         [Space]
         [SerializeField] private GameObject _puzzleLoaderObject;
@@ -63,10 +63,14 @@ namespace UIscripts
             OnCrossClick += CloseWindow;
             OnLockedPanelClick += LoadBuyPanelPopUp;
             OnPanelClick += LoadPuzzleDifficultyChooser;
-            ScrollSnapToItem.ScrollItemChanged += SetCurrentGridSO;
+            PuzzlePrepareUI.ScrollItemChanged += SetCurrentGridSO;
+        }
+        private void Start()
+        {
             LoadAllPuzzles();
             LoadPlayerPuzzles();
             LoadCoins();
+            LoadDifficulties();
             SetCurrentGridSO(0);
         }
 
@@ -74,7 +78,6 @@ namespace UIscripts
         {
             _puzzles.List.ForEach(puzzle => Instantiate(_puzzlePrefab, _puzzleParent.transform).LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.IsLocked, puzzle.Id));
         }
-
         public void LoadPlayerPuzzles()
         {
             if (PlayerData.Instance.SavedPuzzles != null)
@@ -91,11 +94,17 @@ namespace UIscripts
                 }
             }            
         }
-
         public void StartPuzzle()
         {
             PlayerData.Instance.SetCurrentPuzzle(new PuzzleSavingData(_currentPuzzleSO.Id, _currentGridSO));
             SceneManager.LoadScene("Main");
+        }
+        private void LoadDifficulties()
+        {
+            for (int i = 0; i < _diffucultiesList.GridDiffucultiesList.Count; i++)
+            {
+                Instantiate(_scrollPrefab, _scrollParent.transform).LoadScrollElement(_diffucultiesList.GridDiffucultiesList[i], i);
+            }
         }
 
         #region MenuButtonsInteraction
@@ -123,7 +132,7 @@ namespace UIscripts
             {
                 if(puzzleID == puzzle.Id)
                 {
-                    _puzzleToBuyPopUpObject.LoadPuzzlePanel(puzzle.PuzzleImage);
+                    _puzzleToBuyPopUpObject.LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.Id);
                     _puzzleToBuyPopUp.SetActive(true);
                     break;
                 }
@@ -141,12 +150,7 @@ namespace UIscripts
                     break;
                 }
             }
-            for (int i = 0; i < _diffucultiesList.GridDiffucultiesList.Count; i++)
-            {
-                Instantiate(_scrollPrefab, _scrollParent.transform).LoadScrollElement(_diffucultiesList.GridDiffucultiesList[i], i);
-            }
         }
-
         private void SetCurrentGridSO(int index)
         {
             _currentGridSO = _diffucultiesList.GridDiffucultiesList[index];
@@ -157,7 +161,7 @@ namespace UIscripts
 
         public void LoadCoins()
         {
-            _coinsText.text = PlayerData.Instance.CoinsAmount.ToString();
+            _coinsText.ForEach(text => text.text = PlayerData.Instance.CoinsAmount.ToString());
         }
 
         #endregion
