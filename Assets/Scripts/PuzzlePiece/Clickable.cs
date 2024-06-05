@@ -31,7 +31,9 @@ namespace PuzzlePiece
 
         private void OnMouseUp()
         {
-            if (Vector3.Distance(_initialPosition, transform.position) < _tolerance)
+            float distance = Vector3.Distance(_initialPosition, transform.position) - Mathf.Abs(_initialPosition.z - transform.position.z);
+
+            if (distance < _tolerance)
             {
                 OnItemClicked?.Invoke(_snappable, GetMouseWorldPos());
             }

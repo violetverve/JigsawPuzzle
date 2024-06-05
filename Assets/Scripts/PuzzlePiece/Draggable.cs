@@ -15,6 +15,8 @@ namespace PuzzlePiece
         private bool _isDragging;
         private Vector3 _offset;
         private ISnappable _snappable;
+        private Vector3 _initialPosition;
+        private float _distanceTolerance = 0.01f;
         
 
         private void Awake()
@@ -31,6 +33,7 @@ namespace PuzzlePiece
         {
             _isDragging = true;
             _offset = transform.position - GetMouseWorldPos();
+            _initialPosition = transform.position;
 
             OnItemPickedUp?.Invoke(_snappable);
         }
@@ -38,7 +41,11 @@ namespace PuzzlePiece
         private void OnMouseUp()
         {
             _isDragging = false;
-            OnItemDropped?.Invoke(_snappable);
+            
+            if (Vector3.Distance(_initialPosition, transform.position) > _distanceTolerance)
+            {
+                OnItemDropped?.Invoke(_snappable);
+            }
         }
 
         private void OnMouseDrag()

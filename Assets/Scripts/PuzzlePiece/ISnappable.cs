@@ -5,6 +5,7 @@ namespace PuzzlePiece {
     public interface ISnappable
     {
         Transform Transform { get; }
+        bool IsAnimating { get; }
         bool TrySnapToGrid();
         Piece GetNeighbourPiece();
         ISnappable CombineWith(Piece otherPiece);

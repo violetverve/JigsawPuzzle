@@ -11,44 +11,35 @@ namespace Grid
         [SerializeField] private ScrollViewController _scrollViewController;
         private List<ISnappable> _snappables = new List<ISnappable>();
         private List<Piece> _collectedPieces = new List<Piece>();
-        private const int _correctPositionZ = 1;
-
         public static event Action<int> OnProgressUpdate;
-        public static event Action<ISnappable> OnISnappableRotated;
-        
         public List<Piece> CollectedPieces => _collectedPieces;
 
 
         private void OnEnable()
         {
-            Draggable.OnItemDropped += HandleItemDropped;
             Draggable.OnItemPickedUp += HandleItemPickedUp;
             PuzzleGroup.OnCollectedNewPieces += HandleCollectedNewPieces;
             Piece.OnCollectedNewPieces += HandleCollectedNewPieces;
             Clickable.OnItemClicked += HandleItemClicked;
+
+            Piece.OnGridSnapCompleted += HandleItemDropped;
+            PuzzleGroup.OnGridSnapCompleted += HandleItemDropped;
         }
 
         private void OnDisable()
         {
-            Draggable.OnItemDropped -= HandleItemDropped;
             Draggable.OnItemPickedUp -= HandleItemPickedUp;
             PuzzleGroup.OnCollectedNewPieces -= HandleCollectedNewPieces;
             Piece.OnCollectedNewPieces -= HandleCollectedNewPieces;
             Clickable.OnItemClicked -= HandleItemClicked;
+
+            Piece.OnGridSnapCompleted -= HandleItemDropped;
+            PuzzleGroup.OnGridSnapCompleted -= HandleItemDropped;
         }
 
         private void HandleItemClicked(ISnappable snappable, Vector3 mousePosition)
         {
-            StartCoroutine(HandleItemClickedCoroutine(snappable, mousePosition));
-        }
-
-        private IEnumerator HandleItemClickedCoroutine(ISnappable snappable, Vector3 mousePosition)
-        {
             snappable.Rotate(mousePosition);
-
-            yield return new WaitForSeconds(0.1f);
-
-            OnISnappableRotated?.Invoke(snappable);
         }
 
         private void HandleItemPickedUp(ISnappable snappable)
@@ -82,7 +73,6 @@ namespace Grid
             if (!snappable.TrySnapToGrid()) return false;
             
             _snappables.Remove(snappable);
-            snappable.UpdateZPosition(_correctPositionZ);
 
             return true;
         }
@@ -92,6 +82,8 @@ namespace Grid
             Piece neighbourPiece = snappable.GetNeighbourPiece();
 
             if (!CanSnap(neighbourPiece)) return false;
+
+            if (snappable.IsAnimating) return false;
 
             if (!snappable.HaveSameRotation(neighbourPiece)) return false;
 

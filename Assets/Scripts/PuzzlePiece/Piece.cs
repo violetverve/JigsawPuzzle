@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using DG.Tweening;
 
 namespace PuzzlePiece
 {
@@ -17,13 +18,22 @@ namespace PuzzlePiece
         private float _snapRadius;
         private Vector3 _boxColliderSize;
         private bool _isEdgePiece;
+        private bool _isAnimating = false;
+        private float _snappingDuration = 0.05f;
+        private float _rotationDuration = 0.2f;
+        private float _rotationAngle = -90;
+        private const int COLLECTED_Z_POSITION = 1;
 
         public static event Action<List<Piece>> OnCollectedNewPieces;
+        public static event Action<ISnappable> OnPieceRotated;
+        public static event Action<ISnappable> OnGridSnapCompleted;
+
         public Transform Transform => transform;
         public Vector3 CorrectPosition => _correctPosition;
         public Vector2Int GridPosition => _gridPosition;
         public PuzzleGroup Group => _group;
         public Draggable Draggable => _draggable;
+        public bool IsAnimating => _isAnimating;
 
         private void Awake()
         {
@@ -52,7 +62,6 @@ namespace PuzzlePiece
             Destroy(_draggable);
             Destroy(_clickable);
 
-            OnCollectedNewPieces?.Invoke(new List<Piece> { this });
             return true;
         }
 
@@ -68,7 +77,18 @@ namespace PuzzlePiece
 
         public void SnapToCorrectPosition()
         {
-            transform.position = _correctPosition;
+            GetSnapToCorrectPositionTween().OnComplete(FinishSnapToCorrectPosition);    
+        }
+
+        public Tween GetSnapToCorrectPositionTween()
+        {
+            return transform.DOMove(_correctPosition, _snappingDuration);
+        }
+
+        private void FinishSnapToCorrectPosition()
+        {
+            OnCollectedNewPieces?.Invoke(new List<Piece> { this });
+            UpdateZPosition(COLLECTED_Z_POSITION);
         }
 
         private bool IsWithinSnapToGridRadius()
@@ -78,11 +98,23 @@ namespace PuzzlePiece
 
         public void SnapToOtherPiecePosition(Piece otherPiece)
         { 
+            _isAnimating = true;
+
+            GetSnapToOtherPiecePositionTween(otherPiece).OnComplete(FinishAmination);
+        }
+
+        public Tween GetSnapToOtherPiecePositionTween(Piece otherPiece)
+        {
             Vector3 distance = _correctPosition - otherPiece.CorrectPosition;
             
             distance = Transform.rotation * distance;
 
-            transform.position = otherPiece.Transform.position + distance;
+            return transform.DOMove(otherPiece.Transform.position + distance, _snappingDuration);
+        }
+
+        private void FinishAmination()
+        {
+            _isAnimating = false;
         }
 
         public ISnappable CombineWith(Piece otherPiece)
@@ -208,7 +240,19 @@ namespace PuzzlePiece
             Vector3 clampedPosition = getClampedPosition(pieceCenter, pieceSize);
             
             Vector3 offset = pieceCenter - transform.position;
-            transform.position = clampedPosition - offset;
+
+            if (transform.position == clampedPosition - offset)
+            {
+                OnGridSnapCompleted?.Invoke(this);
+                return;
+            }
+            
+            transform.DOMove(clampedPosition - offset, _snappingDuration).OnComplete(FinishClampToGrid);
+        }
+
+        private void FinishClampToGrid()
+        {
+            OnGridSnapCompleted?.Invoke(this);
         }
 
         public void AddToCollectedPieces(List<Piece> collectedPieces)
@@ -248,8 +292,19 @@ namespace PuzzlePiece
         # region Rotation
         public void Rotate(Vector3 mouseWorldPos)
         {
-            float rotationAngle = -90;
-            transform.Rotate(0, 0, rotationAngle);
+            if (_isAnimating) return;
+            
+            _isAnimating = true;
+
+            transform.DORotate(transform.eulerAngles + new Vector3(0, 0, _rotationAngle), _rotationDuration)
+                     .OnComplete(FinishRotation);
+        }
+
+        private void FinishRotation()
+        {
+            _isAnimating = false;
+
+            OnPieceRotated?.Invoke(this);
         }
 
         public bool HaveSameRotation(Piece piece)

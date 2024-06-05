@@ -53,13 +53,15 @@ namespace Grid
         private void OnEnable()
         {
             Draggable.OnItemDropped += HandleItemDropped;
-            GridInteractionController.OnISnappableRotated += HandleISnapableRotated;
+            Piece.OnPieceRotated += HandleISnapableRotated;
+            PuzzleGroup.OnGroupRotated += HandleISnapableRotated;
         }
 
         private void OnDisable()
         {
             Draggable.OnItemDropped -= HandleItemDropped;
-            GridInteractionController.OnISnappableRotated -= HandleISnapableRotated;
+            Piece.OnPieceRotated -= HandleISnapableRotated;
+            PuzzleGroup.OnGroupRotated -= HandleISnapableRotated;
         }
 
         private void HandleISnapableRotated(ISnappable snappable)
