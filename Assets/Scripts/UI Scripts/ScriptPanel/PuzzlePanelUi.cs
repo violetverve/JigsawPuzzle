@@ -33,16 +33,6 @@ namespace UIscripts
             _puzzleUIImage.sprite = sprite;
             _puzzleID = puzzleID;
         }
-        /// <summary>
-        /// LoadPanel for buying process
-        /// </summary>
-        /// <param name="sprite"> </param>
-        /// <param name="interactivity"> </param>
-        public void LoadPuzzlePanel(Sprite sprite)
-        {
-            _puzzleUIImage.sprite = sprite;
-        }
-
         public void LoadPuzzlePopUp()
         {
            if(_locked)
@@ -55,6 +45,7 @@ namespace UIscripts
            }
 
         }
+        public int PuzzleID => _puzzleID;
     }
 }
 

@@ -1,3 +1,4 @@
+using Grid;
 using PuzzleData;
 using PuzzlePiece;
 using System.Collections.Generic;
@@ -11,18 +12,16 @@ namespace PuzzleData
         //to find then SO of puzzle
         private int _id;
         //how big is our puzzle
-        private int _height;
-        private int _width;
+        private GridSO _gridSize;
         //ever puzzle piece will have their own id(column and row) and rotation 
         private List<Vector3> _uncompletedPieces;       
         //remember piece configuration of puzzle
         private PieceConfiguration[,] _pieceConfiguration;
 
-        public PuzzleSavingData(int id, int height, int width/*, PieceConfiguration[,] pieceConfigurations*/)
+        public PuzzleSavingData(int id, GridSO gridSize/*, PieceConfiguration[,] pieceConfigurations*/)
         {
             _id = id;
-            _height = height;
-            _width = width;
+            _gridSize = gridSize;
             //_pieceConfiguration = pieceConfigurations;
         }
         /// <summary>
@@ -35,8 +34,7 @@ namespace PuzzleData
         }
 
         public int ID => _id;
-        public int Height => _height;
-        public int Width => _width;
+        public GridSO Grid => _gridSize;
         public List<Vector3> UncompletedPieces => _uncompletedPieces;
         public PieceConfiguration[,] PieceConfigurations => _pieceConfiguration;
     }

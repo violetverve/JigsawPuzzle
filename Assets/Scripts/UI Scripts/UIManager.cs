@@ -6,6 +6,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Player;
 using System;
+using PuzzleData;
+using GameManagement;
+using Grid;
+using UnityEngine.SceneManagement;
 
 namespace UIscripts
 {
@@ -31,16 +35,27 @@ namespace UIscripts
         [SerializeField] private PuzzlePanelUI _puzzleToBuyPopUpObject;
 
         [Space]
-        [SerializeField] private TextMeshProUGUI _coinsText;
+        [SerializeField] private List<TextMeshProUGUI> _coinsText;
 
         [Space]
         [SerializeField] private GameObject _puzzleLoaderObject;
-        [SerializeField] private Image _puzzleToChoose;
+        [SerializeField] private PuzzlePanelUI _puzzleToChoose;
 
         public static Action<GameObject> OnCrossClick;
         public static Action<Button> OnPanelsChange;
         public static Action<int> OnLockedPanelClick;
         public static Action<int> OnPanelClick;
+
+        private PuzzleSO _currentPuzzleSO;
+
+        [SerializeField] private GridSOList _diffucultiesList;
+        private GridSO _currentGridSO;
+
+        [Space]
+        [Header("Scroll")]
+
+        [SerializeField] private GameObject _scrollParent;
+        [SerializeField] private ScrollElement _scrollPrefab;
 
         private void Awake()
         {
@@ -48,17 +63,21 @@ namespace UIscripts
             OnCrossClick += CloseWindow;
             OnLockedPanelClick += LoadBuyPanelPopUp;
             OnPanelClick += LoadPuzzleDifficultyChooser;
+            PuzzlePrepareUI.ScrollItemChanged += SetCurrentGridSO;
+        }
+        private void Start()
+        {
             LoadAllPuzzles();
             LoadPlayerPuzzles();
             LoadCoins();
-            
+            LoadDifficulties();
+            SetCurrentGridSO(0);
         }
 
         public void LoadAllPuzzles()
         {
             _puzzles.List.ForEach(puzzle => Instantiate(_puzzlePrefab, _puzzleParent.transform).LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.IsLocked, puzzle.Id));
         }
-
         public void LoadPlayerPuzzles()
         {
             if (PlayerData.Instance.SavedPuzzles != null)
@@ -74,6 +93,18 @@ namespace UIscripts
                     }
                 }
             }            
+        }
+        public void StartPuzzle()
+        {
+            PlayerData.Instance.SetCurrentPuzzle(new PuzzleSavingData(_currentPuzzleSO.Id, _currentGridSO));
+            SceneManager.LoadScene("Main");
+        }
+        private void LoadDifficulties()
+        {
+            for (int i = 0; i < _diffucultiesList.GridDiffucultiesList.Count; i++)
+            {
+                Instantiate(_scrollPrefab, _scrollParent.transform).LoadScrollElement(_diffucultiesList.GridDiffucultiesList[i], i);
+            }
         }
 
         #region MenuButtonsInteraction
@@ -101,7 +132,7 @@ namespace UIscripts
             {
                 if(puzzleID == puzzle.Id)
                 {
-                    _puzzleToBuyPopUpObject.LoadPuzzlePanel(puzzle.PuzzleImage);
+                    _puzzleToBuyPopUpObject.LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.Id);
                     _puzzleToBuyPopUp.SetActive(true);
                     break;
                 }
@@ -113,11 +144,16 @@ namespace UIscripts
             {
                 if (puzzleID == puzzle.Id)
                 {
-                    _puzzleToChoose.sprite = puzzle.PuzzleImage;
+                    _puzzleToChoose.LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.Id);
                     _puzzleLoaderObject.SetActive(true);
+                    _currentPuzzleSO = puzzle;
                     break;
                 }
             }
+        }
+        private void SetCurrentGridSO(int index)
+        {
+            _currentGridSO = _diffucultiesList.GridDiffucultiesList[index];
         }
         #endregion
 
@@ -125,10 +161,11 @@ namespace UIscripts
 
         public void LoadCoins()
         {
-            _coinsText.text = PlayerData.Instance.CoinsAmount.ToString();
+            _coinsText.ForEach(text => text.text = PlayerData.Instance.CoinsAmount.ToString());
         }
 
         #endregion
+
     }
 }
 
