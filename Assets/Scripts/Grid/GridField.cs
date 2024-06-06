@@ -1,5 +1,6 @@
 using UnityEngine;
 using PuzzlePiece;
+using UI.GameScene;
 
 namespace Grid
 {

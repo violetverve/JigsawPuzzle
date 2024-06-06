@@ -1,7 +1,8 @@
-using GameManagement;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UI.GameScene;
+using GameManagement;
 
 namespace Grid
 {   
@@ -21,23 +22,29 @@ namespace Grid
 
         private void OnEnable()
         {
-            LevelManager.LoadCurrentLevel += GenerateGrid;
+            LevelManager.LevelStarted += HandleLevelStarted;
         }
 
         private void OnDisable()
         {
-            LevelManager.LoadCurrentLevel -= GenerateGrid;
+            LevelManager.LevelStarted -= HandleLevelStarted;
         }
 
-        private void GenerateGrid(GridSO gridSO, Material material)
+        private void HandleLevelStarted(Level level)
         {
-            _gridSO = gridSO;
+            GenerateGrid(level);
+        }
+
+        private void GenerateGrid(Level level)
+        {
+            _gridSO = level.GridSO;
 
             _gridField.Initialize(_gridSO);
 
-            _gridGenerator.InitializeGrid(_gridSO, material);
+            _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleMaterial);
 
-            _scrollViewController.PopulateScrollView(_gridGenerator.GeneratedPieces);
+            _scrollViewController.PopulateScrollView(_gridGenerator.GeneratedPieces, level.RotationEnabled);
+
         }
 
     }

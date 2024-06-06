@@ -963,6 +963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _puzzleList: {fileID: 11400000, guid: 0439993a7929dcb4f82c6187a4866a8b, type: 2}
   _progressManager: {fileID: 110429432}
+  _debugLevel: {fileID: 2110491225}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
