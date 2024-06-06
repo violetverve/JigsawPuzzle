@@ -12,6 +12,8 @@ namespace Grid
         [SerializeField] private ScrollViewController _scrollViewController;
         private List<ISnappable> _snappables = new List<ISnappable>();
         private List<Piece> _collectedPieces = new List<Piece>();
+        private bool _rotationEnabled;
+
         public static event Action<int> OnProgressUpdate;
         public List<Piece> CollectedPieces => _collectedPieces;
 
@@ -38,8 +40,14 @@ namespace Grid
             PuzzleGroup.OnGridSnapCompleted -= HandleItemDropped;
         }
 
+        public void SetRotationEnabled(bool rotationEnabled)
+        {
+            _rotationEnabled = rotationEnabled;
+        }
+
         private void HandleItemClicked(ISnappable snappable, Vector3 mousePosition)
         {
+            if (!_rotationEnabled) return;
             snappable.Rotate(mousePosition);
         }
 

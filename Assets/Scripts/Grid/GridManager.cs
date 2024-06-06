@@ -43,6 +43,8 @@ namespace Grid
 
             _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleMaterial);
 
+            _gridInteractionController.SetRotationEnabled(level.RotationEnabled);
+
             _scrollViewController.PopulateScrollView(_gridGenerator.GeneratedPieces, level.RotationEnabled);
 
         }
