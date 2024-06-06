@@ -17,11 +17,18 @@ namespace Grid
         public GridField GridField => _gridField;
 
         public ScrollViewController ScrollViewController => _scrollViewController;
+        
 
-        public void Awake()
+        private void OnEnable()
         {
             LevelManager.LoadCurrentLevel += GenerateGrid;
         }
+
+        private void OnDisable()
+        {
+            LevelManager.LoadCurrentLevel -= GenerateGrid;
+        }
+
         private void GenerateGrid(GridSO gridSO, Material material)
         {
             _gridSO = gridSO;

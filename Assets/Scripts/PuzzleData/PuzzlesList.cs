@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.U2D.Aseprite;
 using UnityEngine;
+using System.Linq;
 
     [CreateAssetMenu(fileName = "PuzzlesList", menuName = "Create SO/Puzzles List")]
     public class PuzzleList : ScriptableObject
@@ -12,6 +13,10 @@ using UnityEngine;
 
         public List<PuzzleSO> List => _puzzleList;
 
+        public PuzzleSO GetPuzzleByID(int id)
+        {
+            return _puzzleList.FirstOrDefault(puzzle => puzzle.Id == id);
+        }
     }
 
 

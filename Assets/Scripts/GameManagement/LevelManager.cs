@@ -15,20 +15,23 @@ namespace GameManagement
         [SerializeField] private PuzzleList _puzzleList;
         [SerializeField] private ProgressManager _progressManager;
 
-        private void Awake()
-        {           
-
-        }
         private void Start()
         {
-            StartLevel(PlayerData.Instance.CurrentPuzzle.Grid, FindPuzzle.FindPuzzleWithID(PlayerData.Instance.CurrentPuzzle.ID, _puzzleList));
-            _progressManager.SetNumberOfPieces(PlayerData.Instance.CurrentPuzzle.Grid.Width * PlayerData.Instance.CurrentPuzzle.Grid.Height);
+            PuzzleSavingData currentPuzzle = PlayerData.Instance.CurrentPuzzle;
+
+            _progressManager.SetNumberOfPieces(currentPuzzle.Grid.Area);
+
+            PuzzleSO currentPuzzleSO = _puzzleList.GetPuzzleByID(currentPuzzle.ID);
+
+            StartLevel(currentPuzzle.Grid, currentPuzzleSO);
         }
+
         #region PuzzlePlay
         public void StartLevel(GridSO gridSO, PuzzleSO puzzleSO)
         {
             LoadCurrentLevel?.Invoke(gridSO, puzzleSO.PuzzleMaterial);
         }
         #endregion
+
     }
 }

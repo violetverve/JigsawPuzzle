@@ -69,7 +69,7 @@ public class ScrollElement : MonoBehaviour
     }
     public void LoadScrollElement(GridSO difficultyGrid, int scrollnum)
     {
-        _scrollElementText.text = difficultyGrid.PieceNums().ToString();
+        _scrollElementText.text = difficultyGrid.Area.ToString();
         _scrollElementNumber = scrollnum;
     }
 
