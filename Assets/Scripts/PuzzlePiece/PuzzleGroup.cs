@@ -15,6 +15,9 @@ namespace PuzzlePiece
         private List<Piece> _pieces = new List<Piece>();
         private bool _isAnimating = false;
         private const int COLLECTED_Z_POSITION = 1;
+        private float _snappingDuration = 0.05f;
+        private float _rotationDuration = 0.2f;
+        private float _rotationAngle = -90;
 
         public static event Action<List<Piece>> OnCollectedNewPieces;
         public static event Action<ISnappable> OnGroupRotated;
@@ -97,6 +100,8 @@ namespace PuzzlePiece
         {
             OnCollectedNewPieces.Invoke(_pieces);
             UpdateZPosition(COLLECTED_Z_POSITION);
+
+            StartMaterialAnimation();
         }
 
         public ISnappable CombineWith(Piece otherPiece)
@@ -146,12 +151,14 @@ namespace PuzzlePiece
                 sequence.Join(moveTween);
             }
 
-            sequence.OnComplete(FinishAnimation);
+            sequence.OnComplete(FinishSnapGroupAnimation);
         }
 
-        private void FinishAnimation()
+        private void FinishSnapGroupAnimation()
         {
             _isAnimating = false;
+
+            StartMaterialAnimation();
         }
 
         public void AddPieceToGroup(Piece piece)
@@ -170,7 +177,6 @@ namespace PuzzlePiece
             }
 
             piece.SetGroup(this);
-
             piece.SetupForGroup();
 
             _pieces.Add(piece);
@@ -220,7 +226,8 @@ namespace PuzzlePiece
                 return;
             } 
             
-            transform.DOMove(clampedPosition - offset, 0.05f).OnComplete(FinishClampToGrid);
+            transform.DOMove(clampedPosition - offset, _snappingDuration)
+                     .OnComplete(FinishClampToGrid);
         }
 
         private void FinishClampToGrid()
@@ -255,29 +262,20 @@ namespace PuzzlePiece
 
             Piece piece = GetPieceAtMousePosition(mousePosition);
 
-            if (piece == null)
-            {
-                return;
-            }
-
-            float rotationAngle = -90;
-            float duration = 0.2f;
-
             _isAnimating = true;
 
             Sequence sequence = DOTween.Sequence();
 
             foreach (Transform child in transform)
             {
-                Vector3 newPosition = RotatePointAroundPivot(child.position, piece.transform.position, rotationAngle);
-                Vector3[] path = GetCircularPath(child.position, piece.transform.position, rotationAngle, 5);
+                Vector3 newPosition = RotatePointAroundPivot(child.position, piece.transform.position, _rotationAngle);
+                Vector3[] path = GetCircularPath(child.position, piece.transform.position, _rotationAngle, 5);
 
-                Tween moveTween = child.DOPath(path, duration, PathType.CatmullRom);
-                Tween rotateTween = child.DORotate(child.eulerAngles + new Vector3(0, 0, rotationAngle), duration);
+                Tween moveTween = child.DOPath(path, _rotationDuration, PathType.CatmullRom);
+                Tween rotateTween = child.DORotate(child.eulerAngles + new Vector3(0, 0, _rotationAngle), _rotationDuration);
 
                 sequence.Insert(0, moveTween);
                 sequence.Insert(0, rotateTween);
-
             }
 
             sequence.OnComplete(FinishRotation);
@@ -322,6 +320,11 @@ namespace PuzzlePiece
         }
 
         # endregion
+
+        private void StartMaterialAnimation()
+        {
+            _pieces.ForEach(piece => piece.StartMaterialAnimation());
+        }
 
     }
 }

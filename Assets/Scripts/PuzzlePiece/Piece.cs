@@ -13,6 +13,7 @@ namespace PuzzlePiece
         private Draggable _draggable;
         private Clickable _clickable;
         private PuzzleGroup _group;
+        private MaterialBloom _materialBloom;
         private BoxCollider2D _boxCollider;
         private float _snapDistance;
         private float _snapRadius;
@@ -41,6 +42,7 @@ namespace PuzzlePiece
             gameObject.AddComponent<RectTransform>();
             _draggable = gameObject.AddComponent<Draggable>();
             _clickable = gameObject.AddComponent<Clickable>();
+            _materialBloom = gameObject.AddComponent<MaterialBloom>();
         }
 
         public void Initialize(Vector3 correctPosition, Vector2Int gridPosition, bool isEdgePiece)
@@ -89,6 +91,8 @@ namespace PuzzlePiece
         {
             OnCollectedNewPieces?.Invoke(new List<Piece> { this });
             UpdateZPosition(COLLECTED_Z_POSITION);
+
+            StartMaterialAnimation();
         }
 
         private bool IsWithinSnapToGridRadius()
@@ -115,6 +119,8 @@ namespace PuzzlePiece
         private void FinishAmination()
         {
             _isAnimating = false;
+
+            StartMaterialAnimation();
         }
 
         public ISnappable CombineWith(Piece otherPiece)
@@ -330,6 +336,11 @@ namespace PuzzlePiece
         }
 
         # endregion
-  
+
+
+        public void StartMaterialAnimation()
+        {
+            _materialBloom.AnimateMaterial();
+        }
     }
 }
