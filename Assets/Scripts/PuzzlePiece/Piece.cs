@@ -121,6 +121,8 @@ namespace PuzzlePiece
             _isAnimating = false;
 
             StartMaterialAnimation();
+
+            // check if the piece is in correct position after combining
         }
 
         public ISnappable CombineWith(Piece otherPiece)

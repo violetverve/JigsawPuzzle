@@ -91,7 +91,7 @@ namespace Grid
             Piece neighbourPiece = snappable.GetNeighbourPiece();
 
             if (!CanSnap(neighbourPiece)) return false;
-
+  
             if (snappable.IsAnimating) return false;
 
             if (!snappable.HaveSameRotation(neighbourPiece)) return false;
@@ -113,6 +113,7 @@ namespace Grid
         
             OnProgressUpdate?.Invoke(_collectedPieces.Count);
         }
+
 
         private bool CanSnap(Piece piece)
         {

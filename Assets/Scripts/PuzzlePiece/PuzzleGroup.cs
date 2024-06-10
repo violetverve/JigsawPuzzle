@@ -13,6 +13,7 @@ namespace PuzzlePiece
         private Clickable _clickable;
         private CompositeCollider2D _compositeCollider;
         private List<Piece> _pieces = new List<Piece>();
+        private List<Piece> _lastPieces = new List<Piece>();
         private bool _isAnimating = false;
         private const int COLLECTED_Z_POSITION = 1;
         private float _snappingDuration = 0.05f;
@@ -101,7 +102,7 @@ namespace PuzzlePiece
             OnCollectedNewPieces.Invoke(_pieces);
             UpdateZPosition(COLLECTED_Z_POSITION);
 
-            StartMaterialAnimation();
+            StartMaterialAnimation(_pieces);
         }
 
         public ISnappable CombineWith(Piece otherPiece)
@@ -143,6 +144,8 @@ namespace PuzzlePiece
         {
             _isAnimating = true;
 
+            _lastPieces = _pieces.ToList();
+
             Sequence sequence = DOTween.Sequence();
 
             foreach (Piece piece in _pieces)
@@ -157,8 +160,8 @@ namespace PuzzlePiece
         private void FinishSnapGroupAnimation()
         {
             _isAnimating = false;
-
-            StartMaterialAnimation();
+            
+            StartMaterialAnimation(_lastPieces);
         }
 
         public void AddPieceToGroup(Piece piece)
@@ -321,9 +324,9 @@ namespace PuzzlePiece
 
         # endregion
 
-        private void StartMaterialAnimation()
+        private void StartMaterialAnimation(List<Piece> pieces)
         {
-            _pieces.ForEach(piece => piece.StartMaterialAnimation());
+            pieces.ForEach(piece => piece.StartMaterialAnimation());
         }
 
     }
