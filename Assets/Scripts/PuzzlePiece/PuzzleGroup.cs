@@ -20,9 +20,10 @@ namespace PuzzlePiece
         private float _rotationDuration = 0.2f;
         private float _rotationAngle = -90;
 
-        public static event Action<List<Piece>> OnCollectedNewPieces;
         public static event Action<ISnappable> OnGroupRotated;
         public static event Action<ISnappable> OnGridSnapCompleted;
+        public static event Action<ISnappable> OnGroupSnappedToGrid;
+        public static event Action<ISnappable> OnCombinedWithOther;
 
         public Transform Transform => transform;
         public List<Piece> Pieces => _pieces;
@@ -73,8 +74,11 @@ namespace PuzzlePiece
             return group;
         }
 
+        # region SnapToGrid
         public bool TrySnapToGrid()
         {
+            if (IsSnappedToGrid()) return false;
+
             bool snap = _pieces.Any(piece => piece.CanSnapToGrid()); 
 
             if (snap)
@@ -87,8 +91,7 @@ namespace PuzzlePiece
                     sequence.Join(moveTween);
                 }
 
-                Destroy(_draggable);
-                Destroy(_clickable);
+                DestroyInteractiveComponents();
 
                 sequence.OnComplete(FinishSnapToCorrectPosition);
             }
@@ -99,15 +102,30 @@ namespace PuzzlePiece
 
         private void FinishSnapToCorrectPosition()
         {
-            OnCollectedNewPieces.Invoke(_pieces);
             UpdateZPosition(COLLECTED_Z_POSITION);
 
-            StartMaterialAnimation(_pieces);
+            OnGroupSnappedToGrid?.Invoke(this);
         }
+
+        public bool IsSnappedToGrid()
+        {
+            return _draggable == null;
+        }
+
+        private void DestroyInteractiveComponents()
+        {
+            Destroy(_draggable);
+            Destroy(_clickable);
+
+            _draggable = null;
+            _clickable = null;
+        }
+
+        # endregion
 
         public ISnappable CombineWith(Piece otherPiece)
         {
-            SnapGroupPosition(otherPiece);
+            SnapGroupPositionToOtherPiece(otherPiece);
 
             PuzzleGroup neighbourGroup = otherPiece.Group;
 
@@ -140,11 +158,13 @@ namespace PuzzlePiece
             return null;
         }
 
-        private void SnapGroupPosition(Piece referencePiece)
+        private void SnapGroupPositionToOtherPiece(Piece referencePiece)
         {
-            _isAnimating = true;
+            if (IsSnappedToGrid()) return;
+            
+            if (_isAnimating) return;
 
-            _lastPieces = _pieces.ToList();
+            _isAnimating = true;
 
             Sequence sequence = DOTween.Sequence();
 
@@ -160,23 +180,22 @@ namespace PuzzlePiece
         private void FinishSnapGroupAnimation()
         {
             _isAnimating = false;
-            
-            StartMaterialAnimation(_lastPieces);
+
+            if (IsSnappedToGrid())
+            {
+                UpdateZPosition(COLLECTED_Z_POSITION);
+            }
+
+            OnCombinedWithOther?.Invoke(this);
         }
 
         public void AddPieceToGroup(Piece piece)
         {
             if (piece.Draggable == null)
             {
-                Destroy(_draggable);
-                Destroy(_clickable);
-                OnCollectedNewPieces.Invoke(_pieces);
-                UpdateZPosition(COLLECTED_Z_POSITION);
-            }
+                DestroyInteractiveComponents();
 
-            if (_draggable == null)
-            {
-                OnCollectedNewPieces.Invoke(new List<Piece> { piece });
+                UpdateZPosition(COLLECTED_Z_POSITION);
             }
 
             piece.SetGroup(this);
@@ -195,9 +214,7 @@ namespace PuzzlePiece
         {
             if (otherGroup.Draggable == null)
             {
-                Destroy(_draggable);
-                Destroy(_clickable);
-                OnCollectedNewPieces.Invoke(_pieces);
+                DestroyInteractiveComponents();
             }
 
             UpdatePiecesGroup(otherGroup.Pieces);
@@ -240,10 +257,7 @@ namespace PuzzlePiece
 
         public void AddToCollectedPieces(List<Piece> collectedPieces)
         {
-            foreach (Piece piece in _pieces)
-            {
-                collectedPieces.Add(piece);
-            }
+            _pieces.ForEach(piece => collectedPieces.Add(piece));
         }
 
         public void UpdateZPosition(int zPosition)
@@ -252,13 +266,12 @@ namespace PuzzlePiece
             position.z = zPosition;
             transform.position = position;
 
-            foreach (Piece piece in _pieces)
-            {
-                piece.UpdateZPosition(zPosition);
-            }
+            _pieces.ForEach(piece => piece.UpdateZPosition(zPosition));
         }
 
+
         # region Rotation
+
         public void Rotate(Vector3 mousePosition)
         {
             if (_isAnimating) return;
@@ -323,11 +336,5 @@ namespace PuzzlePiece
         }
 
         # endregion
-
-        private void StartMaterialAnimation(List<Piece> pieces)
-        {
-            pieces.ForEach(piece => piece.StartMaterialAnimation());
-        }
-
     }
 }

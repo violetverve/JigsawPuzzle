@@ -1511,7 +1511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gridSO: {fileID: 11400000, guid: 5659531d58d088d4cbfe8123ebd4b9e7, type: 2}
   _puzzleSO: {fileID: 11400000, guid: 6dc373b797cee6347bedb25f7e4748b6, type: 2}
-  _rotationEnabled: 0
+  _rotationEnabled: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

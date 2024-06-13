@@ -4,6 +4,7 @@ using UnityEngine;
 using PuzzlePiece;
 using System;
 using UI.GameScene;
+using System.Linq;
 
 namespace Grid
 {
@@ -13,6 +14,7 @@ namespace Grid
         private List<ISnappable> _snappables = new List<ISnappable>();
         private List<Piece> _collectedPieces = new List<Piece>();
         private bool _rotationEnabled;
+        private List<Piece> _corePieces = new List<Piece>();
 
         public static event Action<int> OnProgressUpdate;
         public List<Piece> CollectedPieces => _collectedPieces;
@@ -21,23 +23,56 @@ namespace Grid
         private void OnEnable()
         {
             Draggable.OnItemPickedUp += HandleItemPickedUp;
-            PuzzleGroup.OnCollectedNewPieces += HandleCollectedNewPieces;
-            Piece.OnCollectedNewPieces += HandleCollectedNewPieces;
             Clickable.OnItemClicked += HandleItemClicked;
 
             Piece.OnGridSnapCompleted += HandleItemDropped;
             PuzzleGroup.OnGridSnapCompleted += HandleItemDropped;
+
+            Piece.OnPieceSnappedToGrid += HandleSnapedToGrid;
+            PuzzleGroup.OnGroupSnappedToGrid += HandleSnapedToGrid;
+
+            Piece.OnCombinedWithOther += HandleCombinedWithOther;
+            PuzzleGroup.OnCombinedWithOther += HandleCombinedWithOther;
         }
 
         private void OnDisable()
         {
             Draggable.OnItemPickedUp -= HandleItemPickedUp;
-            PuzzleGroup.OnCollectedNewPieces -= HandleCollectedNewPieces;
-            Piece.OnCollectedNewPieces -= HandleCollectedNewPieces;
             Clickable.OnItemClicked -= HandleItemClicked;
 
             Piece.OnGridSnapCompleted -= HandleItemDropped;
             PuzzleGroup.OnGridSnapCompleted -= HandleItemDropped;
+
+            Piece.OnPieceSnappedToGrid -= HandleSnapedToGrid;
+            PuzzleGroup.OnGroupSnappedToGrid -= HandleSnapedToGrid;
+
+            Piece.OnCombinedWithOther -= HandleCombinedWithOther;
+            PuzzleGroup.OnCombinedWithOther -= HandleCombinedWithOther;
+        }
+
+        private void HandleCombinedWithOther(ISnappable snappable)
+        {
+            TryCombineWithOther(snappable, snappable);
+        }
+
+        private void HandleSnapedToGrid(ISnappable snappable)
+        {
+            UpdateCompletedPieces(snappable.Pieces);
+            
+            _corePieces = new List<Piece>(snappable.Pieces);
+
+            bool combinedWithOther = TryCombineWithOther(snappable);
+
+            if (!combinedWithOther)
+            {
+                StartMaterialAnimation(snappable.Pieces, snappable.Pieces);
+            }
+        }
+
+        private void UpdateCompletedPieces(List<Piece> pieces)
+        {
+            _collectedPieces.AddRange(pieces);
+            OnProgressUpdate?.Invoke(_collectedPieces.Count);
         }
 
         public void SetRotationEnabled(bool rotationEnabled)
@@ -60,7 +95,13 @@ namespace Grid
         private void HandleItemDropped(ISnappable snappable)
         {
             if (TrySnapToGrid(snappable)) return;
-            TryCombineWithOther(snappable);
+
+            _corePieces = new List<Piece>(snappable.Pieces);
+
+            if (SingleTryCombineWithOther(snappable) != null && snappable.IsSnappedToGrid())
+            {
+                UpdateCompletedPieces(_corePieces);
+            }
         }
 
         private void MoveToTop(ISnappable snappable)
@@ -86,25 +127,71 @@ namespace Grid
             return true;
         }
 
-        private bool TryCombineWithOther(ISnappable snappable)
+        private bool TryCombineWithOther(ISnappable snappable, ISnappable previouslyCombined = null)
+        {
+            var stack = new Stack<ISnappable>(new[] { snappable });
+            var combinedSuccessfully = false;
+            var combined = previouslyCombined;
+        
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                var newCombined = SingleTryCombineWithOther(current);
+        
+                if (combined != null && newCombined == null)
+                {
+                    StartMaterialAnimation(_corePieces, combined.Pieces);
+                    continue;
+                }
+        
+                if (newCombined == null) continue;
+        
+                combined = newCombined;
+                combinedSuccessfully = true;
+        
+                if (!combined.IsSnappedToGrid())
+                {
+                    StartMaterialAnimation(_corePieces, combined.Pieces);
+                    continue;
+                }
+        
+                combined.UpdateZPosition(1);
+                stack.Push(combined);
+            }
+        
+            return combinedSuccessfully;
+        }
+
+        private ISnappable SingleTryCombineWithOther(ISnappable snappable)
         {
             Piece neighbourPiece = snappable.GetNeighbourPiece();
 
-            if (!CanSnap(neighbourPiece)) return false;
-  
-            if (snappable.IsAnimating) return false;
-
-            if (!snappable.HaveSameRotation(neighbourPiece)) return false;
-
+            if (!CanSnap(neighbourPiece) || !snappable.HaveSameRotation(neighbourPiece)){
+                return null;
+            }
             _snappables.Remove(snappable);
             _snappables.Remove(neighbourPiece);
             _snappables.Remove(neighbourPiece.Group);
 
             ISnappable combined = snappable.CombineWith(neighbourPiece);
 
-            _snappables.Add(combined);
+            if (!combined.IsSnappedToGrid())
+            {
+                _snappables.Add(combined);
+            }
 
-            return true;
+            return combined;
+        }
+
+        private void StartMaterialAnimation(List<Piece> corePieces, List<Piece> wholeGroup)
+        {
+            List<Piece> neighbourPieces = wholeGroup
+                .Where(piece => !corePieces.Contains(piece) && 
+                                corePieces.Any(corePiece => piece != corePiece && piece.IsNeighbour(corePiece.GridPosition)))
+                .ToList();
+
+            corePieces.ForEach(piece => piece.StartMaterialAnimation(1f));
+            neighbourPieces.ForEach(piece => piece.StartMaterialAnimation(0.5f));
         }
 
         private void HandleCollectedNewPieces(List<Piece> pieces)
@@ -113,7 +200,6 @@ namespace Grid
         
             OnProgressUpdate?.Invoke(_collectedPieces.Count);
         }
-
 
         private bool CanSnap(Piece piece)
         {

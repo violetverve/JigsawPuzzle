@@ -5,9 +5,10 @@ namespace PuzzlePiece {
     public interface ISnappable
     {
         Transform Transform { get; }
-        bool IsAnimating { get; }
+        List<Piece> Pieces { get; }
         bool TrySnapToGrid();
         Piece GetNeighbourPiece();
+        bool IsSnappedToGrid();
         ISnappable CombineWith(Piece otherPiece);
         void UpdateZPosition(int zPosition);
         void ClampToGrid(GetClampedPositionDelegate getClampedPosition, bool mouseOnScrollView);

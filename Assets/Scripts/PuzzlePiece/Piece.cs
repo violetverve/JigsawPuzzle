@@ -25,9 +25,10 @@ namespace PuzzlePiece
         private float _rotationAngle = -90;
         private const int COLLECTED_Z_POSITION = 1;
 
-        public static event Action<List<Piece>> OnCollectedNewPieces;
         public static event Action<ISnappable> OnPieceRotated;
         public static event Action<ISnappable> OnGridSnapCompleted;
+        public static event Action<ISnappable> OnPieceSnappedToGrid;
+        public static event Action<ISnappable> OnCombinedWithOther;
 
         public Transform Transform => transform;
         public Vector3 CorrectPosition => _correctPosition;
@@ -35,6 +36,7 @@ namespace PuzzlePiece
         public PuzzleGroup Group => _group;
         public Draggable Draggable => _draggable;
         public bool IsAnimating => _isAnimating;
+        public List<Piece> Pieces => new List<Piece> { this };
 
         private void Awake()
         {
@@ -56,13 +58,15 @@ namespace PuzzlePiece
             _snapRadius = (_snapDistance / 2) * 0.95f;
         }
 
+
+        # region SnapToGrid
         public bool TrySnapToGrid() 
         {
+            if (IsSnappedToGrid()) return false;
             if (!CanSnapToGrid()) return false;
 
             SnapToCorrectPosition();
-            Destroy(_draggable);
-            Destroy(_clickable);
+            DestroyInteractiveComponents();
 
             return true;
         }
@@ -78,7 +82,7 @@ namespace PuzzlePiece
         }
 
         public void SnapToCorrectPosition()
-        {
+        {   
             GetSnapToCorrectPositionTween().OnComplete(FinishSnapToCorrectPosition);    
         }
 
@@ -89,10 +93,9 @@ namespace PuzzlePiece
 
         private void FinishSnapToCorrectPosition()
         {
-            OnCollectedNewPieces?.Invoke(new List<Piece> { this });
             UpdateZPosition(COLLECTED_Z_POSITION);
 
-            StartMaterialAnimation();
+            OnPieceSnappedToGrid?.Invoke(this);            
         }
 
         private bool IsWithinSnapToGridRadius()
@@ -100,11 +103,22 @@ namespace PuzzlePiece
             return Vector2.Distance(transform.position, _correctPosition) < _snapRadius / 2f;
         }
 
+        public bool IsSnappedToGrid()
+        {
+            if (_group != null) return _group.IsSnappedToGrid();
+            return _draggable == null;
+        }
+
+        # endregion
+
         public void SnapToOtherPiecePosition(Piece otherPiece)
         { 
+            if (IsSnappedToGrid()) return;
+            if (_isAnimating) return;
+
             _isAnimating = true;
 
-            GetSnapToOtherPiecePositionTween(otherPiece).OnComplete(FinishAmination);
+            GetSnapToOtherPiecePositionTween(otherPiece).OnComplete(FinishSnapToOtherPieceAnimation);
         }
 
         public Tween GetSnapToOtherPiecePositionTween(Piece otherPiece)
@@ -116,13 +130,11 @@ namespace PuzzlePiece
             return transform.DOMove(otherPiece.Transform.position + distance, _snappingDuration);
         }
 
-        private void FinishAmination()
+        private void FinishSnapToOtherPieceAnimation()
         {
             _isAnimating = false;
 
-            StartMaterialAnimation();
-
-            // check if the piece is in correct position after combining
+            OnCombinedWithOther?.Invoke(_group);
         }
 
         public ISnappable CombineWith(Piece otherPiece)
@@ -138,6 +150,15 @@ namespace PuzzlePiece
             } 
 
             return PuzzleGroup.CreateGroup(new List<Piece> { this, otherPiece });
+        }
+
+        private void DestroyInteractiveComponents()
+        {
+            Destroy(_draggable);
+            Destroy(_clickable);
+
+            _draggable = null;
+            _clickable = null;
         }
 
         # region Neighbours
@@ -188,16 +209,17 @@ namespace PuzzlePiece
 
         private bool IsNeighbourToCombine(Piece piece)
         {
-            return IsNeighbour(piece.GridPosition) && IsInSnappableRange(piece) && IsAlignedWithGrid(piece);
+            return IsNeighbour(piece.GridPosition) && IsInCombinableRange(piece) && IsAlignedWithGrid(piece);
         }
 
+        // neighbours to combine
         public Piece GetNeighbourPiece()
         {
             List<Piece> neighbours = GetNeighbours();
             return neighbours.Count > 0 ? neighbours[0] : null;
         }
 
-        private bool IsNeighbour(Vector2Int otherGridPosition)
+        public bool IsNeighbour(Vector2Int otherGridPosition)
         {
             return Mathf.Abs(_gridPosition.x - otherGridPosition.x) == 1 && _gridPosition.y == otherGridPosition.y ||
                    Mathf.Abs(_gridPosition.y - otherGridPosition.y) == 1 && _gridPosition.x == otherGridPosition.x;
@@ -207,7 +229,7 @@ namespace PuzzlePiece
         
         # region CombiningConditions
 
-        private bool IsInSnappableRange(Piece piece)
+        private bool IsInCombinableRange(Piece piece)
         {
             float dist = Vector2.Distance(transform.position, piece.Transform.position);
             return dist < _snapDistance && dist > _snapDistance / 2;
@@ -277,8 +299,7 @@ namespace PuzzlePiece
         public void SetupForGroup()
         {
             _boxCollider.usedByComposite = true;
-            Destroy(_draggable);
-            Destroy(_clickable);
+            DestroyInteractiveComponents();
         }
 
         public void UpdateZPosition(int zPosition)
@@ -339,10 +360,9 @@ namespace PuzzlePiece
 
         # endregion
 
-
-        public void StartMaterialAnimation()
+        public void StartMaterialAnimation(float bloomIntensityCoefficient = 1)
         {
-            _materialBloom.AnimateMaterial();
+            _materialBloom.AnimateMaterial(bloomIntensityCoefficient);
         }
     }
 }
