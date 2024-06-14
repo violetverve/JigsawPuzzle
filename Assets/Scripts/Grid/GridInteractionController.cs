@@ -84,6 +84,11 @@ namespace Grid
         private void HandleItemClicked(ISnappable snappable, Vector3 mousePosition)
         {
             if (!_rotationEnabled) return;
+            if (snappable is Piece piece)
+            {
+                if (IsInScrollView(piece)) return;
+            }
+
             snappable.Rotate(mousePosition);
         }
 
