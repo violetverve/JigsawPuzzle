@@ -36,6 +36,7 @@ namespace PuzzlePiece
         public PuzzleGroup Group => _group;
         public Draggable Draggable => _draggable;
         public bool IsAnimating => _isAnimating;
+        public bool IsEdgePiece => _isEdgePiece;
         public List<Piece> Pieces => new List<Piece> { this };
 
         private void Awake()
@@ -76,9 +77,10 @@ namespace PuzzlePiece
             return _isEdgePiece && IsWithinSnapToGridRadius() && IsInCorrectRotation();
         }
 
-        private bool IsInCorrectRotation()
+        public bool IsInCorrectRotation()
         {
-            return transform.rotation.eulerAngles.z == 0;
+            float threshold = 0.01f;
+            return Mathf.Abs(transform.rotation.eulerAngles.z) < threshold;
         }
 
         public void SnapToCorrectPosition()
@@ -324,7 +326,7 @@ namespace PuzzlePiece
             if (_isAnimating) return;
             
             _isAnimating = true;
-
+            
             transform.DORotate(transform.eulerAngles + new Vector3(0, 0, _rotationAngle), _rotationDuration)
                      .OnComplete(FinishRotation);
         }
@@ -338,9 +340,13 @@ namespace PuzzlePiece
 
         public bool HaveSameRotation(Piece piece)
         {
-            return transform.rotation.eulerAngles.z == piece.transform.rotation.eulerAngles.z;
+            float threshold = 0.01f;
+        
+            float rotationDifference = Mathf.Abs(transform.rotation.eulerAngles.z - piece.transform.rotation.eulerAngles.z);
+
+            return rotationDifference < threshold;
         }
-    
+        
         public bool IsPointOnPiece(Vector3 point)
         {
             Vector2 mousePos = new Vector2(point.x, point.y);
@@ -360,9 +366,34 @@ namespace PuzzlePiece
 
         # endregion
 
+        # region Animation
         public void StartMaterialAnimation(float bloomIntensityCoefficient = 1)
         {
             _materialBloom.AnimateMaterial(bloomIntensityCoefficient);
         }
+
+        public void AnimateToCorrectPosition(float duration, int zPosition)
+        {
+            UpdateZPosition(zPosition);
+
+            Vector3 correctPosition = _correctPosition;
+            _correctPosition.z = zPosition;
+            
+            Sequence sequence = DOTween.Sequence();
+
+            sequence.Append(transform.DOMove(correctPosition, duration));
+            sequence.Join(transform.DORotate(Vector3.zero, duration));
+
+            sequence.OnComplete(InvokeItemDropped);
+        }
+
+        # endregion
+
+        private void InvokeItemDropped()
+        {
+            _draggable.InvokeItemDropped();
+        }
+    
+
     }
 }

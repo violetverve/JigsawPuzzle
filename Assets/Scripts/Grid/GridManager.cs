@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UI.GameScene;
 using GameManagement;
+using PuzzlePiece;
 
 namespace Grid
 {   
@@ -18,6 +19,7 @@ namespace Grid
         public GridField GridField => _gridField;
 
         public ScrollViewController ScrollViewController => _scrollViewController;
+        public List<Piece> CollectedPieces => _gridInteractionController.CollectedPieces;
         
 
         private void OnEnable()
@@ -47,6 +49,16 @@ namespace Grid
 
             _scrollViewController.PopulateScrollView(_gridGenerator.GeneratedPieces, level.RotationEnabled);
 
+        }
+
+        public List<Piece> GetScrollViewPieces()
+        {
+            return _scrollViewController.ContentPieces;
+        }
+
+        public List<ISnappable> GetSnappables()
+        {
+            return _gridInteractionController.Snappables;
         }
 
     }

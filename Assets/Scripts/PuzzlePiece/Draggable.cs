@@ -62,5 +62,10 @@ namespace PuzzlePiece
             mousePoint.z = _mainCamera.WorldToScreenPoint(transform.position).z;
             return _mainCamera.ScreenToWorldPoint(mousePoint);
         }
+
+        public void InvokeItemDropped()
+        {
+            OnItemDropped?.Invoke(_snappable);
+        }
     }
 }

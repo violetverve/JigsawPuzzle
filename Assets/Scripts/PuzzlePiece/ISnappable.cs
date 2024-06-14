@@ -6,6 +6,7 @@ namespace PuzzlePiece {
     {
         Transform Transform { get; }
         List<Piece> Pieces { get; }
+        Draggable Draggable { get; }
         bool TrySnapToGrid();
         Piece GetNeighbourPiece();
         bool IsSnappedToGrid();
@@ -15,6 +16,7 @@ namespace PuzzlePiece {
         void AddToCollectedPieces(List<Piece> collectedPieces);
         void Rotate(Vector3 mouseWorldPos);
         bool HaveSameRotation(Piece piece);
+        void AnimateToCorrectPosition(float duration, int zPosition);
     } 
 }
 

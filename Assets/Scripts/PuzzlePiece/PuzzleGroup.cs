@@ -30,7 +30,6 @@ namespace PuzzlePiece
         public Draggable Draggable => _draggable;
         public bool IsAnimating => _isAnimating;
 
-
         public void InitializeGroup(List<Piece> pieces)
         {
             _draggable = gameObject.AddComponent<Draggable>();
@@ -55,13 +54,8 @@ namespace PuzzlePiece
 
         public static PuzzleGroup CreateGroup(List<Piece> pieces)
         {
-            Vector3 centerPoint = Vector3.zero;
-            foreach (Piece piece in pieces)
-            {
-                centerPoint += piece.transform.position;
-            }
-            centerPoint /= pieces.Count;
-
+            Vector3 centerPoint = GetCenterPoint(pieces);
+            
             Transform parent = pieces[0].transform.parent;
 
             GameObject groupObject = new GameObject(PUZZLE_GROUP);
@@ -72,6 +66,11 @@ namespace PuzzlePiece
             group.InitializeGroup(pieces);
 
             return group;
+        }
+        
+        private static Vector3 GetCenterPoint(List<Piece> _pieces)
+        {
+            return _pieces.Aggregate(Vector3.zero, (sum, piece) => sum + piece.transform.position) / _pieces.Count;
         }
 
         # region SnapToGrid
@@ -276,25 +275,36 @@ namespace PuzzlePiece
         {
             if (_isAnimating) return;
 
-            Piece piece = GetPieceAtMousePosition(mousePosition);
+            var piece = GetPieceAtMousePosition(mousePosition);
 
             _isAnimating = true;
 
+            var sequence = GetRotationSequence(piece, _rotationAngle, _rotationDuration);
+
+            sequence.OnComplete(FinishRotation);
+        }
+
+        public Sequence GetRotationSequence(Piece piece, float rotationAngle, float rotationDuration)
+        {
             Sequence sequence = DOTween.Sequence();
 
             foreach (Transform child in transform)
             {
-                Vector3 newPosition = RotatePointAroundPivot(child.position, piece.transform.position, _rotationAngle);
-                Vector3[] path = GetCircularPath(child.position, piece.transform.position, _rotationAngle, 5);
+                Vector3 newPosition = RotatePointAroundPivot(child.position, piece.transform.position, rotationAngle);
 
-                Tween moveTween = child.DOPath(path, _rotationDuration, PathType.CatmullRom);
-                Tween rotateTween = child.DORotate(child.eulerAngles + new Vector3(0, 0, _rotationAngle), _rotationDuration);
+                int pathPoints = 5;
+                Vector3[] path = GetCircularPath(child.position, piece.transform.position, rotationAngle, pathPoints);
+
+                Tween moveTween = child.DOPath(path, rotationDuration, PathType.CatmullRom);
+                Tween rotateTween = child.DORotate(child.eulerAngles + new Vector3(0, 0, rotationAngle), rotationDuration);
 
                 sequence.Insert(0, moveTween);
                 sequence.Insert(0, rotateTween);
             }
 
-            sequence.OnComplete(FinishRotation);
+            // sequence.OnComplete(FinishRotation);
+
+            return sequence;
         }
 
         private void FinishRotation()
@@ -336,5 +346,55 @@ namespace PuzzlePiece
         }
 
         # endregion
+
+        # region Animation  
+        
+        public void AnimateToCorrectPosition(float duration, int zPosition)
+        {
+            Piece pivotPiece = GetCenterPiece();
+            UpdateZPosition(zPosition);
+            
+            Sequence sequence = DOTween.Sequence();
+
+            if (!pivotPiece.IsInCorrectRotation())
+            {
+                float angle = -pivotPiece.transform.rotation.eulerAngles.z;
+
+                // for -270 to smooth rotation
+                angle = angle < -180 ? angle + 360 : angle;
+
+                sequence.Append(GetRotationSequence(pivotPiece, angle, duration/2));
+            }
+
+            Sequence moveSequence = DOTween.Sequence();
+
+            foreach (Piece piece in _pieces)
+            {
+                Vector3 correctPosition = piece.CorrectPosition;
+                correctPosition.z = zPosition;
+
+                Tween moveTween = piece.transform.DOMove(correctPosition, duration);
+                moveSequence.Join(moveTween);
+            }
+
+            sequence.Append(moveSequence);
+
+            sequence.OnComplete(InvokeItemDropped);
+        }
+
+        private Piece GetCenterPiece()
+        {
+            Vector3 averagePosition = GetCenterPoint(_pieces);
+        
+            return _pieces.OrderBy(piece => Vector3.Distance(piece.CorrectPosition, averagePosition)).First();
+        }
+
+        # endregion 
+
+        private void InvokeItemDropped()
+        {
+            _draggable.InvokeItemDropped();
+        }
+
     }
 }

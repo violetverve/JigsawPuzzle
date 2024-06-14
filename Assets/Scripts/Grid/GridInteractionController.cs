@@ -18,6 +18,7 @@ namespace Grid
 
         public static event Action<int> OnProgressUpdate;
         public List<Piece> CollectedPieces => _collectedPieces;
+        public List<ISnappable> Snappables => _snappables;
 
 
         private void OnEnable()

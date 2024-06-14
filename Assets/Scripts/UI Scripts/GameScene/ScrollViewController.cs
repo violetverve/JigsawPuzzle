@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Grid;
 using PuzzlePiece;
+using System.Linq;
 
 
 namespace UI.GameScene
@@ -15,7 +16,11 @@ namespace UI.GameScene
         [SerializeField] private ScrollRect _scrollRect;
         private float _pieceSize = 40;
         private float _originalPieceSize;
-        private bool _isOriginalPieceSizeSet;    
+        private bool _isOriginalPieceSizeSet;
+        private List<Piece> _contentPieces = new List<Piece>();
+        private int _visiblePieces = -1;
+
+        public List<Piece> ContentPieces => _contentPieces; 
 
 
         private void OnEnable()
@@ -41,6 +46,11 @@ namespace UI.GameScene
             }
         }
 
+        public void RemovePieceFromScrollView(Piece piece)
+        {
+            RemovePieceFromScrollView(piece.Transform);
+        }
+
         private void RemovePieceFromScrollView(Transform piece)
         {
             piece.SetParent(_gridParent, true);
@@ -51,6 +61,8 @@ namespace UI.GameScene
             
             rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
             rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+
+            _contentPieces.Remove(piece.GetComponent<Piece>());
         }
 
         private void HandleItemDropped(ISnappable snappable)
@@ -67,7 +79,9 @@ namespace UI.GameScene
 
         public void PopulateScrollView(List<Piece> pieces, bool rotationEnabled)
         {
-            foreach (var piece in pieces)
+            List<Piece> shuffledPieces = pieces.OrderBy(x => UnityEngine.Random.Range(0, int.MaxValue)).ToList();
+
+            foreach (var piece in shuffledPieces)
             {
                 Vector3 rotation = rotationEnabled ? GetRandomPieceRotation() : Vector3.zero;
 
@@ -75,6 +89,8 @@ namespace UI.GameScene
 
                 AddPieceToScrollView(piece.transform);
             }
+
+            _contentPieces = shuffledPieces;
         }
 
         private Vector3 GetRandomPieceRotation()
@@ -89,10 +105,14 @@ namespace UI.GameScene
             Vector3 position = piece.position;
     
             piece.SetParent(_content, true);
-            InsertPieceAtIndex(piece as RectTransform, GetDropIndex(position));
+
+            int index = GetDropIndex(position);
+            InsertPieceAtIndex(piece as RectTransform, index);
 
             piece.localPosition = Vector3.zero;
             piece.localScale = Vector3.one * _pieceSize;
+
+            _contentPieces.Insert(index, piece.GetComponent<Piece>());
         }
 
         private void SetOriginalPieceSize(Transform piece)
@@ -141,6 +161,31 @@ namespace UI.GameScene
         {
             return piece.parent == _content;
         }
+
+        # region VisiblePieces
+        
+        private bool IsVisibleFrom(Renderer renderer, Camera camera)
+        {
+            Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
+            return GeometryUtility.TestPlanesAABB(planes, renderer.bounds);
+        }
+        
+        private List<Piece> GetVisiblePieces(Camera camera)
+        {
+            return _contentPieces.Where(piece => IsVisibleFrom(piece.GetComponent<Renderer>(), camera)).ToList();
+        }
+
+        public List<Piece> GetVisiblePieces()
+        {
+            if (_visiblePieces == -1)
+            {
+                _visiblePieces = GetVisiblePieces(Camera.main).Count;
+            }
+
+            return _contentPieces.GetRange(0, Mathf.Min(_visiblePieces, _contentPieces.Count));
+        }
+
+        # endregion
 
     }
 }
