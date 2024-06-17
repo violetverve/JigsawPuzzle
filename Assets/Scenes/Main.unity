@@ -388,7 +388,7 @@ CanvasGroup:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 293246557}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
@@ -801,6 +801,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _panelInitialUnactive: {fileID: 891330880}
   _panelInitialActive: {fileID: 293246563}
+  _scrollViewController: {fileID: 293246562}
+  _grid: {fileID: 1690346331}
   _fadeDuration: 0.5
   _colorFadeDuration: 0.1
   _toggle: {fileID: 695344964}
@@ -942,7 +944,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 867313942}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1273,7 +1275,7 @@ Transform:
   m_GameObject: {fileID: 1577722395}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1795,7 +1797,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gridSO: {fileID: 11400000, guid: 5659531d58d088d4cbfe8123ebd4b9e7, type: 2}
   _puzzleSO: {fileID: 11400000, guid: 6dc373b797cee6347bedb25f7e4748b6, type: 2}
-  _rotationEnabled: 1
+  _rotationEnabled: 0
 --- !u!1 &2111864101
 GameObject:
   m_ObjectHideFlags: 0

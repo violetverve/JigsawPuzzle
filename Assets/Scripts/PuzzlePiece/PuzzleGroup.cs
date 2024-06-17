@@ -15,7 +15,7 @@ namespace PuzzlePiece
         private List<Piece> _pieces = new List<Piece>();
         private List<Piece> _lastPieces = new List<Piece>();
         private bool _isAnimating = false;
-        private const int COLLECTED_Z_POSITION = 1;
+        private const int COLLECTED_Z_POSITION = 0;
         private float _snappingDuration = 0.05f;
         private float _rotationDuration = 0.2f;
         private float _rotationAngle = -90;
@@ -190,17 +190,18 @@ namespace PuzzlePiece
 
         public void AddPieceToGroup(Piece piece)
         {
-            if (piece.Draggable == null)
+            bool pieceInteractable = piece.Draggable != null;
+
+            _pieces.Add(piece);
+        
+            if (!pieceInteractable)
             {
                 DestroyInteractiveComponents();
-
                 UpdateZPosition(COLLECTED_Z_POSITION);
             }
 
-            piece.SetGroup(this);
             piece.SetupForGroup();
-
-            _pieces.Add(piece);
+            piece.SetGroup(this);
         }
 
         private bool IsTheSameGroup(PuzzleGroup group)
@@ -211,12 +212,15 @@ namespace PuzzlePiece
 
         private void MergeGroup(PuzzleGroup otherGroup)
         {
-            if (otherGroup.Draggable == null)
-            {
-                DestroyInteractiveComponents();
-            }
+            bool otherGroupsInteractable = otherGroup.Draggable != null;
 
             UpdatePiecesGroup(otherGroup.Pieces);
+
+            if (!otherGroupsInteractable)
+            {
+                DestroyInteractiveComponents();
+                UpdateZPosition(COLLECTED_Z_POSITION);
+            }
         
             Destroy(otherGroup.gameObject);
         }
@@ -259,7 +263,7 @@ namespace PuzzlePiece
             _pieces.ForEach(piece => collectedPieces.Add(piece));
         }
 
-        public void UpdateZPosition(int zPosition)
+        public void UpdateZPosition(int zPosition = COLLECTED_Z_POSITION)
         {
             Vector3 position = transform.position;
             position.z = zPosition;

@@ -23,7 +23,7 @@ namespace PuzzlePiece
         private float _snappingDuration = 0.05f;
         private float _rotationDuration = 0.2f;
         private float _rotationAngle = -90;
-        private const int COLLECTED_Z_POSITION = 1;
+        private const int COLLECTED_Z_POSITION = 0;
 
         public static event Action<ISnappable> OnPieceRotated;
         public static event Action<ISnappable> OnGridSnapCompleted;
@@ -37,6 +37,7 @@ namespace PuzzlePiece
         public Draggable Draggable => _draggable;
         public bool IsAnimating => _isAnimating;
         public bool IsEdgePiece => _isEdgePiece;
+        public MaterialBloom MaterialBloom => _materialBloom;
         public List<Piece> Pieces => new List<Piece> { this };
 
         private void Awake()

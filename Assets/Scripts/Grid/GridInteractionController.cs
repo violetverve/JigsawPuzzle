@@ -10,6 +10,7 @@ namespace Grid
 {
     public class GridInteractionController : MonoBehaviour
     {
+        private const int COMPLETED_Z_POSITION = 0;
         [SerializeField] private ScrollViewController _scrollViewController;
         private List<ISnappable> _snappables = new List<ISnappable>();
         private List<Piece> _collectedPieces = new List<Piece>();
@@ -99,7 +100,7 @@ namespace Grid
         }
 
         private void HandleItemDropped(ISnappable snappable)
-        {
+        {   
             if (TrySnapToGrid(snappable)) return;
 
             _corePieces = new List<Piece>(snappable.Pieces);
@@ -120,7 +121,7 @@ namespace Grid
         {
             for (int i = 0; i < _snappables.Count; i++)
             {
-                _snappables[i].UpdateZPosition(-i);
+                _snappables[i].UpdateZPosition(-i - 1);
             }
         }
 
@@ -161,7 +162,7 @@ namespace Grid
                     continue;
                 }
         
-                combined.UpdateZPosition(1);
+                combined.UpdateZPosition(COMPLETED_Z_POSITION);
                 stack.Push(combined);
             }
         
