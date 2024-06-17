@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using PuzzlePiece;
 
 namespace UI.GameScene
 {
@@ -8,6 +9,8 @@ namespace UI.GameScene
     {
         [SerializeField] private CanvasGroup _panelInitialUnactive;
         [SerializeField] private CanvasGroup _panelInitialActive;
+        [SerializeField] private ScrollViewController _scrollViewController;
+        [SerializeField] private GameObject _grid;
         [SerializeField] private float _fadeDuration = 0.5f;
         [SerializeField] private float _colorFadeDuration = 0.1f;
         [SerializeField] private Toggle _toggle;
@@ -17,6 +20,16 @@ namespace UI.GameScene
         {
             TogglePanel(_panelInitialUnactive);
             TogglePanel(_panelInitialActive);
+            SetContentOpacity(!_grid.activeSelf ? 1 : 0);
+            _grid.SetActive(!_grid.activeSelf);
+        }
+
+        private void SetContentOpacity(int targetAlpha)
+        {
+            foreach (Piece piece in _scrollViewController.ContentPieces)
+            {
+                piece.MaterialBloom.AnimateOpacity(targetAlpha, _fadeDuration);
+            }
         }
 
         private void TogglePanel(CanvasGroup panel)

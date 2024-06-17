@@ -59,4 +59,9 @@ public class MaterialBloom : MonoBehaviour
         return sequence;
     }
 
+    public void AnimateOpacity(float targetOpacity, float duration)
+    {
+        _animationMaterial.DOColor(new Color(1, 1, 1, targetOpacity), BASE_COLOR, duration);
+    }
+
 }
