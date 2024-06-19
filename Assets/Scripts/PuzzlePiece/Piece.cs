@@ -137,6 +137,11 @@ namespace PuzzlePiece
         {
             _isAnimating = false;
 
+            if (IsSnappedToGrid())
+            {
+                UpdateZPosition(COLLECTED_Z_POSITION);
+            }
+
             OnCombinedWithOther?.Invoke(_group);
         }
 
@@ -394,6 +399,8 @@ namespace PuzzlePiece
         {
             _draggable.InvokeItemDropped();
         }
+
+        
     
 
     }

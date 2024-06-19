@@ -172,17 +172,19 @@ namespace UI.GameScene
         
         private List<Piece> GetVisiblePieces(Camera camera)
         {
-            return _contentPieces.Where(piece => IsVisibleFrom(piece.GetComponent<Renderer>(), camera)).ToList();
-        }
+            return _contentPieces.Where(piece => 
+                        IsVisibleFrom(piece.GetComponent<Renderer>(), camera) && piece.gameObject.activeSelf).ToList();
+                    }
 
         public List<Piece> GetVisiblePieces()
         {
-            if (_visiblePieces == -1)
-            {
-                _visiblePieces = GetVisiblePieces(Camera.main).Count;
-            }
+            // if (_visiblePieces == -1)
+            // {
+            //     _visiblePieces = GetVisiblePieces(Camera.main).Count;
+            // }
 
-            return _contentPieces.GetRange(0, Mathf.Min(_visiblePieces, _contentPieces.Count));
+            // return _contentPieces.GetRange(0, Mathf.Min(_visiblePieces, _contentPieces.Count));
+            return GetVisiblePieces(Camera.main);
         }
 
         # endregion

@@ -80,7 +80,7 @@ namespace UI.GameScene
         
         private Piece GetHintPiece(List<Piece> pieces)
         {
-            return pieces.FirstOrDefault(piece => HasNeighbourCollected(piece) || piece.IsEdgePiece);
+            return pieces.FirstOrDefault(piece => (HasNeighbourCollected(piece) || piece.IsEdgePiece) && piece.gameObject.activeSelf);
         }
 
         private ISnappable GetHintSnappable(List<ISnappable> snappables)
