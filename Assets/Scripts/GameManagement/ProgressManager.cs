@@ -2,13 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Grid;
+using System;
+using UI.GameScene;
 
 namespace GameManagement
 {
     public class ProgressManager : MonoBehaviour
     {
+        [SerializeField] private ProgressNotification _edgesCollectedNotification;
+
+        public static Action EdgesCollected;
+
         private int _numberOfPieces;
         private float _lastMilestone = 0f;
+        private int _numberOfEdges;
+
         private readonly float[] _milestones = { 0.25f, 0.5f, 0.75f };
         
         private void OnEnable()
@@ -21,14 +29,16 @@ namespace GameManagement
             GridInteractionController.OnProgressUpdate -= HandleProgressUpdate;
         }
 
-        private void HandleProgressUpdate(int numberOfPiecesCollected)
+        private void HandleProgressUpdate(int numberOfPiecesCollected, int numberOfEdgesCollected)
         {
             CheckForMilestones(numberOfPiecesCollected);
+            CheckIfEdgesCollected(numberOfEdgesCollected);
         }
 
-        public void SetNumberOfPieces(int numberOfPieces)
+        public void SetNumberOfPieces(GridSO grid)
         {
-            _numberOfPieces = numberOfPieces;
+            _numberOfPieces = grid.Area;
+            _numberOfEdges = grid.Edges;
         }
 
         private void CheckForMilestones(int numberOfPiecesCollected)
@@ -49,6 +59,16 @@ namespace GameManagement
                         _lastMilestone = milestone;
                     }
                 }
+            }
+        }
+
+        private void CheckIfEdgesCollected(int numberOfEdgesCollected)
+        {
+            if (numberOfEdgesCollected == _numberOfEdges)
+            {
+                Debug.Log("All edges collected!");
+                EdgesCollected?.Invoke();
+                // _edgesCollectedNotification.Animate();
             }
         }
     

@@ -20,7 +20,7 @@ namespace GameManagement
         {
             Level currentLevel = SetupCurrentLevel();
 
-            _progressManager.SetNumberOfPieces(currentLevel.GridSO.Area);
+            _progressManager.SetNumberOfPieces(currentLevel.GridSO);
 
             StartLevel(currentLevel);
         }
@@ -33,7 +33,7 @@ namespace GameManagement
             }
             
             PuzzleSavingData currentPuzzle = PlayerData.Instance.CurrentPuzzle;
-            _progressManager.SetNumberOfPieces(currentPuzzle.Grid.Area);
+            _progressManager.SetNumberOfPieces(currentPuzzle.Grid);
             PuzzleSO currentPuzzleSO = _puzzleList.GetPuzzleByID(currentPuzzle.ID);
 
             bool rotationEnabled = true;

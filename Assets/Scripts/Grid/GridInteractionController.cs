@@ -17,9 +17,11 @@ namespace Grid
         private bool _rotationEnabled;
         private List<Piece> _corePieces = new List<Piece>();
 
-        public static event Action<int> OnProgressUpdate;
+        public static event Action<int, int> OnProgressUpdate;
+        public static event Action<List<Piece>, List<Piece>> PiecesCollected;
         public List<Piece> CollectedPieces => _collectedPieces;
         public List<ISnappable> Snappables => _snappables;
+        public List<Piece> CorePieces => _corePieces;
 
 
         private void OnEnable()
@@ -59,22 +61,31 @@ namespace Grid
 
         private void HandleSnapedToGrid(ISnappable snappable)
         {
-            UpdateCompletedPieces(snappable.Pieces);
-            
             _corePieces = new List<Piece>(snappable.Pieces);
+
+            UpdateCompletedPieces(snappable.Pieces);
 
             bool combinedWithOther = TryCombineWithOther(snappable);
 
             if (!combinedWithOther)
             {
-                StartMaterialAnimation(snappable.Pieces, snappable.Pieces);
+                // StartMaterialAnimation(snappable.Pieces, snappable.Pieces);
+                PiecesCollected?.Invoke(snappable.Pieces, snappable.Pieces);
             }
         }
 
         private void UpdateCompletedPieces(List<Piece> pieces)
         {
             _collectedPieces.AddRange(pieces);
-            OnProgressUpdate?.Invoke(_collectedPieces.Count);
+            var edgePieces = GetEdgePieces(_collectedPieces);
+
+            Debug.Log("Collected Pieces: " + _collectedPieces.Count + " Edge Pieces: " + edgePieces.Count);
+            OnProgressUpdate?.Invoke(_collectedPieces.Count, GetEdgePieces(_collectedPieces).Count);
+        }
+        
+        private List<Piece> GetEdgePieces(List<Piece> pieces)
+        {
+            return pieces.Where(piece => piece.IsEdgePiece).ToList();
         }
 
         public void SetRotationEnabled(bool rotationEnabled)
@@ -147,7 +158,8 @@ namespace Grid
         
                 if (combined != null && newCombined == null)
                 {
-                    StartMaterialAnimation(_corePieces, combined.Pieces);
+                    // StartMaterialAnimation(_corePieces, combined.Pieces);
+                    PiecesCollected?.Invoke(_corePieces, combined.Pieces);
                     continue;
                 }
         
@@ -158,7 +170,8 @@ namespace Grid
         
                 if (!combined.IsSnappedToGrid())
                 {
-                    StartMaterialAnimation(_corePieces, combined.Pieces);
+                    // StartMaterialAnimation(_corePieces, combined.Pieces);
+                    PiecesCollected?.Invoke(_corePieces, combined.Pieces);
                     continue;
                 }
         
@@ -189,7 +202,8 @@ namespace Grid
 
             return combined;
         }
-
+        
+        # region MaterialAnimation
         private void StartMaterialAnimation(List<Piece> corePieces, List<Piece> wholeGroup)
         {
             List<Piece> neighbourPieces = wholeGroup
@@ -201,11 +215,30 @@ namespace Grid
             neighbourPieces.ForEach(piece => piece.StartMaterialAnimation(0.5f));
         }
 
+        private void StartEdgeMaterialAnimation(List<Piece> corePieces, List<Piece> wholeGroup)
+        {
+            var coreEdges = corePieces
+                .Where(piece => piece.IsEdgePiece)
+                .ToList();
+
+            // first core edges next chain reaction of edge pieces
+
+            coreEdges.ForEach(piece => piece.StartMaterialAnimation(1f));
+
+            var allOtherEdges = wholeGroup
+                .Where(piece => piece.IsEdgePiece && !coreEdges.Contains(piece))
+                .ToList();
+
+            allOtherEdges.ForEach(piece => piece.StartMaterialAnimation(0.5f));
+        }
+
+        # endregion
+
         private void HandleCollectedNewPieces(List<Piece> pieces)
         {
             _collectedPieces.AddRange(pieces);
         
-            OnProgressUpdate?.Invoke(_collectedPieces.Count);
+            OnProgressUpdate?.Invoke(_collectedPieces.Count, _collectedPieces.Count);
         }
 
         private bool CanSnap(Piece piece)
