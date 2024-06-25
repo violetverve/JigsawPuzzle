@@ -10,6 +10,7 @@ namespace Grid {
     {
         [SerializeField] private PuzzlePieceGeneratorSO _puzzlePieceGenerator;
         [SerializeField] private GridField _gridField;
+        [SerializeField] private Material _material;
         private GridSO _gridSO;
         private float _pieceScale;
         private const float _pieceSize = 2f;
@@ -18,14 +19,12 @@ namespace Grid {
         private List<Piece> _generatedPieces = new List<Piece>();
         public List<Piece> GeneratedPieces => _generatedPieces;
         private Vector3 _startPosition;
-        private Material _material;
 
 
-        public void InitializeGrid(GridSO gridSO, Material material)
+        public void InitializeGrid(GridSO gridSO, Sprite image)
         {
             _gridSO = gridSO;
-            _material = material;
-            
+            _material.mainTexture = image.texture;
             _cellSize = _gridField.CellSize;
 
             _pieceConfigurations = new PieceConfiguration[_gridSO.Height, _gridSO.Width];

@@ -1,44 +1,66 @@
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
-
+using Player;
 
 namespace UI.GameScene.Themes
 {
     public class SingleChoiceManager : MonoBehaviour
     {
         public static event Action<ThemeToggle> OnThemeSelected;
-        [SerializeField] private ToggleGroup _toggleGroup;
-        private List<Toggle> _toggles;
 
-        private void Awake()
-        {
-            _toggles = new List<Toggle>(_toggleGroup.GetComponentsInChildren<Toggle>());
-        }
+        [SerializeField] private ThemesGrid _themesGrid;
 
         void Start()
         {
-            // // Ensure only one Toggle can be selected at a time
-            foreach (Toggle toggle in _toggles)
+            foreach (var themeToggle in _themesGrid.Toggles)
             {
-                toggle.onValueChanged.AddListener(delegate { OnToggleChanged(toggle); });
+                themeToggle.Toggle.onValueChanged
+                    .AddListener(delegate { OnToggleChanged(themeToggle); });
+            }
+
+            SetTheme(PlayerData.Instance.ThemeID);
+        }
+
+
+        private void SetTheme(int themeID)
+        {
+            Debug.Log(_themesGrid.Toggles.Count);
+            Debug.Log(themeID);
+            
+            if (themeID > _themesGrid.Toggles.Count - 1)
+            {
+                themeID = 0;
+            }
+
+            ThemeToggle themeToggle = _themesGrid.Toggles[themeID];
+
+            themeToggle.Toggle.isOn = true;
+            DeselectOtherToggles(themeToggle);
+
+            OnThemeSelected(themeToggle);
+        }
+
+        private void OnToggleChanged(ThemeToggle changedThemeToggle)
+        {
+            if (changedThemeToggle.Toggle.isOn)
+            {
+                int themeIndex = _themesGrid.Toggles.IndexOf(changedThemeToggle);
+                PlayerData.Instance.SaveThemeID(themeIndex);
+
+                DeselectOtherToggles(changedThemeToggle);
+                OnThemeSelected?.Invoke(changedThemeToggle);
             }
         }
 
-        void OnToggleChanged(Toggle changedToggle)
+        private void DeselectOtherToggles(ThemeToggle selectedToggle)
         {
-            if (changedToggle.isOn)
+            foreach (var themeToggle in _themesGrid.Toggles)
             {
-                foreach (Toggle toggle in _toggles)
+                if (themeToggle != selectedToggle)
                 {
-                    if (toggle != changedToggle)
-                    {
-                        toggle.isOn = false;
-                    }
+                    themeToggle.Toggle.isOn = false;
                 }
-
-                OnThemeSelected?.Invoke(changedToggle.GetComponent<ThemeToggle>());
             }
         }
     }

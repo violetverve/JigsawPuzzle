@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 1
   _name: Bunny
-  _puzzleMaterial: {fileID: 2100000, guid: cb305feafe5dddc44b62e8b16845161d, type: 2}
+  _puzzleMaterial: {fileID: -876546973899608171, guid: 83d704565a28f444d9779c151a5cf401, type: 3}
   _puzzleImage: {fileID: 21300000, guid: 67bfc93a6c2e8564f965d2436486da97, type: 3}
+  _isLocked: 0

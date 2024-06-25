@@ -14,11 +14,13 @@ namespace Player
         private readonly string _hintsPrefs = "player_hints";
         private readonly string _savedPuzzlesPref = "player_savedPuzzle";
         private readonly string _savedCurrentPuzzlePref = "player_savedCurrentPuzzle";
+        private readonly string _themePref = "player_theme";
 
         private int _coinsAmount;
         private int _hintsAmount;
         private List<PuzzleSavingData> _savedPuzzles;
         private PuzzleSavingData _currentPuzzle;
+        private int _themeID;
 
         #region Singleton Pattern
         public static PlayerData Instance { get; private set; }
@@ -44,12 +46,21 @@ namespace Player
             Debug.Log("Hints" + _hintsAmount);
             _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSavingData>>(PlayerPrefs.GetString(_savedPuzzlesPref));
             _currentPuzzle = JsonConvert.DeserializeObject<PuzzleSavingData>(PlayerPrefs.GetString(_savedCurrentPuzzlePref));
+
+            _themeID = PlayerPrefs.GetInt(_themePref, 0);
+        }
+
+        public void SaveThemeID(int id)
+        {
+            _themeID = id;
+            PlayerPrefs.SetInt(_themePref, id);
         }
 
         public void SavePlayerPuzzleProgress(PuzzleSavingData puzzleToSave)
         {
             _savedPuzzles.Add(puzzleToSave);
         }
+
         public void SavePlayerPuzzleProgress()
         {
             if (_savedPuzzles != null)
@@ -58,6 +69,7 @@ namespace Player
                 PlayerPrefs.SetString(_savedPuzzlesPref, savedPuzzles);
             }
         }
+
         public void SetCurrentPuzzle(PuzzleSavingData puzzle)
         {
             _currentPuzzle = puzzle;
@@ -93,6 +105,7 @@ namespace Player
         public int HintsAmount => _hintsAmount;
         public List<PuzzleSavingData> SavedPuzzles => _savedPuzzles;
         public PuzzleSavingData CurrentPuzzle => _currentPuzzle;
+        public int ThemeID => _themeID;
     }
 }
 

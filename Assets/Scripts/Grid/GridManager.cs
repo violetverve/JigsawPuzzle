@@ -43,7 +43,7 @@ namespace Grid
 
             _gridField.Initialize(_gridSO);
 
-            _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleMaterial);
+            _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage);
 
             _gridInteractionController.SetRotationEnabled(level.RotationEnabled);
 
