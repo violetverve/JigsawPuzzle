@@ -5,6 +5,7 @@ using PuzzlePiece;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Player;
 
 namespace UI.GameScene
 {
@@ -21,6 +22,11 @@ namespace UI.GameScene
 
         private void Awake()
         {
+            if (PlayerData.Instance != null)
+            {
+                _hintsNumber = PlayerData.Instance.HintsAmount;
+            }
+
             SetNumberHintsText(_hintsNumber);
         }
 
@@ -34,6 +40,11 @@ namespace UI.GameScene
             {
                 _hintsNumber--;
                 SetNumberHintsText(_hintsNumber);
+               
+               if (PlayerData.Instance != null)
+                {
+                    PlayerData.Instance.UseHint();
+                }
             }
         }
 

@@ -89,16 +89,20 @@ namespace Player
             _coinsAmount -= amount;
             PlayerPrefs.SetInt(_coinsPrefs, _coinsAmount);
         }
+
         public void AddHints(int reward)
         {
             _hintsAmount += reward;
             PlayerPrefs.SetInt(_coinsPrefs, _hintsAmount);
         }
-        public void SpendHints(int amount)
+
+        public void UseHint()
         {
-            _hintsAmount -= amount;
+            _hintsAmount--;
+            Debug.Log("Hint Used");
             PlayerPrefs.SetInt(_hintsPrefs, _hintsAmount);
         }
+
         #endregion
 
         public int CoinsAmount => _coinsAmount;
