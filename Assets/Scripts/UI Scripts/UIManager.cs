@@ -57,7 +57,7 @@ namespace UIscripts
         [SerializeField] private GameObject _scrollParent;
         [SerializeField] private ScrollElement _scrollPrefab;
 
-        private void Awake()
+        private void OnEnable()
         {
             OnPanelsChange += TurnIterectableButton;
             OnCrossClick += CloseWindow;
@@ -65,6 +65,16 @@ namespace UIscripts
             OnPanelClick += LoadPuzzleDifficultyChooser;
             PuzzlePrepareUI.ScrollItemChanged += SetCurrentGridSO;
         }
+
+        private void OnDisable()
+        {
+            OnPanelsChange -= TurnIterectableButton;
+            OnCrossClick -= CloseWindow;
+            OnLockedPanelClick -= LoadBuyPanelPopUp;
+            OnPanelClick -= LoadPuzzleDifficultyChooser;
+            PuzzlePrepareUI.ScrollItemChanged -= SetCurrentGridSO;
+        }
+
         private void Start()
         {
             LoadAllPuzzles();

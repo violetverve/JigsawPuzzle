@@ -32,10 +32,18 @@ public class ScrollElement : MonoBehaviour
     {
         AdjustScrollElementAnimationCurveSize();
         AdjustScrollElementAnimationCurveColor();
+    }
 
-
+    private void OnEnable()
+    {
         PuzzlePrepareUI.ItemChanging += SetBasicScrollElementParameters;
     }
+
+    private void OnDisable()
+    {
+        PuzzlePrepareUI.ItemChanging -= SetBasicScrollElementParameters;
+    }
+
     private void AdjustScrollElementAnimationCurveSize()
     {
         _scrollElementAnimationCurveSize.ClearKeys();
