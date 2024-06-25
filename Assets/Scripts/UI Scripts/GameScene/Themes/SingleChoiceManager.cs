@@ -25,9 +25,6 @@ namespace UI.GameScene.Themes
 
         private void SetTheme(int themeID)
         {
-            Debug.Log(_themesGrid.Toggles.Count);
-            Debug.Log(themeID);
-            
             if (themeID > _themesGrid.Toggles.Count - 1)
             {
                 themeID = 0;
