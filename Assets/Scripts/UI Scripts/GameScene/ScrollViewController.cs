@@ -18,7 +18,6 @@ namespace UI.GameScene
         private float _originalPieceSize;
         private bool _isOriginalPieceSizeSet;
         private List<Piece> _contentPieces = new List<Piece>();
-        private int _visiblePieces = -1;
 
         public List<Piece> ContentPieces => _contentPieces; 
 
@@ -178,12 +177,6 @@ namespace UI.GameScene
 
         public List<Piece> GetVisiblePieces()
         {
-            // if (_visiblePieces == -1)
-            // {
-            //     _visiblePieces = GetVisiblePieces(Camera.main).Count;
-            // }
-
-            // return _contentPieces.GetRange(0, Mathf.Min(_visiblePieces, _contentPieces.Count));
             return GetVisiblePieces(Camera.main);
         }
 
