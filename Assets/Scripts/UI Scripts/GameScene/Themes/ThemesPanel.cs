@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
 
 namespace UI.GameScene.Themes
 {
@@ -9,6 +10,9 @@ namespace UI.GameScene.Themes
         [SerializeField] private int _hideYPosition;
         [SerializeField] private int _showYPosition;
         [SerializeField] private float _animationDuration;
+
+        public static event Action ThemePanelShown;
+        public static event Action ThemePanelHidden;
 
         [SerializeField] private Camera _camera;
 
@@ -43,6 +47,8 @@ namespace UI.GameScene.Themes
         {
             gameObject.SetActive(true);
             GetSlideInTween().Play();
+
+            ThemePanelShown?.Invoke();
         }
 
         public void Hide()
@@ -53,6 +59,8 @@ namespace UI.GameScene.Themes
         private void HideGameObject()
         {
             gameObject.SetActive(false);
+            
+            ThemePanelHidden?.Invoke();
         }
 
         private Tween GetSlideInTween()

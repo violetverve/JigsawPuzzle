@@ -507,6 +507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _yDistance: 150
+  _duration: 0.2
 --- !u!1 &308472845
 GameObject:
   m_ObjectHideFlags: 0
@@ -1985,7 +1986,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b23ee92b389098743ad489e090d0a0f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hideYPosition: -1500
+  _hideYPosition: -1400
   _showYPosition: 0
   _animationDuration: 0.5
   _camera: {fileID: 1577722397}
