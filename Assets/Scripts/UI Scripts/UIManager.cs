@@ -88,6 +88,7 @@ namespace UIscripts
         {
             _puzzles.List.ForEach(puzzle => Instantiate(_puzzlePrefab, _puzzleParent.transform).LoadPuzzlePanel(puzzle.PuzzleImage, puzzle.IsLocked, puzzle.Id));
         }
+
         public void LoadPlayerPuzzles()
         {
             if (PlayerData.Instance.SavedPuzzles != null)
@@ -104,11 +105,13 @@ namespace UIscripts
                 }
             }            
         }
+
         public void StartPuzzle()
         {
             PlayerData.Instance.SetCurrentPuzzle(new PuzzleSavingData(_currentPuzzleSO.Id, _currentGridSO));
             SceneManager.LoadScene("Main");
         }
+
         private void LoadDifficulties()
         {
             for (int i = 0; i < _diffucultiesList.GridDiffucultiesList.Count; i++)
@@ -123,16 +126,17 @@ namespace UIscripts
             foreach(Button buttons in _buttonsInteractivity)
             {
                 buttons.interactable = true;
-                buttons.GetComponentInChildren<TextMeshProUGUI>().color = _buttonTextColorBasic;
+                // buttons.GetComponentInChildren<TextMeshProUGUI>().color = _buttonTextColorBasic;
             }
             button.interactable = false;
-            button.GetComponentInChildren<TextMeshProUGUI>().color = _buttonTextColorClicked;
+            // button.GetComponentInChildren<TextMeshProUGUI>().color = _buttonTextColorClicked;
         }
 
         private void CloseWindow(GameObject ToClose)
         {
             ToClose.SetActive(false);
         }
+
         #endregion
 
         #region ChoosePuzzleInteraction
@@ -148,6 +152,7 @@ namespace UIscripts
                 }
             }
         }
+
         public void LoadPuzzleDifficultyChooser(int puzzleID)
         {
             foreach (var puzzle in _puzzles.List)
@@ -161,21 +166,21 @@ namespace UIscripts
                 }
             }
         }
+
         private void SetCurrentGridSO(int index)
         {
             _currentGridSO = _diffucultiesList.GridDiffucultiesList[index];
         }
+        
         #endregion
 
         #region CoinsLoading
-
         public void LoadCoins()
         {
             _coinsText.ForEach(text => text.text = PlayerData.Instance.CoinsAmount.ToString());
         }
-
+        
         #endregion
-
     }
 }
 
