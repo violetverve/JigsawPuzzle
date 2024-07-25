@@ -4,6 +4,7 @@ using UnityEngine;
 using PuzzleData;
 using Newtonsoft.Json;
 using Grid;
+using GameManagement;
 
 namespace Player
 {
@@ -21,8 +22,9 @@ namespace Player
         private List<PuzzleSavingData> _savedPuzzles;
         private PuzzleSavingData _currentPuzzle;
         private int _themeID;
+        private Level _currentLevel;
 
-        #region Singleton Pattern
+
         public static PlayerData Instance { get; private set; }
 
         private void Awake()
@@ -35,15 +37,20 @@ namespace Player
             Instance = this;
             LoadAllPlayerData();
         }
-        #endregion
+
+        public void SetCurrentLevel(Level level)
+        {
+            _currentLevel = level;
+        }
 
         #region Saving
         public void LoadAllPlayerData()
         {
             _coinsAmount = PlayerPrefs.GetInt(_coinsPrefs, 1000);
-            Debug.Log("Coins" + _coinsAmount);  
-            _hintsAmount = PlayerPrefs.GetInt(_hintsPrefs, 3);
-            Debug.Log("Hints" + _hintsAmount);
+ 
+            // _hintsAmount = PlayerPrefs.GetInt(_hintsPrefs, 3);
+            _hintsAmount = 10;
+            
             _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSavingData>>(PlayerPrefs.GetString(_savedPuzzlesPref));
             _currentPuzzle = JsonConvert.DeserializeObject<PuzzleSavingData>(PlayerPrefs.GetString(_savedCurrentPuzzlePref));
 
@@ -84,6 +91,7 @@ namespace Player
             _coinsAmount += reward;
             PlayerPrefs.SetInt(_coinsPrefs, _coinsAmount);
         }
+
         public void SpendCoins(int amount)
         {
             _coinsAmount -= amount;
@@ -110,6 +118,7 @@ namespace Player
         public List<PuzzleSavingData> SavedPuzzles => _savedPuzzles;
         public PuzzleSavingData CurrentPuzzle => _currentPuzzle;
         public int ThemeID => _themeID;
+        public Level CurrentLevel => _currentLevel;
     }
 }
 

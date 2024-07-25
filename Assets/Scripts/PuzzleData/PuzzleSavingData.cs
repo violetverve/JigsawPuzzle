@@ -9,28 +9,16 @@ namespace PuzzleData
 {
     public class PuzzleSavingData
     {
-        //to find then SO of puzzle
         private int _id;
-        //how big is our puzzle
         private GridSO _gridSize;
-        //ever puzzle piece will have their own id(column and row) and rotation 
         private List<Vector3> _uncompletedPieces;       
-        //remember piece configuration of puzzle
+
         private PieceConfiguration[,] _pieceConfiguration;
 
-        public PuzzleSavingData(int id, GridSO gridSize/*, PieceConfiguration[,] pieceConfigurations*/)
+        public PuzzleSavingData(int id, GridSO gridSize)
         {
             _id = id;
             _gridSize = gridSize;
-            //_pieceConfiguration = pieceConfigurations;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pieceData"></param>
-        public void AddPieces(Vector3 pieceData)
-        { 
-            _uncompletedPieces.Add(pieceData);
         }
 
         public int ID => _id;

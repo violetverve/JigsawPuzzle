@@ -1993,6 +1993,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4251005647312437012, guid: 13eaeae01b020454eadf7f97d7dde15d, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
     - target: {fileID: 7109981766199729230, guid: 13eaeae01b020454eadf7f97d7dde15d, type: 3}
       propertyPath: m_Name
       value: ScrollElement
@@ -4023,7 +4027,19 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1278515318}
+        m_TargetAssemblyTypeName: UIscripts.UIManager, Assembly-CSharp
+        m_MethodName: ToggleRotationEnabled
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!114 &1412264885
 MonoBehaviour:

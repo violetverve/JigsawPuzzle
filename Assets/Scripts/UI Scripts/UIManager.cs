@@ -50,6 +50,7 @@ namespace UIscripts
 
         [SerializeField] private GridSOList _diffucultiesList;
         private GridSO _currentGridSO;
+        private bool _currentRotationEnabled;
 
         [Space]
         [Header("Scroll")]
@@ -108,8 +109,14 @@ namespace UIscripts
 
         public void StartPuzzle()
         {
-            PlayerData.Instance.SetCurrentPuzzle(new PuzzleSavingData(_currentPuzzleSO.Id, _currentGridSO));
+            Level level = new Level(_currentGridSO, _currentPuzzleSO, _currentRotationEnabled);
+            PlayerData.Instance.SetCurrentLevel(level);
             SceneManager.LoadScene("Main");
+        }
+        
+        public void ToggleRotationEnabled()
+        {
+            _currentRotationEnabled = !_currentRotationEnabled;
         }
 
         private void LoadDifficulties()
