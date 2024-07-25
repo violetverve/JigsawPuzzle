@@ -13,13 +13,17 @@ MonoBehaviour:
   m_Name: PuzzlesList
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlesList/StagesList
   _puzzleList:
-  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
-  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}
-  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
-  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}
-  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
-  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}
-  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
-  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}
-  - {fileID: 11400000, guid: 84b57cefc1c575849a24c5ee1b6015d7, type: 2}
-  - {fileID: 11400000, guid: f74d6bdd766637e4296801e7cfb6ea20, type: 2}
+  - {fileID: 11400000, guid: 2bbe2455e039be142898db7d6767ea32, type: 2}
+  - {fileID: 11400000, guid: a97e7d09e32e20b43b2901a91a01d921, type: 2}
+  - {fileID: 11400000, guid: e9bfda3dec14ddc4f824b31f41a585f1, type: 2}
+  - {fileID: 11400000, guid: cec5e1cefd7088f4a8417532006a9a75, type: 2}
+  - {fileID: 11400000, guid: 29f6ba12e34f11a4386a6fb83e130c7b, type: 2}
+  - {fileID: 11400000, guid: bad78e97518a16c458179bcf76e69265, type: 2}
+  - {fileID: 11400000, guid: 8b94416d1f0fba348a917b47550e4a95, type: 2}
+  - {fileID: 11400000, guid: 2c09cfa507191754e9db441b1ef1caf9, type: 2}
+  - {fileID: 11400000, guid: ce69b6dffb91cae4f99c1faff3df382e, type: 2}
+  - {fileID: 11400000, guid: 5f1f334cc60564342bd6f8c9b27a781e, type: 2}
+  - {fileID: 11400000, guid: 9b169c4e0e007c44f87982b493903437, type: 2}
+  - {fileID: 11400000, guid: 521a46d9adf25a64bbd30eccfb86b67c, type: 2}
+  - {fileID: 11400000, guid: 42b1887fa02192f468e2019851c9c4e9, type: 2}
+  - {fileID: 11400000, guid: 8ea4959c21d977e48a92b9db98d2609a, type: 2}

@@ -5,8 +5,7 @@ using Utils;
 
 namespace PuzzleData
 {
-    [CreateAssetMenu(fileName = "Puzzle Config", menuName = "Create SO/Puzzle Config")]
-
+    [CreateAssetMenu(fileName = "PuzzleSO", menuName = "Create SO/PuzzleSO")]
     public class PuzzleSO : ScriptableObject
     {
         [SerializeField] private int _id;
