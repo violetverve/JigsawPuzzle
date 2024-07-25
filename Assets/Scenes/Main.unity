@@ -1097,6 +1097,7 @@ GameObject:
   - component: {fileID: 783174026}
   - component: {fileID: 783174027}
   - component: {fileID: 783174028}
+  - component: {fileID: 783174029}
   m_Layer: 5
   m_Name: PreviewEyeToggle
   m_TagString: Untagged
@@ -1200,6 +1201,19 @@ MonoBehaviour:
   _scrollViewAnimator: {fileID: 293246564}
   _grid: {fileID: 1690346331}
   _fadeDuration: 0.5
+--- !u!114 &783174029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783174025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a986836c5c6a2e48b8e69cb9ccfedae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _previewImage: {fileID: 234841177}
 --- !u!1 &802846770
 GameObject:
   m_ObjectHideFlags: 0
@@ -1646,7 +1660,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 891330877}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a986836c5c6a2e48b8e69cb9ccfedae, type: 3}
   m_Name: 
