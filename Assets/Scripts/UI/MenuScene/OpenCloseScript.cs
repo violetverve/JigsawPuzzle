@@ -1,9 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace UI.MenuScene
 {
@@ -18,25 +17,22 @@ namespace UI.MenuScene
         {
            _button = GetComponent<Button>();
         }
+
         public void OpenClose()
         {
             Open();
             Close();
             UIManager.OnPanelsChange?.Invoke(_button); 
         }
+
         private void Open()
         {
-            foreach (var objects in _openList)
-            {
-                objects.SetActive(true);
-            }
+            _openList.ForEach(item => item.SetActive(true));
         }
+
         private void Close()
         {
-            foreach (var objects in _closeList)
-            {
-                objects.SetActive(false);
-            }
+            _closeList.ForEach(item => item.SetActive(false));
         }
     }
 }
