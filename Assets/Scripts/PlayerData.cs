@@ -16,6 +16,7 @@ namespace Player
         private readonly string _savedPuzzlesPref = "player_savedPuzzle";
         private readonly string _savedCurrentPuzzlePref = "player_savedCurrentPuzzle";
         private readonly string _themePref = "player_theme";
+        private readonly string _unlockedPuzzlesPref = "unlocked_puzzles";
 
         private int _coinsAmount;
         private int _hintsAmount;
@@ -24,6 +25,7 @@ namespace Player
         private int _themeID;
         private Level _currentLevel;
 
+        private List<int> _unlockedPuzzles;
 
         public static PlayerData Instance { get; private set; }
 
@@ -44,6 +46,7 @@ namespace Player
         }
 
         #region Saving
+
         public void LoadAllPlayerData()
         {
             _coinsAmount = PlayerPrefs.GetInt(_coinsPrefs, 1000);
@@ -55,6 +58,43 @@ namespace Player
             _currentPuzzle = JsonConvert.DeserializeObject<PuzzleSavingData>(PlayerPrefs.GetString(_savedCurrentPuzzlePref));
 
             _themeID = PlayerPrefs.GetInt(_themePref, 0);
+            
+            LoadUnlockedPuzzles();
+            
+            Debug.Log("Unlocked puzzles: " + _unlockedPuzzles.Count);
+        }
+
+        private void LoadUnlockedPuzzles()
+        {
+            var unlockedPuzzles = PlayerPrefs.GetString(_unlockedPuzzlesPref);
+            if (string.IsNullOrEmpty(unlockedPuzzles))
+            {
+                _unlockedPuzzles = new List<int>();
+            }
+            else
+            {
+                _unlockedPuzzles = JsonConvert.DeserializeObject<List<int>>(unlockedPuzzles);
+            }
+        }
+
+        public void UnlockPuzzle(int id)
+        {
+            if (!_unlockedPuzzles.Contains(id))
+            {
+                _unlockedPuzzles.Add(id);
+            }
+
+            SaveUnlockedPuzzles();
+        }
+
+        public void SaveUnlockedPuzzles()
+        {
+            PlayerPrefs.SetString(_unlockedPuzzlesPref, JsonConvert.SerializeObject(_unlockedPuzzles));
+        }
+
+        public bool IsPuzzleUnlocked(int id)
+        {
+            return _unlockedPuzzles.Contains(id);
         }
 
         public void SaveThemeID(int id)
@@ -119,6 +159,7 @@ namespace Player
         public PuzzleSavingData CurrentPuzzle => _currentPuzzle;
         public int ThemeID => _themeID;
         public Level CurrentLevel => _currentLevel;
+        public List<int> UnlockedPuzzles => _unlockedPuzzles;
     }
 }
 

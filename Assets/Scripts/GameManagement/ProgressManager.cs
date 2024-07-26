@@ -16,6 +16,7 @@ namespace GameManagement
         private int _numberOfPieces;
         private float _lastMilestone = 0f;
         private int _numberOfEdges;
+        private bool _edgesCollected = false;
 
         private readonly float[] _milestones = { 0.25f, 0.5f, 0.75f };
         
@@ -64,11 +65,14 @@ namespace GameManagement
 
         private void CheckIfEdgesCollected(int numberOfEdgesCollected)
         {
+            if (_edgesCollected) return;
+            
             if (numberOfEdgesCollected == _numberOfEdges)
             {
-                Debug.Log("All edges collected!");
+                // Debug.Log("All edges collected!");
                 EdgesCollected?.Invoke();
                 // _edgesCollectedNotification.Animate();
+                _edgesCollected = true;
             }
         }
     
