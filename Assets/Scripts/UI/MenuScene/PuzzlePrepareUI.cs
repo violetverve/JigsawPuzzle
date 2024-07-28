@@ -18,7 +18,7 @@ namespace UI.MenuScene
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroup;
 
         [SerializeField] private float _snapForce;
-        
+
         [SerializeField] private DifficultyManagerSO _difficultyManager;
 
         public static Action<float> ItemChanging;
@@ -35,6 +35,8 @@ namespace UI.MenuScene
         private void OnEnable()
         {
             OnElementClick += MoveToElement;
+
+            ResetActiveElement();
         }
 
         private void OnDisable()
@@ -118,6 +120,14 @@ namespace UI.MenuScene
         {
             if (_scrollRect.velocity.magnitude > 1)
                 ItemChanging?.Invoke(_contentPanel.localPosition.x);
+        }
+
+        private void ResetActiveElement()
+        {
+            if (_snappingItemId != 0)
+            {
+                MoveToElement(0);
+            }
         }
 
     }
