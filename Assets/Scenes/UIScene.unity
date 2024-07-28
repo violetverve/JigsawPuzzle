@@ -378,7 +378,7 @@ MonoBehaviour:
   _sampleListItem: {fileID: 1592014343937653015, guid: 13eaeae01b020454eadf7f97d7dde15d, type: 3}
   _horizontalLayoutGroup: {fileID: 1435506033}
   _snapForce: 5
-  _difficiltiesList: {fileID: 11400000, guid: bea4102145125e3428b5e5bb73c6b512, type: 2}
+  _difficultyManager: {fileID: 11400000, guid: 509d8904d009e0f4c974daa991daa4af, type: 2}
 --- !u!1 &161432977
 GameObject:
   m_ObjectHideFlags: 0

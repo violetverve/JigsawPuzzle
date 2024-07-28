@@ -42,10 +42,8 @@ namespace UI.MenuScene
 
         public void SetLocked(bool locked)
         {
-            Debug.Log("SetLocked Puzzle ID: " + _puzzleID + " Is locked: " + locked);
             _locked = locked;
             _lockImage.SetActive(_locked);
-            Debug.Log("SetLocked Image active: " + _lockImage.activeSelf);
         }
 
         public int PuzzleID => _puzzleID;

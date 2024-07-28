@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Grid;
+using GameManagement.Difficulty;
 
 namespace UI.MenuScene
 {

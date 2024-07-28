@@ -7,8 +7,9 @@ using Player;
 using System;
 using PuzzleData;
 using GameManagement;
-using Grid;
+// using Grid;
 using UnityEngine.SceneManagement;
+using GameManagement.Difficulty;
 
 namespace UI.MenuScene
 {
@@ -191,7 +192,6 @@ namespace UI.MenuScene
 
         private void SetCurrentDifficulty(int index)
         {
-            Debug.Log("Setting current difficulty to " + index);
             _currentDifficulty = _difficultyManager.GetDifficulty(index);
         }
         

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using GameManagement.Difficulty;
 
 namespace UI.MenuScene
 {
@@ -17,8 +18,8 @@ namespace UI.MenuScene
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroup;
 
         [SerializeField] private float _snapForce;
-
-        [SerializeField] private GridSOList _difficiltiesList;
+        
+        [SerializeField] private DifficultyManagerSO _difficultyManager;
 
         public static Action<float> ItemChanging;
         public static Action<int> ScrollActiveItemChanged;
@@ -58,7 +59,7 @@ namespace UI.MenuScene
         {
             _deltaPosition = -_contentPanel.localPosition.x / _fullwidth;
             int snappingItemId = Mathf.RoundToInt(_deltaPosition);
-            snappingItemId = Mathf.Clamp(snappingItemId, 0, _difficiltiesList.GridDiffucultiesList.Count - 1);
+            snappingItemId = Mathf.Clamp(snappingItemId, 0, _difficultyManager.Difficulties.Count - 1);
 
             ChagingDifficulty(snappingItemId);        
 
