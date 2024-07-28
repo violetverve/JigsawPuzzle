@@ -49,8 +49,8 @@ namespace UI.MenuScene
 
         private PuzzleSO _currentPuzzleSO;
 
-        [SerializeField] private GridSOList _diffucultiesList;
-        private GridSO _currentGridSO;
+        [SerializeField] private DifficultyManagerSO _difficultyManager;
+        private DifficultySO _currentDifficulty;
         private bool _currentRotationEnabled;
 
         [Space]
@@ -67,7 +67,7 @@ namespace UI.MenuScene
             OnCrossClick += CloseWindow;
             OnLockedPanelClick += LoadBuyPanelPopUp;
             OnPanelClick += LoadPuzzleDifficultyChooser;
-            PuzzlePrepareUI.ScrollItemChanged += SetCurrentGridSO;
+            PuzzlePrepareUI.ScrollActiveItemChanged += SetCurrentDifficulty;
             OnPuzzleUnlocked += UnlockPuzzleUIPanel;
             OnCoinsChange += LoadCoins;
         }
@@ -78,7 +78,7 @@ namespace UI.MenuScene
             OnCrossClick -= CloseWindow;
             OnLockedPanelClick -= LoadBuyPanelPopUp;
             OnPanelClick -= LoadPuzzleDifficultyChooser;
-            PuzzlePrepareUI.ScrollItemChanged -= SetCurrentGridSO;
+            PuzzlePrepareUI.ScrollActiveItemChanged -= SetCurrentDifficulty;
             OnPuzzleUnlocked -= UnlockPuzzleUIPanel;
             OnCoinsChange -= LoadCoins;
         }
@@ -89,7 +89,7 @@ namespace UI.MenuScene
             LoadPlayerPuzzles();
             LoadCoins();
             LoadDifficulties();
-            SetCurrentGridSO(0);
+            SetCurrentDifficulty(0);
         }
 
         public void LoadAllPuzzles()
@@ -131,7 +131,7 @@ namespace UI.MenuScene
 
         public void StartPuzzle()
         {
-            Level level = new Level(_currentGridSO, _currentPuzzleSO, _currentRotationEnabled);
+            Level level = new Level(_currentDifficulty.Grid, _currentPuzzleSO, _currentRotationEnabled);
             PlayerData.Instance.SetCurrentLevel(level);
             SceneManager.LoadScene("Main");
         }
@@ -143,9 +143,12 @@ namespace UI.MenuScene
 
         private void LoadDifficulties()
         {
-            for (int i = 0; i < _diffucultiesList.GridDiffucultiesList.Count; i++)
+            int difficultiesNumber = _difficultyManager.Difficulties.Count;
+
+            for (int i = 0; i < difficultiesNumber; i++)
             {
-                Instantiate(_scrollPrefab, _scrollParent.transform).LoadScrollElement(_diffucultiesList.GridDiffucultiesList[i], i);
+                var difficulty = Instantiate(_scrollPrefab, _scrollParent.transform);
+                difficulty.Load(_difficultyManager.Difficulties[i], i);
             }
         }
 
@@ -186,9 +189,10 @@ namespace UI.MenuScene
             _currentPuzzleSO = puzzle;   
         }
 
-        private void SetCurrentGridSO(int index)
+        private void SetCurrentDifficulty(int index)
         {
-            _currentGridSO = _diffucultiesList.GridDiffucultiesList[index];
+            Debug.Log("Setting current difficulty to " + index);
+            _currentDifficulty = _difficultyManager.GetDifficulty(index);
         }
         
         #endregion

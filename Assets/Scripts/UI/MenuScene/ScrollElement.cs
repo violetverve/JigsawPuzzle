@@ -8,111 +8,140 @@ namespace UI.MenuScene
     public class ScrollElement : MonoBehaviour
     {
         [Header("Element Colors")]
-        [SerializeField] private Color _scrollElementColorActive;
-        [SerializeField] private Color _scrollElementColorBasic;
+        [SerializeField] private Color _activeColor;
+        [SerializeField] private Color _basicColor;
 
         [Header("Element Components")]
-        [SerializeField] private RectTransform _scrollElementTransform;
-        [SerializeField] private Image _scrollElementImage;
-        [SerializeField] private TextMeshProUGUI _scrollElementText;
-        [SerializeField] private Button _scrollElementButton;
-        private int _scrollElementNumber;
+        [SerializeField] private RectTransform _rectTransform;
+        [SerializeField] private Image _image;
+        [SerializeField] private TextMeshProUGUI _piecesText;
+        [SerializeField] private TextMeshProUGUI _coinsText;
+        [SerializeField] private TextMeshProUGUI _rewardText;
+        [SerializeField] private Button _button;
+        private int _index;
+
 
         [Header("Element Parameters")]
-        [SerializeField] private float _scrollElementSize;
-        [SerializeField] private float _paddingScrollElement;
-        [SerializeField] private float _basicScaleScrollElement;
-        [SerializeField] private float _activeScaleScrollElement;
+        [SerializeField] private float _size;
+        [SerializeField] private float _padding;
+        [SerializeField] private float _basicScale;
+        [SerializeField] private float _activeScale;
         private float _totalPaddingAndSize;
 
-        [SerializeField, HideInInspector] private AnimationCurve _scrollElementAnimationCurveSize;
-        [SerializeField, HideInInspector] private AnimationCurve _scrollElementAnimationCurveRedColor;
-        [SerializeField, HideInInspector] private AnimationCurve _scrollElementAnimationCurveBlueColor;
-        [SerializeField, HideInInspector] private AnimationCurve _scrollElementAnimationCurveGreenColor;
+        [SerializeField, HideInInspector] private AnimationCurve _animationCurveSize;
+        [SerializeField, HideInInspector] private AnimationCurve _animationCurveRed;
+        [SerializeField, HideInInspector] private AnimationCurve _animationCurveBlue;
+        [SerializeField, HideInInspector] private AnimationCurve _animationCurveGreen;
+        [SerializeField, HideInInspector] private AnimationCurve _animationCurveOpacity;
 
         private void Awake()
         {
-            _totalPaddingAndSize = _paddingScrollElement + _scrollElementSize;
+            _totalPaddingAndSize = _padding + _size;
 
-            AdjustScrollElementAnimationCurveSize();
-            AdjustScrollElementAnimationCurveColor();
+            AdjustAnimationCurveSize();
+            AdjustAnimationCurveColor();
+            AdjustOpacityCurve();
         }
 
         private void OnEnable()
         {
-            PuzzlePrepareUI.ItemChanging += SetBasicScrollElementParameters;
-            _scrollElementButton.onClick.AddListener(ElementClick);
+            PuzzlePrepareUI.ItemChanging += SetBasicParameters;
+            _button.onClick.AddListener(ElementClick);
         }
 
         private void OnDisable()
         {
-            PuzzlePrepareUI.ItemChanging -= SetBasicScrollElementParameters;
-            _scrollElementButton.onClick.RemoveListener(ElementClick);
+            PuzzlePrepareUI.ItemChanging -= SetBasicParameters;
+            _button.onClick.RemoveListener(ElementClick);
         }
 
-        private void AdjustScrollElementAnimationCurveSize()
+        private void AdjustAnimationCurveSize()
         {
-            _scrollElementAnimationCurveSize.ClearKeys();
+            _animationCurveSize.ClearKeys();
 
-            _scrollElementAnimationCurveSize.AddKey(_totalPaddingAndSize, _basicScaleScrollElement);
-            _scrollElementAnimationCurveSize.AddKey(-1 * _totalPaddingAndSize, _basicScaleScrollElement);
-            _scrollElementAnimationCurveSize.AddKey(0, _activeScaleScrollElement);
+            _animationCurveSize.AddKey(_totalPaddingAndSize, _basicScale);
+            _animationCurveSize.AddKey(-1 * _totalPaddingAndSize, _basicScale);
+            _animationCurveSize.AddKey(0, _activeScale
+);
         }
 
-        public void SetBasicScrollElementParameters(float scrollPosition)
+        public void SetBasicParameters(float scrollPosition)
         {
             float relativePosition = CalculateRelativePosition(scrollPosition);
-            SetScrollElementScale(relativePosition);
-            SetScrollElementColor(relativePosition);
+            SetScale(relativePosition);
+            SetColor(relativePosition);
+            SetOpacity(relativePosition);
         }
 
         private float CalculateRelativePosition(float scrollPosition)
         {
-            return scrollPosition + _scrollElementNumber * (_paddingScrollElement + _scrollElementSize);
+            return scrollPosition + _index * (_padding + _size);
         }
 
-        private void SetScrollElementScale(float relativePosition)
+        private void SetScale(float relativePosition)
         {
-            float scale = _scrollElementAnimationCurveSize.Evaluate(relativePosition);
-            _scrollElementTransform.localScale = new Vector3(scale, scale);
+            float scale = _animationCurveSize.Evaluate(relativePosition);
+            _rectTransform.localScale = new Vector3(scale, scale);
         }
 
-        private void SetScrollElementColor(float relativePosition)
+        private void SetColor(float relativePosition)
         {
             Color color = new Color(
-                _scrollElementAnimationCurveRedColor.Evaluate(relativePosition),
-                _scrollElementAnimationCurveGreenColor.Evaluate(relativePosition),
-                _scrollElementAnimationCurveBlueColor.Evaluate(relativePosition));
-            _scrollElementImage.color = color;
+                _animationCurveRed.Evaluate(relativePosition),
+                _animationCurveGreen.Evaluate(relativePosition),
+                _animationCurveBlue.Evaluate(relativePosition));
+            _image.color = color;
         }
 
-        private void AdjustScrollElementAnimationCurveColor()
+        private void SetOpacity(float relativePosition)
         {
-            AdjustColorCurve(_scrollElementAnimationCurveRedColor, _scrollElementColorBasic.r, _scrollElementColorActive.r);
-            AdjustColorCurve(_scrollElementAnimationCurveGreenColor, _scrollElementColorBasic.g, _scrollElementColorActive.g);
-            AdjustColorCurve(_scrollElementAnimationCurveBlueColor, _scrollElementColorBasic.b, _scrollElementColorActive.b);
+            float opacity = _animationCurveOpacity.Evaluate(relativePosition);
+            var color = _rewardText.color;
+            color.a = opacity;
+
+            _rewardText.color = color;
+        }
+
+        private void AdjustAnimationCurveColor()
+        {
+            AdjustColorCurve(_animationCurveRed, _basicColor.r, _activeColor.r);
+            AdjustColorCurve(_animationCurveGreen, _basicColor.g, _activeColor.g);
+            AdjustColorCurve(_animationCurveBlue, _basicColor.b, _activeColor.b);
         }
 
         private void AdjustColorCurve(AnimationCurve curve, float basicColorValue, float activeColorValue)
         {
             curve.ClearKeys();
-            float keyPosition = _paddingScrollElement + _scrollElementSize;
+            float keyPosition = _padding + _size;
 
             curve.AddKey(keyPosition, basicColorValue);
             curve.AddKey(-keyPosition, basicColorValue);
             curve.AddKey(0, activeColorValue);
         }
 
-
-        public void LoadScrollElement(GridSO difficultyGrid, int scrollnum)
+        private void AdjustOpacityCurve()
         {
-            _scrollElementText.text = difficultyGrid.Area.ToString();
-            _scrollElementNumber = scrollnum;
+            int inactiveOpacity = 0;
+            int activeOpacity = 1;
+
+            _animationCurveOpacity.ClearKeys();
+            float keyPosition = _padding + _size;
+
+            _animationCurveOpacity.AddKey(keyPosition, inactiveOpacity);
+            _animationCurveOpacity.AddKey(-keyPosition, inactiveOpacity);
+            _animationCurveOpacity.AddKey(0, activeOpacity);
+        }
+
+        public void Load(DifficultySO difficulty, int index)
+        {
+            _piecesText.text = difficulty.Grid.Area.ToString();
+            _coinsText.text = difficulty.Reward.ToString();
+            _index = index;
         }
 
         private void ElementClick()
         {
-            PuzzlePrepareUI.OnElementClick?.Invoke(_scrollElementNumber);
+            PuzzlePrepareUI.OnElementClick?.Invoke(_index);
         }
 
     }

@@ -21,12 +21,12 @@ namespace UI.MenuScene
         [SerializeField] private GridSOList _difficiltiesList;
 
         public static Action<float> ItemChanging;
-        public static Action<int> ScrollItemChanged;
+        public static Action<int> ScrollActiveItemChanged;
         public static Action<int> OnElementClick;
 
         private float _snapSpeed;
         private bool _isSnapped;
-        private int _currentItemSnapping;
+        private int _snappingItemId;
         private float _deltaPosition;
         private float _fullwidth;
         private int _maxScrollvelocity = 200;
@@ -57,10 +57,10 @@ namespace UI.MenuScene
         private void SnappingItem()
         {
             _deltaPosition = -_contentPanel.localPosition.x / _fullwidth;
-            int currentItemSnapping = Mathf.RoundToInt(_deltaPosition);
-            currentItemSnapping = Mathf.Clamp(currentItemSnapping, 0, _difficiltiesList.GridDiffucultiesList.Count - 1);
+            int snappingItemId = Mathf.RoundToInt(_deltaPosition);
+            snappingItemId = Mathf.Clamp(snappingItemId, 0, _difficiltiesList.GridDiffucultiesList.Count - 1);
 
-            ChagingDifficulty(currentItemSnapping);        
+            ChagingDifficulty(snappingItemId);        
 
             ChangingScrollItem();
 
@@ -69,13 +69,13 @@ namespace UI.MenuScene
                 _scrollRect.velocity = Vector2.zero;
                 _snapSpeed += _snapForce * Time.deltaTime;
                 _contentPanel.localPosition = new Vector3(
-                    Mathf.MoveTowards(_contentPanel.localPosition.x, -_currentItemSnapping * _fullwidth, _snapSpeed),
+                    Mathf.MoveTowards(_contentPanel.localPosition.x, -_snappingItemId * _fullwidth, _snapSpeed),
                     _contentPanel.localPosition.y,
                     _contentPanel.localPosition.z);
 
                 ItemChanging?.Invoke(_contentPanel.localPosition.x);
 
-                if (_contentPanel.localPosition.x == -_currentItemSnapping * _fullwidth)
+                if (_contentPanel.localPosition.x == -_snappingItemId * _fullwidth)
                     _isSnapped = true;
             }
             
@@ -106,10 +106,10 @@ namespace UI.MenuScene
 
         private void ChagingDifficulty(int currentItemSnapping)
         {
-            if (_currentItemSnapping != currentItemSnapping)
+            if (_snappingItemId != currentItemSnapping)
             {
-                ScrollItemChanged?.Invoke(currentItemSnapping);
-                _currentItemSnapping = currentItemSnapping;
+                ScrollActiveItemChanged?.Invoke(currentItemSnapping);
+                _snappingItemId = currentItemSnapping;
             }
         }
 
