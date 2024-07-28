@@ -18,8 +18,8 @@ namespace Player
         private readonly string _themePref = "player_theme";
         private readonly string _unlockedPuzzlesPref = "unlocked_puzzles";
 
-        private int _coinsAmount;
-        private int _hintsAmount;
+        private int _coins;
+        private int _hints;
         private List<PuzzleSavingData> _savedPuzzles;
         private PuzzleSavingData _currentPuzzle;
         private int _themeID;
@@ -49,11 +49,10 @@ namespace Player
 
         public void LoadAllPlayerData()
         {
-            _coinsAmount = PlayerPrefs.GetInt(_coinsPrefs, 1000);
+            _coins = PlayerPrefs.GetInt(_coinsPrefs, 1000);
  
-            // _hintsAmount = PlayerPrefs.GetInt(_hintsPrefs, 3);
-            _hintsAmount = 10;
-            
+            _hints = PlayerPrefs.GetInt(_hintsPrefs, 3);
+
             _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSavingData>>(PlayerPrefs.GetString(_savedPuzzlesPref));
             _currentPuzzle = JsonConvert.DeserializeObject<PuzzleSavingData>(PlayerPrefs.GetString(_savedCurrentPuzzlePref));
 
@@ -75,16 +74,6 @@ namespace Player
             {
                 _unlockedPuzzles = JsonConvert.DeserializeObject<List<int>>(unlockedPuzzles);
             }
-        }
-
-        public void UnlockPuzzle(int id)
-        {
-            if (!_unlockedPuzzles.Contains(id))
-            {
-                _unlockedPuzzles.Add(id);
-            }
-
-            SaveUnlockedPuzzles();
         }
 
         public void SaveUnlockedPuzzles()
@@ -125,36 +114,54 @@ namespace Player
 
         #endregion
 
-        #region AddingRemovingConsumables
+        #region UpdateConsumables
         public void AddCoins(int reward)
         {
-            _coinsAmount += reward;
-            PlayerPrefs.SetInt(_coinsPrefs, _coinsAmount);
+            _coins += reward;
+            PlayerPrefs.SetInt(_coinsPrefs, _coins);
         }
 
-        public void SpendCoins(int amount)
+        public void UpdateCoins(int amount)
         {
-            _coinsAmount -= amount;
-            PlayerPrefs.SetInt(_coinsPrefs, _coinsAmount);
-        }
-
-        public void AddHints(int reward)
-        {
-            _hintsAmount += reward;
-            PlayerPrefs.SetInt(_coinsPrefs, _hintsAmount);
+            _coins += amount;
+            PlayerPrefs.SetInt(_coinsPrefs, _coins);
         }
 
         public void UseHint()
         {
-            _hintsAmount--;
-            Debug.Log("Hint Used");
-            PlayerPrefs.SetInt(_hintsPrefs, _hintsAmount);
+            _hints--;
+            PlayerPrefs.SetInt(_hintsPrefs, _hints);
+        }
+
+        # endregion
+
+        #region UnlockPuzzle
+        public bool TryUnlockPuzzle(int price, int id)
+        {
+            if (_coins >= price)
+            {
+                UpdateCoins(-price);
+                UnlockPuzzle(id);
+                return true;
+            }
+
+            return false;
+        }
+
+        public void UnlockPuzzle(int id)
+        {
+            if (!_unlockedPuzzles.Contains(id))
+            {
+                _unlockedPuzzles.Add(id);
+            }
+
+            SaveUnlockedPuzzles();
         }
 
         #endregion
 
-        public int CoinsAmount => _coinsAmount;
-        public int HintsAmount => _hintsAmount;
+        public int Coins => _coins;
+        public int Hints => _hints;
         public List<PuzzleSavingData> SavedPuzzles => _savedPuzzles;
         public PuzzleSavingData CurrentPuzzle => _currentPuzzle;
         public int ThemeID => _themeID;

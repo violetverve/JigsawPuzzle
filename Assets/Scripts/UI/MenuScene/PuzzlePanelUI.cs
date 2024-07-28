@@ -22,9 +22,7 @@ namespace UI.MenuScene
             {
                 _locked = false;
             }
-
-            Debug.Log("Puzzle ID: " + puzzle.Id + " Is locked: " + _locked);
-
+            
             _lockImage.SetActive(_locked);
             _puzzleID = puzzle.Id;
         }

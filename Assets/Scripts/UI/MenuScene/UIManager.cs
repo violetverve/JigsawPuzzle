@@ -45,6 +45,7 @@ namespace UI.MenuScene
         public static Action<int> OnLockedPanelClick;
         public static Action<int> OnPanelClick;
         public static Action<int> OnPuzzleUnlocked;
+        public static Action OnCoinsChange;
 
         private PuzzleSO _currentPuzzleSO;
 
@@ -68,6 +69,7 @@ namespace UI.MenuScene
             OnPanelClick += LoadPuzzleDifficultyChooser;
             PuzzlePrepareUI.ScrollItemChanged += SetCurrentGridSO;
             OnPuzzleUnlocked += UnlockPuzzleUIPanel;
+            OnCoinsChange += LoadCoins;
         }
 
         private void OnDisable()
@@ -78,6 +80,7 @@ namespace UI.MenuScene
             OnPanelClick -= LoadPuzzleDifficultyChooser;
             PuzzlePrepareUI.ScrollItemChanged -= SetCurrentGridSO;
             OnPuzzleUnlocked -= UnlockPuzzleUIPanel;
+            OnCoinsChange -= LoadCoins;
         }
 
         private void Start()
@@ -193,7 +196,7 @@ namespace UI.MenuScene
         #region CoinsLoading
         public void LoadCoins()
         {
-            _coinsText.ForEach(text => text.text = PlayerData.Instance.CoinsAmount.ToString());
+            _coinsText.ForEach(text => text.text = PlayerData.Instance.Coins.ToString());
         }
         
         #endregion

@@ -17,18 +17,11 @@ namespace UI.MenuScene
 
         public void TryUnlockPuzzle()
         {
-            int coins = PlayerData.Instance.CoinsAmount;
-
-            if(coins >= _unlockPrice)
+            if (PlayerData.Instance.TryUnlockPuzzle(_unlockPrice, _puzzlePanelUI.PuzzleID))
             {
-                PlayerData.Instance.SpendCoins(_unlockPrice);
-                PlayerData.Instance.UnlockPuzzle(_puzzlePanelUI.PuzzleID);
-
                 UIManager.OnPuzzleUnlocked?.Invoke(_puzzlePanelUI.PuzzleID);
-
+                UIManager.OnCoinsChange?.Invoke();
                 LoadDifficultyPanel();
-
-                Debug.Log("Puzzle unlocked");
             }
             else
             {

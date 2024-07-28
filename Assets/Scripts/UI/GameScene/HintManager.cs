@@ -24,7 +24,7 @@ namespace UI.GameScene
         {
             if (PlayerData.Instance != null)
             {
-                _hintsNumber = PlayerData.Instance.HintsAmount;
+                _hintsNumber = PlayerData.Instance.Hints;
             }
 
             SetNumberHintsText(_hintsNumber);
