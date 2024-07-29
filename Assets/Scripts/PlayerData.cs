@@ -20,8 +20,10 @@ namespace Player
 
         private int _coins;
         private int _hints;
-        private List<PuzzleSavingData> _savedPuzzles;
-        private PuzzleSavingData _currentPuzzle;
+
+        private List<PuzzleSave> _savedPuzzles;
+        private PuzzleSave _currentPuzzle;
+
         private int _themeID;
         private Level _currentLevel;
 
@@ -37,6 +39,7 @@ namespace Player
                 return;
             }
             Instance = this;
+
             LoadAllPlayerData();
         }
 
@@ -50,17 +53,42 @@ namespace Player
         public void LoadAllPlayerData()
         {
             _coins = PlayerPrefs.GetInt(_coinsPrefs, 1000);
- 
             _hints = PlayerPrefs.GetInt(_hintsPrefs, 3);
-
-            _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSavingData>>(PlayerPrefs.GetString(_savedPuzzlesPref));
-            _currentPuzzle = JsonConvert.DeserializeObject<PuzzleSavingData>(PlayerPrefs.GetString(_savedCurrentPuzzlePref));
-
             _themeID = PlayerPrefs.GetInt(_themePref, 0);
-            
+
+            LoadSavedPuzzled();
+            LoadCurrentPuzzle();   
             LoadUnlockedPuzzles();
-            
-            Debug.Log("Unlocked puzzles: " + _unlockedPuzzles.Count);
+        }
+
+        private void LoadSavedPuzzled()
+        {
+            string savedPuzzles = PlayerPrefs.GetString(_savedPuzzlesPref);
+
+            Debug.Log("SavedPuzzles: " + savedPuzzles);
+
+            if (string.IsNullOrEmpty(savedPuzzles))
+            {
+                _savedPuzzles = new List<PuzzleSave>();
+                Debug.Log("SavedPuzzles is null");
+            }
+            else
+            {
+                _savedPuzzles = JsonConvert.DeserializeObject<List<PuzzleSave>>(savedPuzzles);
+            }
+        }
+
+        private void LoadCurrentPuzzle()
+        {
+            string currentPuzzle = PlayerPrefs.GetString(_savedCurrentPuzzlePref);
+            if (string.IsNullOrEmpty(currentPuzzle))
+            {
+                _currentPuzzle = null;
+            }
+            else
+            {
+                _currentPuzzle = JsonConvert.DeserializeObject<PuzzleSave>(currentPuzzle);
+            }
         }
 
         private void LoadUnlockedPuzzles()
@@ -92,12 +120,16 @@ namespace Player
             PlayerPrefs.SetInt(_themePref, id);
         }
 
-        public void SavePlayerPuzzleProgress(PuzzleSavingData puzzleToSave)
+        public void AddSavedPuzzle(PuzzleSave puzzle)
         {
-            _savedPuzzles.Add(puzzleToSave);
+            if (!_savedPuzzles.Contains(puzzle))
+            {
+                _savedPuzzles.Add(puzzle);
+                SaveSavedPuzzles();
+            }
         }
 
-        public void SavePlayerPuzzleProgress()
+        public void SaveSavedPuzzles()
         {
             if (_savedPuzzles != null)
             {
@@ -106,11 +138,27 @@ namespace Player
             }
         }
 
-        public void SetCurrentPuzzle(PuzzleSavingData puzzle)
+        public PuzzleSave TryGetSavedPuzzle(int id)
         {
-            _currentPuzzle = puzzle;
-            PlayerPrefs.SetString(_savedCurrentPuzzlePref, JsonConvert.SerializeObject(puzzle));
+            if (_savedPuzzles == null)
+            {
+                Debug.LogError("SavedPuzzles is not initialized.");
+                return null;
+            }
+
+            Debug.Log("SavedPuzzles count: " + _savedPuzzles.Count);
+            foreach (var puzzle in _savedPuzzles)
+            {
+                Debug.Log("Puzzle ID: " + puzzle.Id);
+                if (puzzle.Id == id)
+                {
+                    return puzzle;
+                }
+            }
+
+            return null;
         }
+
 
         #endregion
 
@@ -162,11 +210,13 @@ namespace Player
 
         public int Coins => _coins;
         public int Hints => _hints;
-        public List<PuzzleSavingData> SavedPuzzles => _savedPuzzles;
-        public PuzzleSavingData CurrentPuzzle => _currentPuzzle;
+        // public List<PuzzleSavingData> SavedPuzzles => _savedPuzzles;
+        // public PuzzleSavingData CurrentPuzzle => _currentPuzzle;
+
+        public List<PuzzleSave> SavedPuzzles => _savedPuzzles;
+        public PuzzleSave CurrentPuzzle => _currentPuzzle;
         public int ThemeID => _themeID;
         public Level CurrentLevel => _currentLevel;
         public List<int> UnlockedPuzzles => _unlockedPuzzles;
     }
 }
-

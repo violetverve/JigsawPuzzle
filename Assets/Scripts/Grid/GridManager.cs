@@ -5,6 +5,9 @@ using UI.GameScene;
 using GameManagement;
 using PuzzlePiece;
 
+using Player;
+using PuzzleData;
+
 namespace Grid
 {   
     public class GridManager : MonoBehaviour
@@ -20,8 +23,8 @@ namespace Grid
 
         public ScrollViewController ScrollViewController => _scrollViewController;
         public List<Piece> CollectedPieces => _gridInteractionController.CollectedPieces;
+        public PieceConfiguration[,] PieceConfigurations => _gridGenerator.PieceConfigurations;
         
-
         private void OnEnable()
         {
             LevelManager.LevelStarted += HandleLevelStarted;
@@ -43,7 +46,37 @@ namespace Grid
 
             _gridField.Initialize(_gridSO);
 
-            _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage);
+            if (PlayerData.Instance != null)
+            {
+                Debug.Log("Puzzle ID from PlayerData: " + PlayerData.Instance.CurrentLevel.PuzzleSO.Id);
+                PuzzleSave savedPuzzle = PlayerData.Instance.TryGetSavedPuzzle(level.PuzzleSO.Id);
+                if (savedPuzzle != null)
+                {
+                    Debug.Log("Loading saved puzzle");
+
+                    // Debug how Piece configurations are loaded
+
+                    // Debug.Log("Pieces configuration:");
+ 
+                    var pieceConfigurations = savedPuzzle.Get2DArray();
+
+                    Debug.Log("Piece configuration 00: " + pieceConfigurations[0, 0].Top);
+
+                    _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage, pieceConfigurations);                    
+                }
+                else
+                {
+                    Debug.Log("Generating new puzzle from first else");
+                    _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage);
+                }
+            }
+            else
+            {
+                Debug.Log("Generating new puzzle from second else");
+                _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage);
+            }
+
+            // _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage);
 
             _gridInteractionController.SetRotationEnabled(level.RotationEnabled);
 

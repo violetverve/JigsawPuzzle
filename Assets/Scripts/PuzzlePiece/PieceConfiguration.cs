@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PuzzlePiece.Features;
+using System;
 
 namespace PuzzlePiece {
-    [System.Serializable]
+    [Serializable]
     public struct PieceConfiguration
     {
         private FeatureType _left;

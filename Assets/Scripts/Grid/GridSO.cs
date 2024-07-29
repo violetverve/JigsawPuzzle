@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Grid
 {
     [CreateAssetMenu(menuName = "Grid/GridSO")]
+    [System.Serializable]
     public class GridSO : ScriptableObject
     {
         [SerializeField, Min(2)] private int _width;

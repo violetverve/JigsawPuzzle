@@ -7,7 +7,6 @@ using Player;
 using System;
 using PuzzleData;
 using GameManagement;
-// using Grid;
 using UnityEngine.SceneManagement;
 using GameManagement.Difficulty;
 
@@ -122,7 +121,7 @@ namespace UI.MenuScene
 
             foreach (var playerPuzzle in PlayerData.Instance.SavedPuzzles)
             {
-                var puzzle = _puzzles.GetPuzzleByID(playerPuzzle.ID);
+                var puzzle = _puzzles.GetPuzzleByID(playerPuzzle.Id);
                 if (puzzle != null)
                 {
                     Instantiate(_puzzlePrefab, _playerPuzzleParent.transform).LoadPuzzlePanel(puzzle);

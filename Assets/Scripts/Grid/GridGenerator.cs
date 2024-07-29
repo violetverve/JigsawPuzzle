@@ -18,17 +18,27 @@ namespace Grid {
         private PieceConfiguration[,] _pieceConfigurations;
         private List<Piece> _generatedPieces = new List<Piece>();
         public List<Piece> GeneratedPieces => _generatedPieces;
+        public PieceConfiguration[,] PieceConfigurations => _pieceConfigurations;
         private Vector3 _startPosition;
 
 
-        public void InitializeGrid(GridSO gridSO, Sprite image)
+        public void InitializeGrid(GridSO gridSO, Sprite image,  PieceConfiguration[,] pieceConfigurations = null)
         {
             _gridSO = gridSO;
             _material.mainTexture = image.texture;
             _cellSize = _gridField.CellSize;
 
-            _pieceConfigurations = new PieceConfiguration[_gridSO.Height, _gridSO.Width];
-         
+            if (pieceConfigurations == null)
+            {
+                GeneratePieceConfigurations();
+            }
+            else
+            {
+                _pieceConfigurations = pieceConfigurations;
+            }
+
+            Debug.Log("Piece configurations generated");
+
             _pieceScale = _cellSize / _pieceSize;
 
             _startPosition = CalculateStartPosition();
@@ -36,28 +46,17 @@ namespace Grid {
             GenerateGrid();
         }
 
-        // To be used in puzzle preview
-        private GameObject GetPiecesOutline()
+        private void GeneratePieceConfigurations()
         {
-            GameObject outline = new GameObject("Outline");
+            _pieceConfigurations = new PieceConfiguration[_gridSO.Height, _gridSO.Width];
 
             for (int row = 0; row < _gridSO.Height; row++)
             {
                 for (int col = 0; col < _gridSO.Width; col++)
                 {
-                    GameObject outlinePiece = new GameObject("OutlinePiece");
-
-                    Vector3 position = CalculatePiecePosition(row, col);
-
-                    _puzzlePieceGenerator.CreateOutline(outlinePiece, _pieceConfigurations[row, col]);
-
-                    outlinePiece.transform.SetParent(outline.transform, true);
-                    outlinePiece.transform.localScale = Vector3.one * _pieceScale;
-                    outlinePiece.transform.position = position;
+                    _pieceConfigurations[row, col] = GeneratePieceConfiguration(row, col);
                 }
             }
-
-            return outline;
         }
 
         private void GenerateGrid()
@@ -67,8 +66,10 @@ namespace Grid {
                 for (int col = 0; col < _gridSO.Width; col++)
                 {
                     Vector3 position = CalculatePiecePosition(row, col);
-                    var pieceConfiguration = GeneratePieceConfiguration(row, col);
-                    _pieceConfigurations[row, col] = pieceConfiguration;
+                    // var pieceConfiguration = GeneratePieceConfiguration(row, col);
+                    // _pieceConfigurations[row, col] = pieceConfiguration;
+
+                    var pieceConfiguration = _pieceConfigurations[row, col];
                     GeneratePiece(pieceConfiguration, position, row, col);
                 }
             }
@@ -153,6 +154,30 @@ namespace Grid {
         private FeatureType GetRandomFeature()
         {
             return (FeatureType)Random.Range(0, 2);
+        }
+
+        // To be used in puzzle preview
+        private GameObject GetPiecesOutline()
+        {
+            GameObject outline = new GameObject("Outline");
+
+            for (int row = 0; row < _gridSO.Height; row++)
+            {
+                for (int col = 0; col < _gridSO.Width; col++)
+                {
+                    GameObject outlinePiece = new GameObject("OutlinePiece");
+
+                    Vector3 position = CalculatePiecePosition(row, col);
+
+                    _puzzlePieceGenerator.CreateOutline(outlinePiece, _pieceConfigurations[row, col]);
+
+                    outlinePiece.transform.SetParent(outline.transform, true);
+                    outlinePiece.transform.localScale = Vector3.one * _pieceScale;
+                    outlinePiece.transform.position = position;
+                }
+            }
+
+            return outline;
         }
 
     }
