@@ -31,13 +31,13 @@ namespace Grid {
             if (pieceConfigurations == null)
             {
                 GeneratePieceConfigurations();
+                Debug.Log("Piece configurations generated");
             }
             else
             {
                 _pieceConfigurations = pieceConfigurations;
+                Debug.Log("Piece configurations loaded");
             }
-
-            Debug.Log("Piece configurations generated");
 
             _pieceScale = _cellSize / _pieceSize;
 
@@ -66,8 +66,6 @@ namespace Grid {
                 for (int col = 0; col < _gridSO.Width; col++)
                 {
                     Vector3 position = CalculatePiecePosition(row, col);
-                    // var pieceConfiguration = GeneratePieceConfiguration(row, col);
-                    // _pieceConfigurations[row, col] = pieceConfiguration;
 
                     var pieceConfiguration = _pieceConfigurations[row, col];
                     GeneratePiece(pieceConfiguration, position, row, col);

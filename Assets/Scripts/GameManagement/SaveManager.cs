@@ -1,29 +1,41 @@
+using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 using Grid;
 using Player;
-using GameManagement;
-using PuzzleData;
-using Newtonsoft.Json;
+using PuzzleData.Save;
+using PuzzlePiece;
 
-public class SaveManager : MonoBehaviour
+
+namespace GameManagement
 {
-    [SerializeField] private GridManager _gridManager;
-    [SerializeField] private LevelManager _levelManager;
-
-    public void Save()
+    public class SaveManager : MonoBehaviour
     {
-        int id = PlayerData.Instance.CurrentLevel.PuzzleSO.Id;
-        GridSO gridSO = PlayerData.Instance.CurrentLevel.GridSO;
+        [SerializeField] private GridManager _gridManager;
+        [SerializeField] private LevelManager _levelManager;
 
-        int gridSide = gridSO.Width;
+        public void Save()
+        {
+            int id = PlayerData.Instance.CurrentLevel.PuzzleSO.Id;
+            GridSO gridSO = PlayerData.Instance.CurrentLevel.GridSO;
 
-        Debug.Log("ID of the current puzzle: " + id);
-        var piecesConfiguration = _gridManager.PieceConfigurations;
+            int gridSide = gridSO.Width;
 
-        Debug.Log("Saving...");
+            Debug.Log("ID of the current puzzle: " + id);
+            
+            var piecesConfiguration = _gridManager.PieceConfigurations;
 
-        PuzzleSave puzzleSave = new PuzzleSave(id, gridSide, piecesConfiguration);
+            Debug.Log("Saving...");
 
-        PlayerData.Instance.AddSavedPuzzle(puzzleSave);
+            var snappableSaves = _gridManager.GetSnappables().Select(snappable => new SnappableSave(snappable)).ToList();
+
+            var collectedPieceSaves = _gridManager.CollectedPieces.Select(piece => new PieceSave(piece)).ToList();
+            
+            var puzzleSave = new PuzzleSave(id, gridSide, piecesConfiguration, snappableSaves, collectedPieceSaves);
+
+            PlayerData.Instance.AddSavedPuzzle(puzzleSave);
+        }
     }
 }
+

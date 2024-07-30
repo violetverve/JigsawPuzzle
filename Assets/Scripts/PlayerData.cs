@@ -5,6 +5,7 @@ using PuzzleData;
 using Newtonsoft.Json;
 using Grid;
 using GameManagement;
+using PuzzleData.Save;
 
 namespace Player
 {
@@ -65,12 +66,10 @@ namespace Player
         {
             string savedPuzzles = PlayerPrefs.GetString(_savedPuzzlesPref);
 
-            Debug.Log("SavedPuzzles: " + savedPuzzles);
 
             if (string.IsNullOrEmpty(savedPuzzles))
             {
                 _savedPuzzles = new List<PuzzleSave>();
-                Debug.Log("SavedPuzzles is null");
             }
             else
             {
@@ -122,11 +121,19 @@ namespace Player
 
         public void AddSavedPuzzle(PuzzleSave puzzle)
         {
-            if (!_savedPuzzles.Contains(puzzle))
+            Debug.Log("Adding saved puzzle");
+            var previouslySavedPuzzle = TryGetSavedPuzzle(puzzle.Id);
+           
+            if (previouslySavedPuzzle != null)
             {
-                _savedPuzzles.Add(puzzle);
-                SaveSavedPuzzles();
+                Debug.Log("Removing previously saved puzzle");
+                _savedPuzzles.Remove(previouslySavedPuzzle);
             }
+
+            _savedPuzzles.Add(puzzle);
+            SaveSavedPuzzles();
+
+            Debug.Log("Saved");
         }
 
         public void SaveSavedPuzzles()
@@ -210,8 +217,6 @@ namespace Player
 
         public int Coins => _coins;
         public int Hints => _hints;
-        // public List<PuzzleSavingData> SavedPuzzles => _savedPuzzles;
-        // public PuzzleSavingData CurrentPuzzle => _currentPuzzle;
 
         public List<PuzzleSave> SavedPuzzles => _savedPuzzles;
         public PuzzleSave CurrentPuzzle => _currentPuzzle;

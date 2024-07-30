@@ -6,66 +6,59 @@ using PuzzlePiece;
 using System;
 using Newtonsoft.Json;
 
-namespace PuzzleData
+namespace PuzzleData.Save
 {
     [Serializable]
     public class PuzzleSave
     {
         private int _id;
-        // private GridSO _gridSize;
         private int _gridSide;
-        // private PieceConfiguration[,] _pieceConfiguration;
-        private List<List<PieceConfiguration>> _pieceConfigurationList;
+        private List<List<PieceConfigurationSave>> _pieceConfigurationList;
+        private List<PieceSave> _collectedPieceSaves;
 
-        private PieceSave[] _pieceSaves;
-        // private List<ScrollPieceSave> _scrollPieceSaves;
-
+        private List<SnappableSave> _snappableSaves;
+ 
         public int Id => _id;
-        // public GridSO Grid => _gridSize;
         public int GridSide => _gridSide;
-        public List<List<PieceConfiguration>> PieceConfigurationList => _pieceConfigurationList;
-        
-        // public PieceConfiguration[,] PieceConfigurations => _pieceConfiguration;
+        public List<List<PieceConfigurationSave>> PieceConfigurationList => _pieceConfigurationList;
+        public List<PieceSave> CollectedPieceSaves => _collectedPieceSaves;
+        public List<SnappableSave> SnappableSaves => _snappableSaves;
 
         public class ScrollPieceSave
         {
-            public Vector2 gridPosition; // id
-            public Vector3 Rotation;
-        }
-
-        private class PieceSave
-        {
-            public Vector2 gridPosition; // id
-            public Vector3 Position;
+            public Vector2 gridPosition;
             public Vector3 Rotation;
         }
 
         [JsonConstructor]
-        public PuzzleSave(int id, int gridSide, List<List<PieceConfiguration>> pieceConfigurationList)
+        public PuzzleSave(int id, int gridSide, List<List<PieceConfigurationSave>> pieceConfigurationList, List<SnappableSave> snappableSaves = null, List<PieceSave> collectedPieceSaves = null)
         {
             _id = id;
             _gridSide = gridSide;
             _pieceConfigurationList = pieceConfigurationList;
+            _snappableSaves = snappableSaves;
+            _collectedPieceSaves = collectedPieceSaves;
         }
 
-        public PuzzleSave(int id, int gridSide, PieceConfiguration[,] pieceConfiguration)
+        public PuzzleSave(int id, int gridSide, PieceConfiguration[,] pieceConfiguration, List<SnappableSave> snappableSaves, List<PieceSave> collectedPieceSaves)
         {
             _id = id;
             _gridSide = gridSide;
-
             _pieceConfigurationList = Convert2DArrayToListOfLists(pieceConfiguration);
+            _snappableSaves = snappableSaves;
+            _collectedPieceSaves = collectedPieceSaves;
         }
 
-        private List<List<PieceConfiguration>> Convert2DArrayToListOfLists(PieceConfiguration[,] pieceConfiguration)
+        private List<List<PieceConfigurationSave>> Convert2DArrayToListOfLists(PieceConfiguration[,] pieceConfiguration)
         {
-            var pieceConfigurationList = new List<List<PieceConfiguration>>();
+            var pieceConfigurationList = new List<List<PieceConfigurationSave>>();
 
             for (int i = 0; i < pieceConfiguration.GetLength(0); i++)
             {
-                List<PieceConfiguration> row = new List<PieceConfiguration>();
+                var row = new List<PieceConfigurationSave>();
                 for (int j = 0; j < pieceConfiguration.GetLength(1); j++)
                 {
-                    row.Add(pieceConfiguration[i, j]);
+                    row.Add(new PieceConfigurationSave(pieceConfiguration[i, j]));
                 }
                 pieceConfigurationList.Add(row);
             }
@@ -80,7 +73,7 @@ namespace PuzzleData
             {
                 for (int j = 0; j < _pieceConfigurationList[i].Count; j++)
                 {
-                    pieceConfiguration[i, j] = _pieceConfigurationList[i][j];
+                    pieceConfiguration[i, j] = _pieceConfigurationList[i][j].ConvertToPieceConfiguration();
                 }
             }
 

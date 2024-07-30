@@ -400,8 +400,10 @@ namespace PuzzlePiece
             _draggable.InvokeItemDropped();
         }
 
-        
-    
+        public void LoadAsCollected()
+        {
+            DestroyInteractiveComponents();
+        }
 
     }
 }

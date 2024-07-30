@@ -2,15 +2,16 @@ using UnityEngine;
 using Grid;
 using System;
 using PuzzleData;
-using UnityEditor.SearchService;
 using UnityEngine.SceneManagement;
 using Player;
+using PuzzleData.Save;
 
 namespace GameManagement
 {
     public class LevelManager : MonoBehaviour
     {
         public static Action<Level> LevelStarted;
+        public static Action<Level, PuzzleSave> LevelLoaded;
 
         [SerializeField] private PuzzleList _puzzleList;
         [SerializeField] private ProgressManager _progressManager;
@@ -22,7 +23,32 @@ namespace GameManagement
 
             _progressManager.SetNumberOfPieces(currentLevel.GridSO);
 
-            StartLevel(currentLevel);
+            if (IsLevelPreviouslySaved(currentLevel))
+            {
+                Debug.Log("Level previously saved. Loading ...");
+
+                PuzzleSave savedPuzzle = PlayerData.Instance.TryGetSavedPuzzle(currentLevel.PuzzleSO.Id);
+
+                LoadLevel(currentLevel, savedPuzzle);
+            }
+            else 
+            {
+                StartLevel(currentLevel);
+            }
+        }
+
+        private bool IsLevelPreviouslySaved(Level level)
+        {
+            if (PlayerData.Instance != null)
+            {
+                PuzzleSave savedPuzzle = PlayerData.Instance.TryGetSavedPuzzle(level.PuzzleSO.Id);
+                if (savedPuzzle != null) 
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private Level SetupCurrentLevel()
@@ -38,6 +64,11 @@ namespace GameManagement
         private void StartLevel(Level level)
         {
             LevelStarted?.Invoke(level);
+        }
+
+        private void LoadLevel(Level level, PuzzleSave puzzleSave)
+        {
+            LevelLoaded?.Invoke(level, puzzleSave);
         }
 
     }

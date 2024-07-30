@@ -59,6 +59,11 @@ namespace Grid
             TryCombineWithOther(snappable, snappable);
         }
 
+        public void AddSnappable(ISnappable snappable)
+        {
+            _snappables.Add(snappable);
+        }
+
         private void HandleSnapedToGrid(ISnappable snappable)
         {
             _corePieces = new List<Piece>(snappable.Pieces);
@@ -69,9 +74,13 @@ namespace Grid
 
             if (!combinedWithOther)
             {
-                // StartMaterialAnimation(snappable.Pieces, snappable.Pieces);
                 PiecesCollected?.Invoke(snappable.Pieces, snappable.Pieces);
             }
+        }
+
+        public void LoadCollectedPieces(List<Piece> pieces)
+        {
+            _collectedPieces = pieces;
         }
 
         private void UpdateCompletedPieces(List<Piece> pieces)
@@ -128,7 +137,7 @@ namespace Grid
             _snappables.Add(snappable);
         }
 
-        private void UpdateSnappablesZPositions()
+        public void UpdateSnappablesZPositions()
         {
             for (int i = 0; i < _snappables.Count; i++)
             {
