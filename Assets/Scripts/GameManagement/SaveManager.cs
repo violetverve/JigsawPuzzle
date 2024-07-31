@@ -35,6 +35,8 @@ namespace GameManagement
 
             int gridSide = gridSO.Width;
 
+            bool rotationEnabled = PlayerData.Instance.CurrentLevel.RotationEnabled;
+
             Debug.Log("ID of the current puzzle: " + id);
             
             var piecesConfiguration = _gridManager.PieceConfigurations;
@@ -51,7 +53,7 @@ namespace GameManagement
                 .Select(scrollPiece => new ScrollPieceSave(scrollPiece)).ToList();
 
             
-            var puzzleSave = new PuzzleSave(id, gridSide, piecesConfiguration,
+            var puzzleSave = new PuzzleSave(id, gridSide, rotationEnabled, piecesConfiguration,
                 snappableSaves, collectedPieceSaves, scrollPieceSaves);
 
             PlayerData.Instance.AddSavedPuzzle(puzzleSave);

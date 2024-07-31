@@ -9,9 +9,11 @@ namespace UI.MenuScene
     {
         [SerializeField] private Image _puzzleUIImage;
         [SerializeField] private GameObject _lockImage;
+        [SerializeField] private ProgressTag _progressTag;
         [SerializeField] private Button _panelButton;
         private int _puzzleID;
         private bool _locked;
+        private bool _inProgress;
         
         public void LoadPuzzlePanel(PuzzleSO puzzle)
         {
@@ -22,7 +24,15 @@ namespace UI.MenuScene
             {
                 _locked = false;
             }
-            
+
+            var progress = PlayerData.Instance.GetPuzzleProgress(puzzle.Id);
+            if (progress != -1)
+            {
+                _inProgress = true;
+                _progressTag.gameObject.SetActive(true);
+                _progressTag.SetProgressText(progress);
+            }
+
             _lockImage.SetActive(_locked);
             _puzzleID = puzzle.Id;
         }
@@ -31,7 +41,11 @@ namespace UI.MenuScene
         {
             if(_locked)
             {
-              UIManager.OnLockedPanelClick?.Invoke(_puzzleID);
+                PopUpManager.OnLockedPanelClick?.Invoke(_puzzleID);
+            } 
+            else if (_inProgress)
+            {
+                PopUpManager.OnContinuePanelClick?.Invoke(_puzzleID);
             }
             else
             {

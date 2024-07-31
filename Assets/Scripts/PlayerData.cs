@@ -136,6 +136,16 @@ namespace Player
             Debug.Log("Saved");
         }
 
+        public void DeleteSavedPuzzle(int id)
+        {
+            var savedPuzzle = TryGetSavedPuzzle(id);
+            if (savedPuzzle != null)
+            {
+                _savedPuzzles.Remove(savedPuzzle);
+                SaveSavedPuzzles();
+            }
+        }
+
         public void SaveSavedPuzzles()
         {
             if (_savedPuzzles != null)
@@ -149,14 +159,11 @@ namespace Player
         {
             if (_savedPuzzles == null)
             {
-                Debug.LogError("SavedPuzzles is not initialized.");
                 return null;
             }
 
-            Debug.Log("SavedPuzzles count: " + _savedPuzzles.Count);
             foreach (var puzzle in _savedPuzzles)
             {
-                Debug.Log("Puzzle ID: " + puzzle.Id);
                 if (puzzle.Id == id)
                 {
                     return puzzle;
@@ -166,6 +173,21 @@ namespace Player
             return null;
         }
 
+        public int GetPuzzleProgress(int id)
+        {
+            var savedPuzzle = TryGetSavedPuzzle(id);
+            if (savedPuzzle == null)
+            {
+                return -1;
+            }
+
+            int collectedPiecesCount = savedPuzzle.CollectedPieceSaves.Count;
+            int gridSide = savedPuzzle.GridSide;
+            int totalPieces = gridSide * gridSide;
+            int percentageCollected = (int)(((float)collectedPiecesCount / totalPieces) * 100);
+
+            return percentageCollected;
+        }
 
         #endregion
 

@@ -13,6 +13,7 @@ namespace PuzzleData.Save
     {
         private int _id;
         private int _gridSide;
+        private bool _rotationEnabled;
         private List<List<PieceConfigurationSave>> _pieceConfigurationList;
         private List<Vector2IntS> _collectedPieceSaves;
         private List<SnappableSave> _snappableSaves;
@@ -20,6 +21,7 @@ namespace PuzzleData.Save
  
         public int Id => _id;
         public int GridSide => _gridSide;
+        public bool RotationEnabled => _rotationEnabled;
         public List<List<PieceConfigurationSave>> PieceConfigurationList => _pieceConfigurationList;
         public List<Vector2IntS> CollectedPieceSaves => _collectedPieceSaves;
         public List<SnappableSave> SnappableSaves => _snappableSaves;
@@ -27,20 +29,22 @@ namespace PuzzleData.Save
 
 
         [JsonConstructor]
-        public PuzzleSave(int id, int gridSide, List<List<PieceConfigurationSave>> pieceConfigurationList, List<SnappableSave> snappableSaves = null, List<Vector2IntS> collectedPieceSaves = null, List<ScrollPieceSave> scrollPieceSaves = null)
+        public PuzzleSave(int id, int gridSide, bool rotationEnabled, List<List<PieceConfigurationSave>> pieceConfigurationList, List<SnappableSave> snappableSaves = null, List<Vector2IntS> collectedPieceSaves = null, List<ScrollPieceSave> scrollPieceSaves = null)
         {
             _id = id;
             _gridSide = gridSide;
+            _rotationEnabled = rotationEnabled;
             _pieceConfigurationList = pieceConfigurationList;
             _snappableSaves = snappableSaves;
             _collectedPieceSaves = collectedPieceSaves;
             _scrollPieceSaves = scrollPieceSaves;
         }
 
-        public PuzzleSave(int id, int gridSide, PieceConfiguration[,] pieceConfiguration, List<SnappableSave> snappableSaves, List<Vector2IntS> collectedPieceSaves, List<ScrollPieceSave> scrollPieceSaves)
+        public PuzzleSave(int id, int gridSide, bool rotationEnabled, PieceConfiguration[,] pieceConfiguration, List<SnappableSave> snappableSaves, List<Vector2IntS> collectedPieceSaves, List<ScrollPieceSave> scrollPieceSaves)
         {
             _id = id;
             _gridSide = gridSide;
+            _rotationEnabled = rotationEnabled;
             _pieceConfigurationList = Convert2DArrayToListOfLists(pieceConfiguration);
             _snappableSaves = snappableSaves;
             _collectedPieceSaves = collectedPieceSaves;

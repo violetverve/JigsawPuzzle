@@ -1,5 +1,6 @@
 using UnityEngine;
 using Player;
+using PuzzleData;
 
 namespace UI.MenuScene
 {
@@ -28,5 +29,12 @@ namespace UI.MenuScene
                 Debug.Log("Not enough coins");
             }
         }
+
+        public void ActivatePopUp(PuzzleSO puzzle)
+        {
+            _puzzlePanelUI.LoadPuzzlePanel(puzzle);
+            _gameObject.SetActive(true);
+        }
+
     }
 }

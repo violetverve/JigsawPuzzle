@@ -25,13 +25,7 @@ namespace UI.MenuScene
         [SerializeField] private PuzzlePanelUI _puzzlePrefab;
 
         [Space]
-
         [SerializeField] private GameObject _playerPuzzleParent;
-
-        [Space]
-
-        [SerializeField] private GameObject _puzzleToBuyPopUp;
-        [SerializeField] private PuzzlePanelUI _puzzleToBuyPopUpObject;
 
         [Space]
         [SerializeField] private List<TextMeshProUGUI> _coinsText;
@@ -42,10 +36,11 @@ namespace UI.MenuScene
 
         public static Action<GameObject> OnCrossClick;
         public static Action<Button> OnPanelsChange;
-        public static Action<int> OnLockedPanelClick;
         public static Action<int> OnPanelClick;
         public static Action<int> OnPuzzleUnlocked;
+        public static Action<int> OnPuzzleContinue;
         public static Action OnCoinsChange;
+
 
         private PuzzleSO _currentPuzzleSO;
 
@@ -60,27 +55,30 @@ namespace UI.MenuScene
         [SerializeField] private ScrollElement _scrollPrefab;
 
         private List<PuzzlePanelUI> _puzzlePanels = new List<PuzzlePanelUI>();
-        
+
+
         private void OnEnable()
         {
             OnPanelsChange += TurnIterectableButton;
             OnCrossClick += CloseWindow;
-            OnLockedPanelClick += LoadBuyPanelPopUp;
             OnPanelClick += LoadPuzzleDifficultyChooser;
             PuzzlePrepareUI.ScrollActiveItemChanged += SetCurrentDifficulty;
             OnPuzzleUnlocked += UnlockPuzzleUIPanel;
             OnCoinsChange += LoadCoins;
+
+            OnPuzzleContinue += LoadPuzzle;
         }
 
         private void OnDisable()
         {
             OnPanelsChange -= TurnIterectableButton;
             OnCrossClick -= CloseWindow;
-            OnLockedPanelClick -= LoadBuyPanelPopUp;
             OnPanelClick -= LoadPuzzleDifficultyChooser;
             PuzzlePrepareUI.ScrollActiveItemChanged -= SetCurrentDifficulty;
             OnPuzzleUnlocked -= UnlockPuzzleUIPanel;
             OnCoinsChange -= LoadCoins;
+
+            OnPuzzleContinue -= LoadPuzzle;
         }
 
         private void Start()
@@ -119,14 +117,30 @@ namespace UI.MenuScene
                 return;
             }
 
-            foreach (var playerPuzzle in PlayerData.Instance.SavedPuzzles)
+            foreach (var puzzleSave in PlayerData.Instance.SavedPuzzles)
             {
-                var puzzle = _puzzles.GetPuzzleByID(playerPuzzle.Id);
+                var puzzle = _puzzles.GetPuzzleByID(puzzleSave.Id);
                 if (puzzle != null)
                 {
                     Instantiate(_puzzlePrefab, _playerPuzzleParent.transform).LoadPuzzlePanel(puzzle);
                 }
             }         
+        }
+
+        public void LoadPuzzle(int puzzleId)
+        {
+            var puzzleSave = PlayerData.Instance.TryGetSavedPuzzle(puzzleId);
+            var puzzle = _puzzles.GetPuzzleByID(puzzleId);
+            var gridSO = _difficultyManager.GetGridSOBySide(puzzleSave.GridSide);
+            var rotationEnabled = puzzleSave.RotationEnabled;
+
+            if (puzzleSave != null)
+            {
+                Level level = new Level(gridSO, puzzle, rotationEnabled);
+                PlayerData.Instance.SetCurrentLevel(level);
+                SceneManager.LoadScene("Main");
+            }
+
         }
 
         public void StartPuzzle()
@@ -172,14 +186,6 @@ namespace UI.MenuScene
         #endregion
 
         #region ChoosePuzzleInteraction
-        public void LoadBuyPanelPopUp(int puzzleID)
-        {
-            PuzzleSO puzzleToUnlock = _puzzles.GetPuzzleByID(puzzleID);
-
-            _puzzleToBuyPopUpObject.LoadPuzzlePanel(puzzleToUnlock);
-            _puzzleToBuyPopUp.SetActive(true);
-        }
-
         public void LoadPuzzleDifficultyChooser(int puzzleID)
         {
             PuzzleSO puzzle = _puzzles.GetPuzzleByID(puzzleID);
