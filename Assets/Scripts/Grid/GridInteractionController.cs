@@ -19,6 +19,7 @@ namespace Grid
 
         public static event Action<int, int> OnProgressUpdate;
         public static event Action<List<Piece>, List<Piece>> PiecesCollected;
+        public static event Action OnStateChanged;
         public List<Piece> CollectedPieces => _collectedPieces;
         public List<ISnappable> Snappables => _snappables;
         public List<Piece> CorePieces => _corePieces;
@@ -57,6 +58,8 @@ namespace Grid
         private void HandleCombinedWithOther(ISnappable snappable)
         {
             TryCombineWithOther(snappable, snappable);
+
+            OnStateChanged?.Invoke();
         }
 
         public void AddSnappable(ISnappable snappable)
@@ -76,6 +79,8 @@ namespace Grid
             {
                 PiecesCollected?.Invoke(snappable.Pieces, snappable.Pieces);
             }
+
+            OnStateChanged?.Invoke();
         }
 
         public void LoadCollectedPieces(List<Piece> pieces)
@@ -111,6 +116,8 @@ namespace Grid
             }
 
             snappable.Rotate(mousePosition);
+
+            OnStateChanged?.Invoke();
         }
 
         private void HandleItemPickedUp(ISnappable snappable)
@@ -129,6 +136,8 @@ namespace Grid
             {
                 UpdateCompletedPieces(_corePieces);
             }
+
+            OnStateChanged?.Invoke();
         }
 
         private void MoveToTop(ISnappable snappable)

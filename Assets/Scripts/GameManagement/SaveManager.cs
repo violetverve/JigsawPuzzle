@@ -7,14 +7,28 @@ using Player;
 using PuzzleData.Save;
 using PuzzlePiece;
 
-
 namespace GameManagement
 {
     public class SaveManager : MonoBehaviour
     {
         [SerializeField] private GridManager _gridManager;
 
-        public void Save()
+        private void OnEnable()
+        {
+            GridInteractionController.OnStateChanged += HandleStateChanged;
+        }
+
+        private void OnDisable()
+        {
+            GridInteractionController.OnStateChanged -= HandleStateChanged;
+        }
+
+        private void HandleStateChanged()
+        {
+            Save();
+        }
+
+        private void Save()
         {
             int id = PlayerData.Instance.CurrentLevel.PuzzleSO.Id;
             GridSO gridSO = PlayerData.Instance.CurrentLevel.GridSO;
@@ -31,7 +45,7 @@ namespace GameManagement
                 .Select(snappable => new SnappableSave(snappable)).ToList();
 
             var collectedPieceSaves = _gridManager.CollectedPieces
-                .Select(piece => new PieceSave(piece)).ToList();
+                .Select(piece => new Vector2IntS(piece.GridPosition)).ToList();
             
             var scrollPieceSaves = _gridManager.GetScrollViewPieces()
                 .Select(scrollPiece => new ScrollPieceSave(scrollPiece)).ToList();

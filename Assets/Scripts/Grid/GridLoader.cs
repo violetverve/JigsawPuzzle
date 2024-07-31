@@ -70,16 +70,24 @@ namespace Grid
             return snappableSave.PieceSaves.Count == 1;
         }
 
-        private void LoadCollectedPieces(List<PieceSave> collectedPieceSaves, List<Piece> pieces)
+        private void LoadCollectedPieces(List<Vector2IntS> collectedPieceSaves, List<Piece> pieces)
         {
-            var collectedPieces = collectedPieceSaves
-                .Select(pieceSave => FindAndSetupPiece(pieces, pieceSave))
-                .ToList();
+            List <Piece> collectedPieces = new List<Piece>();
 
-            _gridInteractionController.LoadCollectedPieces(collectedPieces);
+            foreach (var collectedPieceSave in collectedPieceSaves)
+            {
+                var piece = pieces.Find(p => p.GridPosition == collectedPieceSave.ToVector2Int());
+                piece.transform.position = piece.CorrectPosition;
+                collectedPieces.Add(piece);
+            }
 
-            var collectedPuzzleGroup = PuzzleGroup.CreateGroup(collectedPieces);
-            collectedPuzzleGroup.LoadAsCollected();
+            if (collectedPieces.Count > 0)
+            {
+                _gridInteractionController.LoadCollectedPieces(collectedPieces);
+
+                var collectedPuzzleGroup = PuzzleGroup.CreateGroup(collectedPieces);
+                collectedPuzzleGroup.LoadAsCollected();
+            }
         }
 
         private void LoadScrollPieces(List<ScrollPieceSave> scrollPieceSaves, List<Piece> pieces)

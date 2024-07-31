@@ -14,20 +14,20 @@ namespace PuzzleData.Save
         private int _id;
         private int _gridSide;
         private List<List<PieceConfigurationSave>> _pieceConfigurationList;
-        private List<PieceSave> _collectedPieceSaves;
+        private List<Vector2IntS> _collectedPieceSaves;
         private List<SnappableSave> _snappableSaves;
         private List <ScrollPieceSave> _scrollPieceSaves;
  
         public int Id => _id;
         public int GridSide => _gridSide;
         public List<List<PieceConfigurationSave>> PieceConfigurationList => _pieceConfigurationList;
-        public List<PieceSave> CollectedPieceSaves => _collectedPieceSaves;
+        public List<Vector2IntS> CollectedPieceSaves => _collectedPieceSaves;
         public List<SnappableSave> SnappableSaves => _snappableSaves;
         public List<ScrollPieceSave> ScrollPieceSaves => _scrollPieceSaves;
 
 
         [JsonConstructor]
-        public PuzzleSave(int id, int gridSide, List<List<PieceConfigurationSave>> pieceConfigurationList, List<SnappableSave> snappableSaves = null, List<PieceSave> collectedPieceSaves = null, List<ScrollPieceSave> scrollPieceSaves = null)
+        public PuzzleSave(int id, int gridSide, List<List<PieceConfigurationSave>> pieceConfigurationList, List<SnappableSave> snappableSaves = null, List<Vector2IntS> collectedPieceSaves = null, List<ScrollPieceSave> scrollPieceSaves = null)
         {
             _id = id;
             _gridSide = gridSide;
@@ -37,7 +37,7 @@ namespace PuzzleData.Save
             _scrollPieceSaves = scrollPieceSaves;
         }
 
-        public PuzzleSave(int id, int gridSide, PieceConfiguration[,] pieceConfiguration, List<SnappableSave> snappableSaves, List<PieceSave> collectedPieceSaves, List<ScrollPieceSave> scrollPieceSaves)
+        public PuzzleSave(int id, int gridSide, PieceConfiguration[,] pieceConfiguration, List<SnappableSave> snappableSaves, List<Vector2IntS> collectedPieceSaves, List<ScrollPieceSave> scrollPieceSaves)
         {
             _id = id;
             _gridSide = gridSide;
