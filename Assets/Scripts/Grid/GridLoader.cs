@@ -5,73 +5,95 @@ using PuzzleData;
 using UI.GameScene;
 using PuzzlePiece;
 using PuzzleData.Save;
+using System.Linq;
 
 namespace Grid
 {
     public class GridLoader : MonoBehaviour
     {
-        public void LoadGrid(PuzzleSave savedPuzzle, ScrollViewController scrollViewController, GridInteractionController gridInteractionController)
+        [SerializeField] private GridManager _gridManager;
+        private GridInteractionController _gridInteractionController;
+        private ScrollViewController _scrollViewController;
+
+        private void Awake()
         {
-            var pieces = scrollViewController.ContentPieces;
+            _gridInteractionController = _gridManager.GridInteractionController;
+            _scrollViewController = _gridManager.ScrollViewController;
+        }
 
-            foreach (var snappableSave in savedPuzzle.SnappableSaves)
+        public void LoadGrid(PuzzleSave savedPuzzle)
+        {
+            var pieces = _gridManager.GridGenerator.GeneratedPieces;
+
+            LoadSnappablePieces(savedPuzzle.SnappableSaves, pieces);
+            LoadCollectedPieces(savedPuzzle.CollectedPieceSaves, pieces);
+            LoadScrollPieces(savedPuzzle.ScrollPieceSaves, pieces);
+        }
+
+        private void SetupPiece(Piece piece, PieceSave pieceSave)
+        {
+            piece.transform.position = pieceSave.Position.ToVector3();
+            piece.transform.rotation = Quaternion.Euler(pieceSave.Rotation.ToVector3());
+        }
+
+        private Piece FindAndSetupPiece(List<Piece> pieces, PieceSave pieceSave)
+        {
+            var piece = pieces.Find(p => p.GridPosition == pieceSave.GridPosition.ToVector2Int());
+            SetupPiece(piece, pieceSave);
+            return piece;
+        }
+
+        private void LoadSnappablePieces(List<SnappableSave> snappableSaves, List<Piece> pieces)
+        {
+            foreach (var snappableSave in snappableSaves)
             {
-                var snappablePieces = new List<Piece>();
+                var snappablePieces = snappableSave.PieceSaves
+                    .Select(pieceSave => FindAndSetupPiece(pieces, pieceSave))
+                    .ToList();
 
-                foreach (var pieceSave in snappableSave.PieceSaves)
+                if (IsSnappablePiece(snappableSave))
                 {
-                    var piece = pieces.Find(p => p.GridPosition == pieceSave.GridPosition.ToVector2Int());
-                    SetupPiece(piece, pieceSave, scrollViewController);
-
-                    scrollViewController.RemovePieceFromScrollView(piece);
-
-                    snappablePieces.Add(piece);
-                }
-
-                if (snappablePieces.Count == 1)
-                {
-                    gridInteractionController.AddSnappable(snappablePieces[0]);
+                    _gridInteractionController.AddSnappable(snappablePieces[0]);
                 }
                 else
                 {
                     PuzzleGroup puzzleGroup = PuzzleGroup.CreateGroup(snappablePieces);
-                    gridInteractionController.AddSnappable(puzzleGroup);
+                    _gridInteractionController.AddSnappable(puzzleGroup);
                 }
             }
 
-
-            var collectedPieces = new List<Piece>();
-            
-            foreach (var collectedPieceSave in savedPuzzle.CollectedPieceSaves)
-            {
-                var piece = pieces.Find(p => p.GridPosition == collectedPieceSave.GridPosition.ToVector2Int());
-
-                SetupPiece(piece, collectedPieceSave, scrollViewController);
-
-                collectedPieces.Add(piece);
-            }
-
-            gridInteractionController.LoadCollectedPieces(collectedPieces);
-
-            if (savedPuzzle.CollectedPieceSaves.Count > 1)
-            {
-                var collectedPuzzleGroup = PuzzleGroup.CreateGroup(collectedPieces);
-                collectedPuzzleGroup.LoadAsCollected();
-            } 
-            else
-            {
-                foreach (var piece in collectedPieces)
-                {
-                    piece.LoadAsCollected();
-                }
-            }
+            _gridInteractionController.UpdateSnappablesZPositions();
         }
 
-        private void SetupPiece(Piece piece, PieceSave pieceSave, ScrollViewController scrollViewController)
+        private bool IsSnappablePiece(SnappableSave snappableSave)
         {
-            scrollViewController.RemovePieceFromScrollView(piece);
-            piece.transform.position = pieceSave.Position.ToVector3();
-            piece.transform.rotation = Quaternion.Euler(pieceSave.Rotation.ToVector3());
+            return snappableSave.PieceSaves.Count == 1;
+        }
+
+        private void LoadCollectedPieces(List<PieceSave> collectedPieceSaves, List<Piece> pieces)
+        {
+            var collectedPieces = collectedPieceSaves
+                .Select(pieceSave => FindAndSetupPiece(pieces, pieceSave))
+                .ToList();
+
+            _gridInteractionController.LoadCollectedPieces(collectedPieces);
+
+            var collectedPuzzleGroup = PuzzleGroup.CreateGroup(collectedPieces);
+            collectedPuzzleGroup.LoadAsCollected();
+        }
+
+        private void LoadScrollPieces(List<ScrollPieceSave> scrollPieceSaves, List<Piece> pieces)
+        {
+            List<Piece> scrollPieces = new List<Piece>();
+
+            foreach (var scrollPieceSave in scrollPieceSaves)
+            {
+                var piece = pieces.Find(p => p.GridPosition == scrollPieceSave.GridPosition.ToVector2Int());
+                piece.transform.rotation = Quaternion.Euler(scrollPieceSave.Rotation.ToVector3());
+                scrollPieces.Add(piece);
+            }
+
+            _scrollViewController.PopulateScrollView(scrollPieces);
         }
 
     }

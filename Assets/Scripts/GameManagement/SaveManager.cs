@@ -13,7 +13,6 @@ namespace GameManagement
     public class SaveManager : MonoBehaviour
     {
         [SerializeField] private GridManager _gridManager;
-        [SerializeField] private LevelManager _levelManager;
 
         public void Save()
         {
@@ -28,11 +27,18 @@ namespace GameManagement
 
             Debug.Log("Saving...");
 
-            var snappableSaves = _gridManager.GetSnappables().Select(snappable => new SnappableSave(snappable)).ToList();
+            var snappableSaves = _gridManager.GetSnappables()
+                .Select(snappable => new SnappableSave(snappable)).ToList();
 
-            var collectedPieceSaves = _gridManager.CollectedPieces.Select(piece => new PieceSave(piece)).ToList();
+            var collectedPieceSaves = _gridManager.CollectedPieces
+                .Select(piece => new PieceSave(piece)).ToList();
             
-            var puzzleSave = new PuzzleSave(id, gridSide, piecesConfiguration, snappableSaves, collectedPieceSaves);
+            var scrollPieceSaves = _gridManager.GetScrollViewPieces()
+                .Select(scrollPiece => new ScrollPieceSave(scrollPiece)).ToList();
+
+            
+            var puzzleSave = new PuzzleSave(id, gridSide, piecesConfiguration,
+                snappableSaves, collectedPieceSaves, scrollPieceSaves);
 
             PlayerData.Instance.AddSavedPuzzle(puzzleSave);
         }

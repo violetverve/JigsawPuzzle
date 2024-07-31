@@ -76,7 +76,7 @@ namespace UI.GameScene
             _scrollRect.enabled = true;
         }
 
-        public void PopulateScrollView(List<Piece> pieces, bool rotationEnabled)
+        public void PopulateScrollView(List<Piece> pieces, bool rotationEnabled=false)
         {
             // List<Piece> shuffledPieces = pieces.OrderBy(x => UnityEngine.Random.Range(0, int.MaxValue)).ToList();
             List<Piece> shuffledPieces = pieces;

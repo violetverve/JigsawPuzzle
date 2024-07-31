@@ -19,7 +19,8 @@ namespace Grid
 
         public GridSO GridSO => _gridSO;
         public GridField GridField => _gridField;
-
+        public GridInteractionController GridInteractionController => _gridInteractionController;
+        public GridGenerator GridGenerator => _gridGenerator;
         public ScrollViewController ScrollViewController => _scrollViewController;
         public List<Piece> CollectedPieces => _gridInteractionController.CollectedPieces;
         public PieceConfiguration[,] PieceConfigurations => _gridGenerator.PieceConfigurations;
@@ -58,11 +59,7 @@ namespace Grid
 
             _gridInteractionController.SetRotationEnabled(level.RotationEnabled);
 
-            _scrollViewController.PopulateScrollView(_gridGenerator.GeneratedPieces, level.RotationEnabled);
-        
-            _gridLoader.LoadGrid(savedPuzzle, _scrollViewController, _gridInteractionController);
-
-            _gridInteractionController.UpdateSnappablesZPositions();
+            _gridLoader.LoadGrid(savedPuzzle);
         }
 
         private void GenerateGrid(Level level)

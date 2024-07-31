@@ -15,39 +15,38 @@ namespace PuzzleData.Save
         private int _gridSide;
         private List<List<PieceConfigurationSave>> _pieceConfigurationList;
         private List<PieceSave> _collectedPieceSaves;
-
         private List<SnappableSave> _snappableSaves;
+        private List <ScrollPieceSave> _scrollPieceSaves;
  
         public int Id => _id;
         public int GridSide => _gridSide;
         public List<List<PieceConfigurationSave>> PieceConfigurationList => _pieceConfigurationList;
         public List<PieceSave> CollectedPieceSaves => _collectedPieceSaves;
         public List<SnappableSave> SnappableSaves => _snappableSaves;
+        public List<ScrollPieceSave> ScrollPieceSaves => _scrollPieceSaves;
 
-        public class ScrollPieceSave
-        {
-            public Vector2 gridPosition;
-            public Vector3 Rotation;
-        }
 
         [JsonConstructor]
-        public PuzzleSave(int id, int gridSide, List<List<PieceConfigurationSave>> pieceConfigurationList, List<SnappableSave> snappableSaves = null, List<PieceSave> collectedPieceSaves = null)
+        public PuzzleSave(int id, int gridSide, List<List<PieceConfigurationSave>> pieceConfigurationList, List<SnappableSave> snappableSaves = null, List<PieceSave> collectedPieceSaves = null, List<ScrollPieceSave> scrollPieceSaves = null)
         {
             _id = id;
             _gridSide = gridSide;
             _pieceConfigurationList = pieceConfigurationList;
             _snappableSaves = snappableSaves;
             _collectedPieceSaves = collectedPieceSaves;
+            _scrollPieceSaves = scrollPieceSaves;
         }
 
-        public PuzzleSave(int id, int gridSide, PieceConfiguration[,] pieceConfiguration, List<SnappableSave> snappableSaves, List<PieceSave> collectedPieceSaves)
+        public PuzzleSave(int id, int gridSide, PieceConfiguration[,] pieceConfiguration, List<SnappableSave> snappableSaves, List<PieceSave> collectedPieceSaves, List<ScrollPieceSave> scrollPieceSaves)
         {
             _id = id;
             _gridSide = gridSide;
             _pieceConfigurationList = Convert2DArrayToListOfLists(pieceConfiguration);
             _snappableSaves = snappableSaves;
             _collectedPieceSaves = collectedPieceSaves;
+            _scrollPieceSaves = scrollPieceSaves;
         }
+
 
         private List<List<PieceConfigurationSave>> Convert2DArrayToListOfLists(PieceConfiguration[,] pieceConfiguration)
         {
