@@ -12,6 +12,7 @@ namespace GameManagement
         [SerializeField] private ProgressNotification _edgesCollectedNotification;
 
         public static Action EdgesCollected;
+        public static Action Win;
 
         private int _numberOfPieces;
         private float _lastMilestone = 0f;
@@ -46,6 +47,7 @@ namespace GameManagement
         {
             if (numberOfPiecesCollected == _numberOfPieces)
             {
+                Win?.Invoke();
                 Debug.Log("All pieces collected!");
             }
             else

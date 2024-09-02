@@ -237,6 +237,7 @@ namespace Player
 
         #endregion
 
+
         public int Coins => _coins;
         public int Hints => _hints;
 

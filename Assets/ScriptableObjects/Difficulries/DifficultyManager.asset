@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DifficultyManager
   m_EditorClassIdentifier: 
   _difficulties:
+  - {fileID: 11400000, guid: ee00dd14e8a7b5e42a1cb3f5394c8069, type: 2}
   - {fileID: 11400000, guid: f0860c47f95e754488b921bc45ce62eb, type: 2}
   - {fileID: 11400000, guid: d80e9e6cfe810b74caf721a05d4fc5cd, type: 2}
   - {fileID: 11400000, guid: fd0a54f8a2c20004ca1b894f36f66036, type: 2}

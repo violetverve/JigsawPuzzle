@@ -1,0 +1,118 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using GameManagement;
+using System;
+using DG.Tweening;
+using UnityEngine.UI;
+using TMPro;
+using GameManagement.Difficulty;
+
+namespace UI.GameScene.Win
+{
+    public class WinAnimator : MonoBehaviour
+    {
+        [SerializeField] private List<GameObject> _objectsToDisable;
+        [SerializeField] private GameObject _puzzleGrid;
+        [SerializeField] private Image _gridFrame;
+        [SerializeField] private Image _puzzleImage;
+        [SerializeField] private CanvasGroup _backgroundGroup;
+        [SerializeField] private ParticleSystem _confetti;
+        [SerializeField] private ParticleSystem _shine;
+        [SerializeField] private RewardPopUp _rewardPopUp;
+        [SerializeField] private DifficultyManagerSO _difficultyManager;
+        [SerializeField] private float _animationDuration = 0.8f;
+        private int _reward;
+
+        private void OnEnable()
+        {
+            ProgressManager.Win += HandleWin;
+            LevelManager.LevelStarted += HandleLevelStarted;
+        }
+
+        private void OnDisable()
+        {
+            ProgressManager.Win -= HandleWin;
+            LevelManager.LevelStarted -= HandleLevelStarted;
+        }
+
+        private void HandleLevelStarted(Level level)
+        {
+            _reward = _difficultyManager.GetRewardByGridSO(level.GridSO);
+            _puzzleImage.sprite = level.PuzzleSO.PuzzleImage;
+        }
+
+        private void HandleWin()
+        {
+            foreach (var obj in _objectsToDisable)
+            {
+                obj.SetActive(false);
+            }
+
+            StartCoroutine(AnimateGrid());
+        }
+    
+        private IEnumerator AnimateGrid()
+        {
+            yield return new WaitForSeconds(0.2f);
+
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(_puzzleGrid.transform.DOScale(0.9f, _animationDuration))
+                .AppendCallback(SetupGrid)
+                .Append(_gridFrame.DOFade(1, _animationDuration))
+                .AppendCallback(AnimateGridAndFrame)
+                .Append(_backgroundGroup.DOFade(1, _animationDuration))
+                .AppendCallback(PlayEffects);
+        }
+
+        private void AnimateGridAndFrame()
+        {
+            _puzzleGrid.transform.DOScale(0.65f, _animationDuration);
+            _gridFrame.gameObject.transform.DOScale(0.72f, _animationDuration);
+        }
+
+        private void PlayEffects()
+        {
+            _confetti.Play();
+            _shine.Play();
+        }
+
+        private void SetupGrid()
+        {
+            int uiLayer = LayerMask.NameToLayer("UI");
+            SetLayerIteratively(_puzzleGrid, uiLayer);
+            
+            Vector3 newPosition = _puzzleGrid.transform.position;
+            newPosition.z = 1;
+            _puzzleGrid.transform.position = newPosition;
+        }
+
+        private void SetLayerIteratively(GameObject root, int newLayer)
+        {
+            if (root == null) return;
+
+            var nodes = new Queue<Transform>();
+            nodes.Enqueue(root.transform);
+
+            while (nodes.Count > 0)
+            {
+                Transform current = nodes.Dequeue();
+                current.gameObject.layer = newLayer;
+
+                foreach (Transform child in current)
+                {
+                    nodes.Enqueue(child);
+                }
+            }
+        }
+
+        public void ShowRewardPopUp()
+        {
+            _puzzleImage.gameObject.SetActive(true);
+            _puzzleGrid.SetActive(false);
+            _rewardPopUp.gameObject.SetActive(true);
+            _rewardPopUp.SetReward(_reward);
+        }
+
+    }
+}

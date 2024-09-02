@@ -28,9 +28,6 @@ namespace UI.MenuScene
         [SerializeField] private GameObject _playerPuzzleParent;
 
         [Space]
-        [SerializeField] private List<TextMeshProUGUI> _coinsText;
-
-        [Space]
         [SerializeField] private GameObject _puzzleLoaderObject;
         [SerializeField] private PuzzlePanelUI _puzzleToChoose;
 
@@ -39,7 +36,6 @@ namespace UI.MenuScene
         public static Action<int> OnPanelClick;
         public static Action<int> OnPuzzleUnlocked;
         public static Action<int> OnPuzzleContinue;
-        public static Action OnCoinsChange;
 
 
         private PuzzleSO _currentPuzzleSO;
@@ -64,7 +60,6 @@ namespace UI.MenuScene
             OnPanelClick += LoadPuzzleDifficultyChooser;
             PuzzlePrepareUI.ScrollActiveItemChanged += SetCurrentDifficulty;
             OnPuzzleUnlocked += UnlockPuzzleUIPanel;
-            OnCoinsChange += LoadCoins;
 
             OnPuzzleContinue += LoadPuzzle;
         }
@@ -76,7 +71,6 @@ namespace UI.MenuScene
             OnPanelClick -= LoadPuzzleDifficultyChooser;
             PuzzlePrepareUI.ScrollActiveItemChanged -= SetCurrentDifficulty;
             OnPuzzleUnlocked -= UnlockPuzzleUIPanel;
-            OnCoinsChange -= LoadCoins;
 
             OnPuzzleContinue -= LoadPuzzle;
         }
@@ -85,7 +79,6 @@ namespace UI.MenuScene
         {
             LoadAllPuzzles();
             LoadPlayerPuzzles();
-            LoadCoins();
             LoadDifficulties();
             SetCurrentDifficulty(0);
         }
@@ -202,13 +195,6 @@ namespace UI.MenuScene
         
         #endregion
 
-        #region CoinsLoading
-        public void LoadCoins()
-        {
-            _coinsText.ForEach(text => text.text = PlayerData.Instance.Coins.ToString());
-        }
-        
-        #endregion
     }
 }
 

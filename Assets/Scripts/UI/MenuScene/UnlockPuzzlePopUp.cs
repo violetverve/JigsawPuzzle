@@ -21,7 +21,7 @@ namespace UI.MenuScene
             if (PlayerData.Instance.TryUnlockPuzzle(_unlockPrice, _puzzlePanelUI.PuzzleID))
             {
                 UIManager.OnPuzzleUnlocked?.Invoke(_puzzlePanelUI.PuzzleID);
-                UIManager.OnCoinsChange?.Invoke();
+                Coins.CoinsChanged?.Invoke();
                 LoadDifficultyPanel();
             }
             else

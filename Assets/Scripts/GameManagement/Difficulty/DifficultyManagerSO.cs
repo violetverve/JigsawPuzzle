@@ -25,5 +25,10 @@ namespace GameManagement.Difficulty
             return _difficulties.Find(difficulty => difficulty.Grid.Width == side).Grid; 
         }
 
+        public int GetRewardByGridSO(GridSO gridSO)
+        {
+            return _difficulties.Find(difficulty => difficulty.Grid == gridSO).Reward;
+        }
+
     }
 }
