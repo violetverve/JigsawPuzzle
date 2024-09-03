@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GameManagement.Difficulty;
+using DG.Tweening;
 
 namespace UI.MenuScene
 {
@@ -20,6 +21,12 @@ namespace UI.MenuScene
         [SerializeField] private float _snapForce;
 
         [SerializeField] private DifficultyManagerSO _difficultyManager;
+        
+        // Animation
+        [SerializeField] private float _appearDuration;
+        [SerializeField] private float _disappearDuration;
+        [SerializeField] private float _showYPosition = 0;
+        [SerializeField] private float _hideYPosition = -1400;
 
         public static Action<float> ItemChanging;
         public static Action<int> ScrollActiveItemChanged;
@@ -37,6 +44,10 @@ namespace UI.MenuScene
             OnElementClick += MoveToElement;
 
             ResetActiveElement();
+
+            transform.localPosition = new Vector3(0, _hideYPosition, 0);
+
+            GetSlideInTween().Play();
         }
 
         private void OnDisable()
@@ -130,5 +141,24 @@ namespace UI.MenuScene
             }
         }
 
+        public void ClosePanel()
+        {
+            GetSlideOutTween().Play().OnComplete(DisablePanel);
+        }
+
+        private Tween GetSlideInTween()
+        {
+            return transform.DOLocalMoveY(_showYPosition, _appearDuration);
+        }
+
+        private Tween GetSlideOutTween()
+        {
+            return transform.DOLocalMoveY(_hideYPosition, _disappearDuration);
+        }
+
+        private void DisablePanel()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
