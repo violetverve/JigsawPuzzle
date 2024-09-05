@@ -10,9 +10,7 @@ namespace UI.MenuScene
     {
         [SerializeField] private PuzzleList _puzzleList;
         [SerializeField] private UnlockPuzzlePopUp _unlockPuzzlePopUp;
-        [SerializeField] private GameObject _puzzleToContinue;
-        [SerializeField] private PuzzlePanelUI _puzzleToContinueObject;
-
+        [SerializeField] private ContinuePuzzlePopUp _continuePuzzlePopUp;
 
         public static Action<int> OnLockedPanelClick;
         public static Action<int> OnContinuePanelClick;
@@ -31,17 +29,15 @@ namespace UI.MenuScene
 
         public void LoadUnlockPanel(int puzzleID)
         {
-            PuzzleSO puzzleToUnlock = _puzzleList.GetPuzzleByID(puzzleID);
+            var puzzleToUnlock = _puzzleList.GetPuzzleByID(puzzleID);
 
             _unlockPuzzlePopUp.ActivatePopUp(puzzleToUnlock);
         }
 
         public void LoadContinuePanel(int puzzleID)
         {
-            PuzzleSO puzzleToContinue = _puzzleList.GetPuzzleByID(puzzleID);
-
-            _puzzleToContinueObject.LoadPuzzlePanel(puzzleToContinue);
-            _puzzleToContinue.SetActive(true);
+            var puzzleToContinue = _puzzleList.GetPuzzleByID(puzzleID);
+            _continuePuzzlePopUp.ActivatePopUp(puzzleToContinue);
         }
 
     }

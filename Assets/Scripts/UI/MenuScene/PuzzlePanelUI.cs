@@ -14,7 +14,8 @@ namespace UI.MenuScene
         private int _puzzleID;
         private bool _locked;
         private bool _inProgress;
-        
+        private float _progressPercentage;
+
         public void LoadPuzzlePanel(PuzzleSO puzzle)
         {
             _puzzleUIImage.sprite = puzzle.PuzzleImage;
@@ -29,8 +30,13 @@ namespace UI.MenuScene
             if (progress != -1)
             {
                 _inProgress = true;
-                _progressTag.gameObject.SetActive(true);
-                _progressTag.SetProgressText(progress);
+                _progressPercentage = progress;
+                
+                if (_progressTag != null)
+                {
+                    _progressTag.gameObject.SetActive(true);
+                    _progressTag.SetProgressText(progress);
+                }
             }
 
             _lockImage.SetActive(_locked);
@@ -43,15 +49,14 @@ namespace UI.MenuScene
             {
                 PopUpManager.OnLockedPanelClick?.Invoke(_puzzleID);
             } 
-            else if (_inProgress)
+            else if (_inProgress && _progressPercentage < 100)
             {
                 PopUpManager.OnContinuePanelClick?.Invoke(_puzzleID);
             }
             else
             {
-               UIManager.OnPanelClick?.Invoke(_puzzleID);
+                UIManager.OnPanelClick?.Invoke(_puzzleID);
             }
-
         }
 
         public void SetLocked(bool locked)

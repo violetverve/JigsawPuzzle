@@ -189,6 +189,11 @@ namespace Player
             return percentageCollected;
         }
 
+        public bool IsPuzzleFinished(int id)
+        {
+            return GetPuzzleProgress(id) == 100;
+        }
+
         #endregion
 
         #region UpdateConsumables

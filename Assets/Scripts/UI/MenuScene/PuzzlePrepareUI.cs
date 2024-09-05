@@ -1,5 +1,3 @@
-using DG.Tweening;
-using Grid;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +13,7 @@ namespace UI.MenuScene
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private RectTransform _contentPanel;
         [SerializeField] private RectTransform _sampleListItem;
+        [SerializeField] private Image _previewImage;
 
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroup;
 
@@ -130,7 +129,9 @@ namespace UI.MenuScene
         private void ChangingScrollItem()
         {
             if (_scrollRect.velocity.magnitude > 1)
+            {
                 ItemChanging?.Invoke(_contentPanel.localPosition.x);
+            }
         }
 
         private void ResetActiveElement()
@@ -159,6 +160,11 @@ namespace UI.MenuScene
         private void DisablePanel()
         {
             gameObject.SetActive(false);
+        }
+
+        public void SetPreviewImage(Sprite sprite)
+        {
+            _previewImage.sprite = sprite;
         }
     }
 }

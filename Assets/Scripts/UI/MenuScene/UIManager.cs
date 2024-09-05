@@ -28,8 +28,7 @@ namespace UI.MenuScene
         [SerializeField] private GameObject _playerPuzzleParent;
 
         [Space]
-        [SerializeField] private GameObject _puzzleLoaderObject;
-        [SerializeField] private PuzzlePanelUI _puzzleToChoose;
+        [SerializeField] private PuzzlePrepareUI _puzzlePrepareUI;
 
         public static Action<GameObject> OnCrossClick;
         public static Action<Button> OnPanelsChange;
@@ -87,6 +86,11 @@ namespace UI.MenuScene
         {
             foreach (var puzzle in _puzzles.List)
             {
+                if (PlayerData.Instance.IsPuzzleFinished(puzzle.Id))
+                {
+                    continue;
+                }
+
                 var panel = Instantiate(_puzzlePrefab, _puzzleParent.transform);
                 panel.LoadPuzzlePanel(puzzle);
                 _puzzlePanels.Add(panel);
@@ -138,6 +142,8 @@ namespace UI.MenuScene
 
         public void StartPuzzle()
         {
+            PlayerData.Instance.DeleteSavedPuzzle(_currentPuzzleSO.Id);
+
             Level level = new Level(_currentDifficulty.Grid, _currentPuzzleSO, _currentRotationEnabled);
             PlayerData.Instance.SetCurrentLevel(level);
             SceneManager.LoadScene("Main");
@@ -183,8 +189,8 @@ namespace UI.MenuScene
         {
             PuzzleSO puzzle = _puzzles.GetPuzzleByID(puzzleID);
 
-            _puzzleToChoose.LoadPuzzlePanel(puzzle);
-            _puzzleLoaderObject.SetActive(true);
+            _puzzlePrepareUI.SetPreviewImage(puzzle.PuzzleImage);
+            _puzzlePrepareUI.gameObject.SetActive(true);
             _currentPuzzleSO = puzzle;   
         }
 

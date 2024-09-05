@@ -7,43 +7,33 @@ namespace UI.MenuScene
 {
     public class ContinuePuzzlePopUp : MonoBehaviour
     {
-        [SerializeField] private GameObject _gameObject;
-        [SerializeField] private Transform _popUpTransform;
         [SerializeField] private PuzzlePanelUI _puzzleImagePanel;
+        private int _puzzleId;
 
-        private void OnEnable()
-        {
-            AnimatePopUp();
-        }
-        
-        private void AnimatePopUp()
-        {
-            _popUpTransform.localScale = Vector3.zero;
-            _popUpTransform.DOScale(1, 0.5f).SetEase(Ease.OutBack);
-        }
 
         public void ActivatePopUp(PuzzleSO puzzle)
         {
+            _puzzleId = puzzle.Id;
             _puzzleImagePanel.LoadPuzzlePanel(puzzle);
-            _gameObject.SetActive(true);
+            gameObject.SetActive(true);
         }
 
         public void LoadGameScene()
         {
-            _gameObject.SetActive(false);
-            UIManager.OnPuzzleContinue?.Invoke(_puzzleImagePanel.PuzzleID);
+            gameObject.SetActive(false);
+            UIManager.OnPuzzleContinue?.Invoke(_puzzleId);
         }
 
         public void RestartPuzzle()
         {
-            PlayerData.Instance.DeleteSavedPuzzle(_puzzleImagePanel.PuzzleID);
+            PlayerData.Instance.DeleteSavedPuzzle(_puzzleId);
             LoadDifficultyPanel();
         }
 
         public void LoadDifficultyPanel()
         {     
-            UIManager.OnPanelClick?.Invoke(_puzzleImagePanel.PuzzleID);
-            _gameObject.SetActive(false);
+            UIManager.OnPanelClick?.Invoke(_puzzleId);
+            gameObject.SetActive(false);
         }
 
     }
