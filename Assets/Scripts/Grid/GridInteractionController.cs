@@ -176,7 +176,6 @@ namespace Grid
         
                 if (combined != null && newCombined == null)
                 {
-                    // StartMaterialAnimation(_corePieces, combined.Pieces);
                     PiecesCollected?.Invoke(_corePieces, combined.Pieces);
                     continue;
                 }
@@ -188,7 +187,6 @@ namespace Grid
         
                 if (!combined.IsSnappedToGrid())
                 {
-                    // StartMaterialAnimation(_corePieces, combined.Pieces);
                     PiecesCollected?.Invoke(_corePieces, combined.Pieces);
                     continue;
                 }
