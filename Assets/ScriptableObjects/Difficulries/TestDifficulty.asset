@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: TestDifficulty
   m_EditorClassIdentifier: 
   _grid: {fileID: 11400000, guid: 5659531d58d088d4cbfe8123ebd4b9e7, type: 2}
-  _reward: 10
+  _reward: 100

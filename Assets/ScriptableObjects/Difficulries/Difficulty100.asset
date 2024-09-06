@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Difficulty100
   m_EditorClassIdentifier: 
   _grid: {fileID: 11400000, guid: 07596e0492b59794a8dbf0f763244395, type: 2}
-  _reward: 100
+  _reward: 1500
