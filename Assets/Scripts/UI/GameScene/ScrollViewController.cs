@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Grid;
 using PuzzlePiece;
 using System.Linq;
+using System;
 
 
 namespace UI.GameScene
@@ -19,6 +20,7 @@ namespace UI.GameScene
         private bool _isOriginalPieceSizeSet;
         private List<Piece> _contentPieces = new List<Piece>();
 
+        public static Action StateChanged;
         public List<Piece> ContentPieces => _contentPieces; 
 
 
@@ -70,7 +72,9 @@ namespace UI.GameScene
 
             if (MouseOnScrollView())
             {
-                AddPieceToScrollView(snappable.Transform);
+                InsertPieceToScrollView(snappable.Transform);
+
+                StateChanged?.Invoke();
             }
             
             _scrollRect.enabled = true;
@@ -94,10 +98,10 @@ namespace UI.GameScene
 
         private Vector3 GetRandomPieceRotation()
         {
-            return new Vector3(0, 0, Random.Range(0, 4) * 90);
+            return new Vector3(0, 0, UnityEngine.Random.Range(0, 4) * 90);
         }
 
-        public void AddPieceToScrollView(Transform piece)
+        public void InsertPieceToScrollView(Transform piece)
         {
             SetOriginalPieceSize(piece);
 
@@ -112,6 +116,20 @@ namespace UI.GameScene
             piece.localScale = Vector3.one * _pieceSize;
 
             _contentPieces.Insert(index, piece.GetComponent<Piece>());
+        }
+
+        public void AddPieceToScrollView(Transform piece)
+        {
+            SetOriginalPieceSize(piece);
+
+            piece.SetParent(_content, true);
+
+            piece.SetAsLastSibling();
+
+            piece.localPosition = Vector3.zero;
+            piece.localScale = Vector3.one * _pieceSize;
+
+            _contentPieces.Add(piece.GetComponent<Piece>());
         }
 
         private void SetOriginalPieceSize(Transform piece)

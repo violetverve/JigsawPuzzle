@@ -6,21 +6,27 @@ using Grid;
 using Player;
 using PuzzleData.Save;
 using PuzzlePiece;
+using UI.GameScene;
 
 namespace GameManagement
 {
     public class SaveManager : MonoBehaviour
     {
         [SerializeField] private GridManager _gridManager;
+        [SerializeField] private ScrollViewController _scrollViewController;
 
         private void OnEnable()
         {
             GridInteractionController.OnStateChanged += HandleStateChanged;
+            ScrollViewController.StateChanged += HandleStateChanged;
+            GridManager.GridGenerated += HandleStateChanged;
         }
 
         private void OnDisable()
         {
             GridInteractionController.OnStateChanged -= HandleStateChanged;
+            ScrollViewController.StateChanged -= HandleStateChanged;
+            GridManager.GridGenerated -= HandleStateChanged;
         }
 
         private void HandleStateChanged()
@@ -52,7 +58,7 @@ namespace GameManagement
             var scrollPieceSaves = _gridManager.GetScrollViewPieces()
                 .Select(scrollPiece => new ScrollPieceSave(scrollPiece)).ToList();
 
-            
+
             var puzzleSave = new PuzzleSave(id, gridSide, rotationEnabled, piecesConfiguration,
                 snappableSaves, collectedPieceSaves, scrollPieceSaves);
 

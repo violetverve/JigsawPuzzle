@@ -5,6 +5,7 @@ using UI.GameScene;
 using GameManagement;
 using PuzzlePiece;
 using PuzzleData.Save;
+using System;
 
 namespace Grid
 {   
@@ -16,6 +17,8 @@ namespace Grid
         [SerializeField] private ScrollViewController _scrollViewController;
         [SerializeField] private GridField _gridField;
         [SerializeField] private GridLoader _gridLoader;
+
+        public static Action GridGenerated;
 
         public GridSO GridSO => _gridSO;
         public GridField GridField => _gridField;
@@ -72,7 +75,9 @@ namespace Grid
 
             _gridInteractionController.SetRotationEnabled(level.RotationEnabled);
 
-            _scrollViewController.PopulateScrollView(_gridGenerator.GeneratedPieces, level.RotationEnabled);   
+            _scrollViewController.PopulateScrollView(_gridGenerator.GeneratedPieces, level.RotationEnabled);
+
+            GridGenerated?.Invoke();
         }
 
         public List<Piece> GetScrollViewPieces()
