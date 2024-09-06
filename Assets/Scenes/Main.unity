@@ -9042,7 +9042,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1627970889}
   m_OnClick:
     m_PersistentCalls:
@@ -10924,11 +10924,13 @@ MonoBehaviour:
   _gridFrame: {fileID: 1855348559}
   _puzzleImage: {fileID: 623694768}
   _backgroundGroup: {fileID: 1450812894}
+  _nextButton: {fileID: 1627970888}
   _confetti: {fileID: 414749417}
   _shine: {fileID: 1541893465}
   _rewardPopUp: {fileID: 1307495717}
   _difficultyManager: {fileID: 11400000, guid: 509d8904d009e0f4c974daa991daa4af, type: 2}
   _animationDuration: 0.8
+  _levelManager: {fileID: 2110491227}
 --- !u!1 &2110491224
 GameObject:
   m_ObjectHideFlags: 0

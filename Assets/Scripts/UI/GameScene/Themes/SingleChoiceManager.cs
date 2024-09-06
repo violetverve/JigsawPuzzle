@@ -19,7 +19,10 @@ namespace UI.GameScene.Themes
                     .AddListener(delegate { OnToggleChanged(themeToggle); });
             }
 
-            SetTheme(PlayerData.Instance.ThemeID);
+            if (PlayerData.Instance != null)
+            {
+                SetTheme(PlayerData.Instance.ThemeID);
+            }
         }
 
 

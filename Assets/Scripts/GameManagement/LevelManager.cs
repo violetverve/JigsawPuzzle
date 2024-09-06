@@ -17,23 +17,28 @@ namespace GameManagement
         [SerializeField] private ProgressManager _progressManager;
         [SerializeField] private LevelDebugShell _debugLevel;
 
-        private void Start()
+        private Level _currentLevel;
+        public Level CurrentLevel => _currentLevel;
+
+        private void Awake()
         {
-            Level currentLevel = SetupCurrentLevel();
+            _currentLevel = SetupCurrentLevel();
 
-            _progressManager.SetNumberOfPieces(currentLevel.GridSO);
+            Debug.Log("Current level: " + _currentLevel.PuzzleSO.Id);
 
-            if (IsLevelPreviouslySaved(currentLevel))
+            _progressManager.SetNumberOfPieces(_currentLevel.GridSO);
+
+            if (IsLevelPreviouslySaved(_currentLevel))
             {
                 Debug.Log("Level previously saved. Loading ...");
 
-                PuzzleSave savedPuzzle = PlayerData.Instance.TryGetSavedPuzzle(currentLevel.PuzzleSO.Id);
+                PuzzleSave savedPuzzle = PlayerData.Instance.TryGetSavedPuzzle(_currentLevel.PuzzleSO.Id);
 
-                LoadLevel(currentLevel, savedPuzzle);
+                LoadLevel(_currentLevel, savedPuzzle);
             }
             else 
             {
-                StartLevel(currentLevel);
+                StartLevel(_currentLevel);
             }
         }
 

@@ -17,29 +17,31 @@ namespace UI.GameScene.Win
         [SerializeField] private Image _gridFrame;
         [SerializeField] private Image _puzzleImage;
         [SerializeField] private CanvasGroup _backgroundGroup;
+        [SerializeField] private Button _nextButton;
         [SerializeField] private ParticleSystem _confetti;
         [SerializeField] private ParticleSystem _shine;
         [SerializeField] private RewardPopUp _rewardPopUp;
         [SerializeField] private DifficultyManagerSO _difficultyManager;
         [SerializeField] private float _animationDuration = 0.8f;
+        [SerializeField] private LevelManager _levelManager;
         private int _reward;
 
         private void OnEnable()
         {
             ProgressManager.Win += HandleWin;
-            LevelManager.LevelStarted += HandleLevelStarted;
         }
 
         private void OnDisable()
         {
             ProgressManager.Win -= HandleWin;
-            LevelManager.LevelStarted -= HandleLevelStarted;
         }
 
-        private void HandleLevelStarted(Level level)
+ 
+        private void Start()
         {
-            _reward = _difficultyManager.GetRewardByGridSO(level.GridSO);
-            _puzzleImage.sprite = level.PuzzleSO.PuzzleImage;
+            var currentLevel = _levelManager.CurrentLevel;
+            _reward = _difficultyManager.GetRewardByGridSO(currentLevel.GridSO);
+            _puzzleImage.sprite = currentLevel.PuzzleSO.PuzzleImage;
         }
 
         private void HandleWin()
@@ -48,6 +50,8 @@ namespace UI.GameScene.Win
             {
                 obj.SetActive(false);
             }
+
+            _nextButton.interactable = true;
 
             StartCoroutine(AnimateGrid());
         }
