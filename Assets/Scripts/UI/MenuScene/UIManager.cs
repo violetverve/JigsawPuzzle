@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,6 +8,7 @@ using PuzzleData;
 using GameManagement;
 using UnityEngine.SceneManagement;
 using GameManagement.Difficulty;
+using System.Linq; 
 
 namespace UI.MenuScene
 {
@@ -112,7 +112,9 @@ namespace UI.MenuScene
                 return;
             }
 
-            foreach (var puzzleSave in PlayerData.Instance.SavedPuzzles)
+            var reversedSavedPuzzles = PlayerData.Instance.SavedPuzzles.AsEnumerable().Reverse().ToList();
+
+            foreach (var puzzleSave in reversedSavedPuzzles)
             {
                 var puzzle = _puzzles.GetPuzzleByID(puzzleSave.Id);
                 if (puzzle != null)
