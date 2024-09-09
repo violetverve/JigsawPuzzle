@@ -123,11 +123,19 @@ namespace Grid
         private void HandleItemPickedUp(ISnappable snappable)
         {
             MoveToTop(snappable);
-            UpdateSnappablesZPositions();
+
+            _snappables.Remove(snappable);
         }
 
         private void HandleItemDropped(ISnappable snappable)
         {   
+            if (!_snappables.Contains(snappable))
+            {
+                _snappables.Add(snappable);
+            }
+
+            UpdateSnappablesZPositions();
+
             if (TrySnapToGrid(snappable)) return;
 
             _corePieces = new List<Piece>(snappable.Pieces);
@@ -142,8 +150,7 @@ namespace Grid
 
         private void MoveToTop(ISnappable snappable)
         {
-            _snappables.Remove(snappable);
-            _snappables.Add(snappable);
+            snappable.UpdateZPosition(-_snappables.Count - 1);
         }
 
         public void UpdateSnappablesZPositions()
@@ -190,7 +197,6 @@ namespace Grid
                     PiecesCollected?.Invoke(_corePieces, combined.Pieces);
                     continue;
                 }
-        
                 combined.UpdateZPosition(COMPLETED_Z_POSITION);
                 stack.Push(combined);
             }

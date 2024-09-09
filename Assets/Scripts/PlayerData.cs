@@ -121,12 +121,12 @@ namespace Player
 
         public void AddSavedPuzzle(PuzzleSave puzzle)
         {
-            Debug.Log("Adding saved puzzle");
+            // Debug.Log("Adding saved puzzle");
             var previouslySavedPuzzle = TryGetSavedPuzzle(puzzle.Id);
            
             if (previouslySavedPuzzle != null)
             {
-                Debug.Log("Removing previously saved puzzle");
+                // Debug.Log("Removing previously saved puzzle");
                 _savedPuzzles.Remove(previouslySavedPuzzle);
             }
 

@@ -348,6 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridManager: {fileID: 1690346335}
+  _scrollViewController: {fileID: 0}
 --- !u!4 &53047736
 Transform:
   m_ObjectHideFlags: 0
@@ -10871,6 +10872,7 @@ MonoBehaviour:
   _gridManager: {fileID: 1690346335}
   _scrollViewController: {fileID: 293246562}
   _hintsNumberText: {fileID: 394913464}
+  _hintButton: {fileID: 2048956149}
 --- !u!1 &2104685120
 GameObject:
   m_ObjectHideFlags: 0

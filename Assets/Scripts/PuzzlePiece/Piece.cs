@@ -382,7 +382,9 @@ namespace PuzzlePiece
         {
             UpdateZPosition(zPosition);
 
-            Vector3 correctPosition = _correctPosition;
+            Vector3 offset = new Vector3(0.005f, 0.005f, 0);
+
+            Vector3 correctPosition = _correctPosition + offset;
             _correctPosition.z = zPosition;
             
             Sequence sequence = DOTween.Sequence();

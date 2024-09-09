@@ -1,11 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Collections;
 using TMPro;
 using Grid;
 using PuzzlePiece;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Player;
+
 
 namespace UI.GameScene
 {
@@ -14,6 +17,7 @@ namespace UI.GameScene
         [SerializeField] private GridManager _gridManager;
         [SerializeField] private ScrollViewController _scrollViewController;
         [SerializeField] private TextMeshProUGUI _hintsNumberText;
+        [SerializeField] private Button _hintButton;
 
         private const int TOP_LAYER = -9;
         private int _hintsNumber = 30;
@@ -57,6 +61,7 @@ namespace UI.GameScene
             if (hintSnappable != null)
             {
                 hintSnappable.AnimateToCorrectPosition(_hintDuration, TOP_LAYER);
+                PauseHintButton();
                 return true;
             }
 
@@ -69,6 +74,7 @@ namespace UI.GameScene
                 _scrollViewController.RemovePieceFromScrollView(hintPiece);
 
                 hintPiece.AnimateToCorrectPosition(_hintDuration, TOP_LAYER);
+                PauseHintButton();
                 return true;
             }
             
@@ -112,7 +118,8 @@ namespace UI.GameScene
             _scrollViewController.RemovePieceFromScrollView(randomPiece);
 
             randomPiece.AnimateToCorrectPosition(_hintDuration, TOP_LAYER);
-
+            
+            PauseHintButton();
             return true;
         }
 
@@ -122,13 +129,28 @@ namespace UI.GameScene
 
             var randomSnappable = snappables[UnityEngine.Random.Range(0, snappables.Count)];
             randomSnappable.AnimateToCorrectPosition(_hintDuration, TOP_LAYER);
- 
+
+            PauseHintButton();
             return true;
+        }
+
+        private void PauseHintButton()
+        {
+            _hintButton.interactable = false;
+
+            StartCoroutine(ReenableHintButtonAfterDuration(_hintDuration));
+        }
+
+        private IEnumerator ReenableHintButtonAfterDuration(float duration)
+        {
+            yield return new WaitForSeconds(duration);
+            _hintButton.interactable = true;
         }
 
         private void SetNumberHintsText(int number)
         {
             _hintsNumberText.text = number.ToString();
         }
+        
     }
 }

@@ -25,6 +25,8 @@ namespace PuzzlePiece
 
         public void AnimateMaterial(float bloomIntensityCoefficient)
         {
+            _animationMaterial.DOKill();
+
             Color tintColor = _animationTintColor;
             tintColor.a *= bloomIntensityCoefficient;
 
