@@ -53,6 +53,8 @@ namespace UI.GameScene.Win
 
             _nextButton.interactable = true;
 
+            _backgroundGroup.gameObject.SetActive(true);
+
             StartCoroutine(AnimateGrid());
         }
     
