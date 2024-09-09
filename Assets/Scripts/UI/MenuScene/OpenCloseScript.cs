@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-
 namespace UI.MenuScene
 {
     public class OpenCloseScript : MonoBehaviour
@@ -11,18 +8,14 @@ namespace UI.MenuScene
          
         [SerializeField] private List<GameObject> _openList;
         [SerializeField] private List<GameObject> _closeList;
-        private Button _button;
+        [SerializeField] private ButtonTMP _buttonTMP;
 
-        private void Awake()
-        {
-           _button = GetComponent<Button>();
-        }
 
         public void OpenClose()
         {
             Open();
             Close();
-            UIManager.OnPanelsChange?.Invoke(_button); 
+            UIManager.OnPanelsChange?.Invoke(_buttonTMP); 
         }
 
         private void Open()

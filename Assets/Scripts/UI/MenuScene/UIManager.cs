@@ -14,9 +14,7 @@ namespace UI.MenuScene
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] private List<Button> _buttonsInteractivity;
-        [SerializeField] private Color _buttonTextColorBasic;
-        [SerializeField] private Color _buttonTextColorClicked;
+        [SerializeField] private List<ButtonTMP> _panelsButtons;
 
         [Space]
 
@@ -31,7 +29,7 @@ namespace UI.MenuScene
         [SerializeField] private PuzzlePrepareUI _puzzlePrepareUI;
 
         public static Action<GameObject> OnCrossClick;
-        public static Action<Button> OnPanelsChange;
+        public static Action<ButtonTMP> OnPanelsChange;
         public static Action<int> OnPanelClick;
         public static Action<int> OnPuzzleUnlocked;
         public static Action<int> OnPuzzleContinue;
@@ -166,15 +164,17 @@ namespace UI.MenuScene
         }
 
         #region MenuButtonsInteraction
-        private void TurnIterectableButton(Button button)
+        private void TurnIterectableButton(ButtonTMP button)
         {
-            foreach(Button buttons in _buttonsInteractivity)
+            foreach (var panelButton in _panelsButtons)
             {
-                buttons.interactable = true;
-                // buttons.GetComponentInChildren<TextMeshProUGUI>().color = _buttonTextColorBasic;
+                if (panelButton == button)
+                {
+                    panelButton.SetInteractable(false);
+                    continue;
+                }
+                panelButton.SetInteractable(true);
             }
-            button.interactable = false;
-            // button.GetComponentInChildren<TextMeshProUGUI>().color = _buttonTextColorClicked;
         }
 
         private void CloseWindow(GameObject ToClose)
