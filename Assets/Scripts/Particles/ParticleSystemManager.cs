@@ -43,6 +43,7 @@ namespace Particles
         public void PlaySparkleEffect(Transform pieceTransform)
         {
             ParticleSystem particleSystem = _sparklePool.Get();
+            particleSystem.transform.SetParent(pieceTransform);
             particleSystem.transform.position = pieceTransform.position;
             particleSystem.transform.localScale = Vector3.one * pieceTransform.localScale.x;
             particleSystem.Play();

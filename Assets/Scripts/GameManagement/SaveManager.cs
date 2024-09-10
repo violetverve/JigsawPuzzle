@@ -43,11 +43,11 @@ namespace GameManagement
 
             bool rotationEnabled = PlayerData.Instance.CurrentLevel.RotationEnabled;
 
-            Debug.Log("ID of the current puzzle: " + id);
+            // Debug.Log("ID of the current puzzle: " + id);
             
             var piecesConfiguration = _gridManager.PieceConfigurations;
 
-            Debug.Log("Saving...");
+            // Debug.Log("Saving...");
 
             var snappableSaves = _gridManager.GetSnappables()
                 .Select(snappable => new SnappableSave(snappable)).ToList();

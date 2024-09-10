@@ -53,8 +53,8 @@ namespace Player
 
         public void LoadAllPlayerData()
         {
-            _coins = PlayerPrefs.GetInt(_coinsPrefs, 1000);
-            _hints = PlayerPrefs.GetInt(_hintsPrefs, 3);
+            _coins = PlayerPrefs.GetInt(_coinsPrefs, 2000);
+            _hints = PlayerPrefs.GetInt(_hintsPrefs, 30);
             _themeID = PlayerPrefs.GetInt(_themePref, 0);
 
             LoadSavedPuzzled();
