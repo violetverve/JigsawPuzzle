@@ -9,6 +9,7 @@ namespace UI.MenuScene
     {
         [SerializeField] private Image _puzzleUIImage;
         [SerializeField] private GameObject _lockImage;
+        [SerializeField] private Material _lockedMaterial;
         [SerializeField] private ProgressTag _progressTag;
         [SerializeField] private Button _panelButton;
         private int _puzzleID;
@@ -41,6 +42,7 @@ namespace UI.MenuScene
 
             _lockImage.SetActive(_locked);
             _puzzleID = puzzle.Id;
+            ToggleLockedMaterial(_locked);
         }
 
         public void LoadPuzzlePopUp()
@@ -63,6 +65,19 @@ namespace UI.MenuScene
         {
             _locked = locked;
             _lockImage.SetActive(_locked);
+            ToggleLockedMaterial(_locked);
+        }
+
+        private void ToggleLockedMaterial(bool locked)
+        {
+            if (locked)
+            {
+                _puzzleUIImage.material = _lockedMaterial;
+            }
+            else
+            {
+                _puzzleUIImage.material = null;
+            }
         }
 
         public int PuzzleID => _puzzleID;
