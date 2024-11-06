@@ -53,7 +53,7 @@ namespace Player
 
         public void LoadAllPlayerData()
         {
-            _coins = PlayerPrefs.GetInt(_coinsPrefs, 2000);
+            _coins = PlayerPrefs.GetInt(_coinsPrefs, 5000);
             _hints = PlayerPrefs.GetInt(_hintsPrefs, 30);
             _themeID = PlayerPrefs.GetInt(_themePref, 0);
 
