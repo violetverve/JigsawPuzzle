@@ -15,7 +15,7 @@ namespace UI.GameScene
         [SerializeField] private Transform _gridParent;
         [SerializeField] private RectTransform _content;
         [SerializeField] private ScrollRect _scrollRect;
-        private float _pieceSize = 40;
+        [SerializeField] private float _pieceSize = 40;
         private float _originalPieceSize;
         private bool _isOriginalPieceSizeSet;
         private List<Piece> _contentPieces = new List<Piece>();
