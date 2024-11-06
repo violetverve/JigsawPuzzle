@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: BasketKittensPuzzle
   m_EditorClassIdentifier: 
   _id: 10
-  _name: Basket Kittens
-  _puzzleMaterial: {fileID: 0}
   _puzzleImage: {fileID: 21300000, guid: 8227f50e667504e4f8559dbbdf6e7bf0, type: 3}
-  _isLocked: 1
+  _isLocked: 0

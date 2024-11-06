@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: LotusPuzzle
   m_EditorClassIdentifier: 
   _id: 14
-  _name: Lotus
-  _puzzleMaterial: {fileID: 0}
   _puzzleImage: {fileID: 21300000, guid: d3217c763d9e0a94297e22971a22fd45, type: 3}
-  _isLocked: 0
+  _isLocked: 1

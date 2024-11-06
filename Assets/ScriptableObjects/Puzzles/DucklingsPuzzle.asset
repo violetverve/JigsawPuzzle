@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: DucklingsPuzzle
   m_EditorClassIdentifier: 
   _id: 12
-  _name: Ducklings
-  _puzzleMaterial: {fileID: 0}
   _puzzleImage: {fileID: 21300000, guid: a1e663bb62fc36945a28873a9254a928, type: 3}
-  _isLocked: 0
+  _isLocked: 1
