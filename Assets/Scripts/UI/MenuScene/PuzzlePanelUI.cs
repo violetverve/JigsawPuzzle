@@ -12,6 +12,7 @@ namespace UI.MenuScene
         [SerializeField] private Material _lockedMaterial;
         [SerializeField] private ProgressTag _progressTag;
         [SerializeField] private Button _panelButton;
+        [SerializeField] private Sprite _secretSprite;
         private int _puzzleID;
         private bool _locked;
         private bool _inProgress;
@@ -19,7 +20,15 @@ namespace UI.MenuScene
 
         public void LoadPuzzlePanel(PuzzleSO puzzle)
         {
-            _puzzleUIImage.sprite = puzzle.PuzzleImage;
+            if (puzzle.IsSecret)
+            {
+                _puzzleUIImage.sprite = _secretSprite;
+            }
+            else
+            {
+                _puzzleUIImage.sprite = puzzle.PuzzleImage;
+            }
+            //_puzzleUIImage.sprite = puzzle.PuzzleImage;
 
             _locked = puzzle.IsLocked;
             if (puzzle.IsLocked && PlayerData.Instance.IsPuzzleUnlocked(puzzle.Id))

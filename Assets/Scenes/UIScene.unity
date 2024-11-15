@@ -373,6 +373,7 @@ MonoBehaviour:
   _contentPanel: {fileID: 1435506032}
   _sampleListItem: {fileID: 1592014343937653015, guid: 13eaeae01b020454eadf7f97d7dde15d, type: 3}
   _previewImage: {fileID: 0}
+  _secretPuzzleSprite: {fileID: 0}
   _horizontalLayoutGroup: {fileID: 1435506033}
   _snapForce: 5
   _difficultyManager: {fileID: 11400000, guid: 509d8904d009e0f4c974daa991daa4af, type: 2}
@@ -1241,6 +1242,7 @@ MonoBehaviour:
   _contentPanel: {fileID: 1435506032}
   _sampleListItem: {fileID: 1592014343937653015, guid: 13eaeae01b020454eadf7f97d7dde15d, type: 3}
   _previewImage: {fileID: 1964464962}
+  _secretPuzzleSprite: {fileID: 21300000, guid: a91de73cb8316b94cb1bc77e190821e7, type: 3}
   _horizontalLayoutGroup: {fileID: 1435506033}
   _snapForce: 5
   _difficultyManager: {fileID: 11400000, guid: 509d8904d009e0f4c974daa991daa4af, type: 2}

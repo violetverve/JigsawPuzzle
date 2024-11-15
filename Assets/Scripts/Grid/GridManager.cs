@@ -58,7 +58,7 @@ namespace Grid
 
             var pieceConfigurations = savedPuzzle.Get2DArray();
 
-            _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage, pieceConfigurations);
+            _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage, level.PuzzleSO.IsSecret, pieceConfigurations);
 
             _gridInteractionController.SetRotationEnabled(level.RotationEnabled);
 
@@ -71,7 +71,7 @@ namespace Grid
 
             _gridField.Initialize(_gridSO);
 
-            _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage);
+            _gridGenerator.InitializeGrid(_gridSO, level.PuzzleSO.PuzzleImage, level.PuzzleSO.IsSecret);
 
             _gridInteractionController.SetRotationEnabled(level.RotationEnabled);
 

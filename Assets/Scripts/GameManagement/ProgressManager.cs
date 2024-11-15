@@ -71,9 +71,7 @@ namespace GameManagement
             
             if (numberOfEdgesCollected == _numberOfEdges)
             {
-                // Debug.Log("All edges collected!");
                 EdgesCollected?.Invoke();
-                // _edgesCollectedNotification.Animate();
                 _edgesCollected = true;
             }
         }

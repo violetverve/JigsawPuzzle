@@ -28,13 +28,6 @@ namespace UI.MenuScene
         [Space]
         [SerializeField] private PuzzlePrepareUI _puzzlePrepareUI;
 
-        public static Action<GameObject> OnCrossClick;
-        public static Action<ButtonTMP> OnPanelsChange;
-        public static Action<int> OnPanelClick;
-        public static Action<int> OnPuzzleUnlocked;
-        public static Action<int> OnPuzzleContinue;
-
-
         private PuzzleSO _currentPuzzleSO;
 
         [SerializeField] private DifficultyManagerSO _difficultyManager;
@@ -48,6 +41,12 @@ namespace UI.MenuScene
         [SerializeField] private ScrollElement _scrollPrefab;
 
         private List<PuzzlePanelUI> _puzzlePanels = new List<PuzzlePanelUI>();
+
+        public static Action<GameObject> OnCrossClick;
+        public static Action<ButtonTMP> OnPanelsChange;
+        public static Action<int> OnPanelClick;
+        public static Action<int> OnPuzzleUnlocked;
+        public static Action<int> OnPuzzleContinue;
 
 
         private void OnEnable()
@@ -190,8 +189,8 @@ namespace UI.MenuScene
         public void LoadPuzzleDifficultyChooser(int puzzleID)
         {
             PuzzleSO puzzle = _puzzles.GetPuzzleByID(puzzleID);
-
-            _puzzlePrepareUI.SetPreviewImage(puzzle.PuzzleImage);
+            
+            _puzzlePrepareUI.SetPreviewImage(puzzle.PuzzleImage, puzzle.IsSecret);
             _puzzlePrepareUI.gameObject.SetActive(true);
             _currentPuzzleSO = puzzle;   
         }

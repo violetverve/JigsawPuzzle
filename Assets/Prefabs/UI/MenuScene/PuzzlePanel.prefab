@@ -111,6 +111,7 @@ MonoBehaviour:
   _lockedMaterial: {fileID: 2100000, guid: 213063a9c239fe843889e1de3dcc33ca, type: 2}
   _progressTag: {fileID: 5598444866300094309}
   _panelButton: {fileID: 6248203707155035647}
+  _secretSprite: {fileID: 21300000, guid: a91de73cb8316b94cb1bc77e190821e7, type: 3}
 --- !u!114 &6248203707155035647
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -15,6 +15,7 @@ namespace PuzzlePiece
         private PuzzleGroup _group;
         private MaterialBloom _materialBloom;
         private BoxCollider2D _boxCollider;
+        private MeshRenderer _meshRenderer;
         private float _snapDistance;
         private float _snapRadius;
         private Vector3 _boxColliderSize;
@@ -39,6 +40,7 @@ namespace PuzzlePiece
         public bool IsEdgePiece => _isEdgePiece;
         public MaterialBloom MaterialBloom => _materialBloom;
         public List<Piece> Pieces => new List<Piece> { this };
+        public MeshRenderer MeshRenderer => _meshRenderer;
 
         private void Awake()
         {
@@ -47,6 +49,7 @@ namespace PuzzlePiece
             _draggable = gameObject.AddComponent<Draggable>();
             _clickable = gameObject.AddComponent<Clickable>();
             _materialBloom = gameObject.AddComponent<MaterialBloom>();
+            _meshRenderer = gameObject.GetComponent<MeshRenderer>();
         }
 
         public void Initialize(Vector3 correctPosition, Vector2Int gridPosition, bool isEdgePiece)

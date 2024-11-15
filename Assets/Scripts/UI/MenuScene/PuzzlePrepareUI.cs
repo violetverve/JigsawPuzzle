@@ -14,6 +14,7 @@ namespace UI.MenuScene
         [SerializeField] private RectTransform _contentPanel;
         [SerializeField] private RectTransform _sampleListItem;
         [SerializeField] private Image _previewImage;
+        [SerializeField] private Sprite _secretPuzzleSprite;
 
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroup;
 
@@ -162,9 +163,9 @@ namespace UI.MenuScene
             gameObject.SetActive(false);
         }
 
-        public void SetPreviewImage(Sprite sprite)
+        public void SetPreviewImage(Sprite sprite, bool isSecret)
         {
-            _previewImage.sprite = sprite;
+            _previewImage.sprite = isSecret ? _secretPuzzleSprite : sprite;
         }
     }
 }

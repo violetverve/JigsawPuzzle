@@ -327,7 +327,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 53047736}
-  - component: {fileID: 53047735}
+  - component: {fileID: 53047737}
   m_Layer: 0
   m_Name: SaveManager
   m_TagString: Untagged
@@ -335,7 +335,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &53047735
+--- !u!4 &53047736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 53047734}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 670284986}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &53047737
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -348,22 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridManager: {fileID: 1690346335}
-  _scrollViewController: {fileID: 0}
---- !u!4 &53047736
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 53047734}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.410591, y: 4.557307, z: 0.847869}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 670284986}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  _scrollViewController: {fileID: 293246562}
 --- !u!1 &68959338
 GameObject:
   m_ObjectHideFlags: 0
@@ -6589,6 +6589,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 670284986}
+  - component: {fileID: 670284987}
   m_Layer: 0
   m_Name: GameManagement
   m_TagString: Untagged
@@ -6605,7 +6606,7 @@ Transform:
   m_GameObject: {fileID: 670284985}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.22966836, y: -1.4519409, z: 0.7469048}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6613,6 +6614,21 @@ Transform:
   - {fileID: 53047736}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &670284987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670284985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b03e375534c5a148be86b042988c025, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _secretTexture: {fileID: 2800000, guid: a91de73cb8316b94cb1bc77e190821e7, type: 3}
+  _imageTexture: {fileID: 0}
+  _gridInteractionController: {fileID: 1690346334}
 --- !u!1 &710388970
 GameObject:
   m_ObjectHideFlags: 0
@@ -9369,6 +9385,7 @@ MonoBehaviour:
   _puzzlePieceGenerator: {fileID: 11400000, guid: e344d7e503172e74c85635fe7ca218ee, type: 2}
   _gridField: {fileID: 867313947}
   _material: {fileID: -876546973899608171, guid: 83d704565a28f444d9779c151a5cf401, type: 3}
+  _secretImageTexture: {fileID: 2800000, guid: a91de73cb8316b94cb1bc77e190821e7, type: 3}
 --- !u!4 &1690346333
 Transform:
   m_ObjectHideFlags: 0
@@ -10296,7 +10313,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 120}
   m_SizeDelta: {x: 1200, y: 1200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1855348559
@@ -10958,6 +10975,7 @@ MonoBehaviour:
   - {fileID: 1320342658}
   _puzzleGrid: {fileID: 1690346331}
   _gridFrame: {fileID: 1855348559}
+  _gridFrameRectTransform: {fileID: 1855348558}
   _puzzleImage: {fileID: 623694768}
   _backgroundGroup: {fileID: 1450812894}
   _nextButton: {fileID: 1627970888}
@@ -10966,7 +10984,7 @@ MonoBehaviour:
   _rewardPopUp: {fileID: 1307495717}
   _difficultyManager: {fileID: 11400000, guid: 509d8904d009e0f4c974daa991daa4af, type: 2}
   _animationDuration: 0.8
-  _levelManager: {fileID: 2110491227}
+  _levelManager: {fileID: 2110491229}
 --- !u!1 &2110491224
 GameObject:
   m_ObjectHideFlags: 0
@@ -10976,8 +10994,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2110491226}
-  - component: {fileID: 2110491227}
   - component: {fileID: 2110491228}
+  - component: {fileID: 2110491229}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: Untagged
@@ -10993,28 +11011,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2110491224}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.22966836, y: 1.4519409, z: -0.7469048}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 670284986}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2110491227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2110491224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02b008c21cbcb8c4ba2d6eacc0f2a2b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _puzzleList: {fileID: 11400000, guid: 0439993a7929dcb4f82c6187a4866a8b, type: 2}
-  _progressManager: {fileID: 6227362}
-  _debugLevel: {fileID: 2110491228}
 --- !u!114 &2110491228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11030,6 +11033,21 @@ MonoBehaviour:
   _gridSO: {fileID: 11400000, guid: 5659531d58d088d4cbfe8123ebd4b9e7, type: 2}
   _puzzleSO: {fileID: 11400000, guid: 6dc373b797cee6347bedb25f7e4748b6, type: 2}
   _rotationEnabled: 0
+--- !u!114 &2110491229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2110491224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02b008c21cbcb8c4ba2d6eacc0f2a2b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _puzzleList: {fileID: 11400000, guid: 0439993a7929dcb4f82c6187a4866a8b, type: 2}
+  _progressManager: {fileID: 6227362}
+  _debugLevel: {fileID: 2110491228}
 --- !u!1 &2111864101
 GameObject:
   m_ObjectHideFlags: 0

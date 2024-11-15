@@ -15,6 +15,7 @@ namespace UI.GameScene.Win
         [SerializeField] private List<GameObject> _objectsToDisable;
         [SerializeField] private GameObject _puzzleGrid;
         [SerializeField] private Image _gridFrame;
+        [SerializeField] private RectTransform _gridFrameRectTransform;
         [SerializeField] private Image _puzzleImage;
         [SerializeField] private CanvasGroup _backgroundGroup;
         [SerializeField] private Button _nextButton;
@@ -75,6 +76,7 @@ namespace UI.GameScene.Win
         {
             _puzzleGrid.transform.DOScale(0.65f, _animationDuration);
             _gridFrame.gameObject.transform.DOScale(0.72f, _animationDuration);
+            _gridFrameRectTransform.DOAnchorPosY(80, _animationDuration);
         }
 
         private void PlayEffects()

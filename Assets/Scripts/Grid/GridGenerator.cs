@@ -11,6 +11,8 @@ namespace Grid {
         [SerializeField] private PuzzlePieceGeneratorSO _puzzlePieceGenerator;
         [SerializeField] private GridField _gridField;
         [SerializeField] private Material _material;
+        [SerializeField] private Texture _secretImageTexture;
+
         private GridSO _gridSO;
         private float _pieceScale;
         private const float _pieceSize = 2f;
@@ -22,10 +24,10 @@ namespace Grid {
         private Vector3 _startPosition;
 
 
-        public void InitializeGrid(GridSO gridSO, Sprite image,  PieceConfiguration[,] pieceConfigurations = null)
+        public void InitializeGrid(GridSO gridSO, Sprite image, bool isSecret, PieceConfiguration[,] pieceConfigurations = null)
         {
             _gridSO = gridSO;
-            _material.mainTexture = image.texture;
+            _material.mainTexture = isSecret ? _secretImageTexture : image.texture;
             _cellSize = _gridField.CellSize;
 
             if (pieceConfigurations == null)

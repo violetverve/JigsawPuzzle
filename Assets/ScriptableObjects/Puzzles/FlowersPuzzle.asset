@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: FlowersPuzzle
   m_EditorClassIdentifier: 
   _id: 6
-  _name: Flowers
-  _puzzleMaterial: {fileID: 0}
   _puzzleImage: {fileID: 21300000, guid: 31282b7fa3c39934daa39e0c09203f99, type: 3}
   _isLocked: 1
+  _isSecret: 1
