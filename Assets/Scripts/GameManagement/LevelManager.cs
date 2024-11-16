@@ -38,6 +38,7 @@ namespace GameManagement
             }
             else 
             {
+                Debug.Log("Level not previously saved. Starting ...");
                 StartLevel(_currentLevel);
             }
         }

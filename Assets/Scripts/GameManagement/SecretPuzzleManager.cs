@@ -1,16 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using Grid;
-using GameManagement;
-using PuzzlePiece;
+using PuzzleData.Save;
 
 namespace GameManagement
 {
     public class SecretPuzzleManager : MonoBehaviour
     {
-        [SerializeField] private Texture _secretTexture;
         [SerializeField] private Texture _imageTexture;
         [SerializeField] private GridInteractionController _gridInteractionController;
 
@@ -18,30 +13,54 @@ namespace GameManagement
         private void OnEnable()
         {
             LevelManager.LevelStarted += HandleLevelStarted;
+            LevelManager.LevelLoaded += HandleLevelLoaded;
+            GridLoader.GridLoaded += HandleGridLoaded;
         }
 
         private void OnDisable()
         {
             GridInteractionController.OnProgressUpdate -= HandleProgressUpdate;
             LevelManager.LevelStarted -= HandleLevelStarted;
+            LevelManager.LevelLoaded -= HandleLevelLoaded;
+            GridLoader.GridLoaded -= HandleGridLoaded;
+        }
+
+        public void HandleGridLoaded()
+        {
+            UpdatePieces();
+        }
+
+        private void HandleLevelLoaded(Level level, PuzzleSave save)
+        {
+            SetupUpdates(level);
         }
 
         private void HandleLevelStarted(Level level)
         {
-            _imageTexture = level.PuzzleSO.PuzzleImage.texture;
-
-            if (level.PuzzleSO.IsSecret)
-            {
-                _secretTexture = level.PuzzleSO.PuzzleImage.texture;
-                GridInteractionController.OnProgressUpdate += HandleProgressUpdate;
-            }
+            SetupUpdates(level);
         }
 
         private void HandleProgressUpdate(int numberOfPiecesCollected, int numberOfEdgesCollected)
         {
+            UpdatePieces();
+        }
+
+        private void SetupUpdates(Level level)
+        {
+            if (!level.PuzzleSO.IsSecret)
+            {
+                return;
+            }
+
+            _imageTexture = level.PuzzleSO.PuzzleImage.texture;
+            GridInteractionController.OnProgressUpdate += HandleProgressUpdate;
+        }
+
+        private void UpdatePieces()
+        {
             foreach (var piece in _gridInteractionController.CollectedPieces)
             {
-                piece.MeshRenderer.material.mainTexture = _secretTexture;
+                piece.MeshRenderer.material.mainTexture = _imageTexture;
             }
         }
 

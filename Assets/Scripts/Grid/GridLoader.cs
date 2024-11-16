@@ -1,11 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using PuzzleData;
 using UI.GameScene;
 using PuzzlePiece;
 using PuzzleData.Save;
 using System.Linq;
+using System;
 
 namespace Grid
 {
@@ -14,6 +13,8 @@ namespace Grid
         [SerializeField] private GridManager _gridManager;
         private GridInteractionController _gridInteractionController;
         private ScrollViewController _scrollViewController;
+        
+        public static Action GridLoaded;
 
         private void Awake()
         {
@@ -28,6 +29,8 @@ namespace Grid
             LoadSnappablePieces(savedPuzzle.SnappableSaves, pieces);
             LoadCollectedPieces(savedPuzzle.CollectedPieceSaves, pieces);
             LoadScrollPieces(savedPuzzle.ScrollPieceSaves, pieces);
+
+            GridLoaded?.Invoke();
         }
 
         private void SetupPiece(Piece piece, PieceSave pieceSave)
