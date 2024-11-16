@@ -328,7 +328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1350ff00fb9b2844986222443be3d9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeColor: {r: 0.3529412, g: 0.7411765, b: 0.2784314, a: 1}
+  _activeColor: {r: 0.5019608, g: 0.47058824, b: 0.94509804, a: 1}
   _basicColor: {r: 0.7686275, g: 0.7686275, b: 0.7686275, a: 1}
   _rectTransform: {fileID: 1592014343937653015}
   _image: {fileID: 6465272189577232954}
