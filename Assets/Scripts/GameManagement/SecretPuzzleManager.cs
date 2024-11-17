@@ -8,7 +8,7 @@ namespace GameManagement
     {
         [SerializeField] private Texture _imageTexture;
         [SerializeField] private GridInteractionController _gridInteractionController;
-
+        private bool _isSecretPuzzle;
 
         private void OnEnable()
         {
@@ -27,7 +27,10 @@ namespace GameManagement
 
         public void HandleGridLoaded()
         {
-            UpdatePieces();
+            if (_isSecretPuzzle)
+            {
+                UpdatePieces();
+            }
         }
 
         private void HandleLevelLoaded(Level level, PuzzleSave save)
@@ -47,7 +50,9 @@ namespace GameManagement
 
         private void SetupUpdates(Level level)
         {
-            if (!level.PuzzleSO.IsSecret)
+            _isSecretPuzzle = level.PuzzleSO.IsSecret;
+            
+            if (!_isSecretPuzzle)
             {
                 return;
             }
