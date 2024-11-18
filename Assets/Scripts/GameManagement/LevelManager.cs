@@ -1,8 +1,5 @@
 using UnityEngine;
-using Grid;
 using System;
-using PuzzleData;
-using UnityEngine.SceneManagement;
 using Player;
 using PuzzleData.Save;
 
@@ -25,8 +22,6 @@ namespace GameManagement
             _currentLevel = SetupCurrentLevel();
 
             Debug.Log("Current level: " + _currentLevel.PuzzleSO.Id);
-
-            _progressManager.SetNumberOfPieces(_currentLevel.GridSO);
 
             if (IsLevelPreviouslySaved(_currentLevel))
             {

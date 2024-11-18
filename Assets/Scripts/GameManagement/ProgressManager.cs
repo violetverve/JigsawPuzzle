@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Grid;
 using System;
@@ -13,6 +11,7 @@ namespace GameManagement
 
         public static Action EdgesCollected;
         public static Action Win;
+        public static Action<int, int> ProgressUpdated;
 
         private int _numberOfPieces;
         private float _lastMilestone = 0f;
@@ -24,17 +23,35 @@ namespace GameManagement
         private void OnEnable()
         {
             GridInteractionController.OnProgressUpdate += HandleProgressUpdate;
+            LevelManager.LevelLoaded += HandleLevelLoaded;
+            LevelManager.LevelStarted += HandleLevelStarted;
         }
 
         private void OnDisable()
         {
             GridInteractionController.OnProgressUpdate -= HandleProgressUpdate;
+            LevelManager.LevelLoaded -= HandleLevelLoaded;
+            LevelManager.LevelStarted -= HandleLevelStarted;
+        }
+
+        private void HandleLevelStarted(Level level)
+        {
+            SetNumberOfPieces(level.GridSO);
+        }
+
+        private void HandleLevelLoaded(Level level, PuzzleData.Save.PuzzleSave save)
+        {
+            SetNumberOfPieces(level.GridSO);
+
+            ProgressUpdated?.Invoke(save.CollectedPieceSaves.Count, _numberOfPieces);
         }
 
         private void HandleProgressUpdate(int numberOfPiecesCollected, int numberOfEdgesCollected)
         {
             CheckForMilestones(numberOfPiecesCollected);
             CheckIfEdgesCollected(numberOfEdgesCollected);
+
+            ProgressUpdated?.Invoke(numberOfPiecesCollected, _numberOfPieces);
         }
 
         public void SetNumberOfPieces(GridSO grid)
