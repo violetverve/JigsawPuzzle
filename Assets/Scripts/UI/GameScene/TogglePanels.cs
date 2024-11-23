@@ -10,8 +10,12 @@ namespace UI.GameScene
         [SerializeField] private ScrollViewAnimator _scrollViewAnimator;
         [SerializeField] private GameObject _grid;
         [SerializeField] private float _fadeDuration = 0.5f;
- 
 
+        private void Awake()
+        {
+            _panelInitialUnactive.alpha = 0;
+        }
+       
         public void Toggle()
         {
             TogglePanel(_panelInitialUnactive);
