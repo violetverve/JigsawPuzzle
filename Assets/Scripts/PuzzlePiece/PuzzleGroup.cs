@@ -160,7 +160,7 @@ namespace PuzzlePiece
         private void SnapGroupPositionToOtherPiece(Piece referencePiece)
         {
             if (IsSnappedToGrid()) return;
-            
+
             if (_isAnimating) return;
 
             _isAnimating = true;
@@ -224,14 +224,11 @@ namespace PuzzlePiece
         
             Destroy(otherGroup.gameObject);
         }
-        
-        private void UpdatePiecesGroup(IEnumerable<Piece> pieces)
-        {
-            foreach (Piece piece in pieces)
-            {
-                piece.SetGroup(this);
-                _pieces.Add(piece);
-            }
+
+        private void UpdatePiecesGroup(List<Piece> pieces)
+        {    
+            pieces.ForEach(piece => piece.SetGroup(this));
+            _pieces.AddRange(pieces);
         }
 
         public void ClampToGrid(GetClampedPositionDelegate getClampedPosition, bool mouseOnScrollView)

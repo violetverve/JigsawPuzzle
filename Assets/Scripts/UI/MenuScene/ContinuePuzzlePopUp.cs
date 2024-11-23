@@ -11,6 +11,7 @@ namespace UI.MenuScene
         private int _puzzleId;
 
 
+
         public void ActivatePopUp(PuzzleSO puzzle)
         {
             _puzzleId = puzzle.Id;
@@ -26,7 +27,6 @@ namespace UI.MenuScene
 
         public void RestartPuzzle()
         {
-            PlayerData.Instance.DeleteSavedPuzzle(_puzzleId);
             LoadDifficultyPanel();
         }
 

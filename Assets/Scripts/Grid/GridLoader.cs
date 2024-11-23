@@ -90,6 +90,8 @@ namespace Grid
 
                 var collectedPuzzleGroup = PuzzleGroup.CreateGroup(collectedPieces);
                 collectedPuzzleGroup.LoadAsCollected();
+
+                _gridInteractionController.SetCollectedPiecesGroup(collectedPuzzleGroup);
             }
         }
 
