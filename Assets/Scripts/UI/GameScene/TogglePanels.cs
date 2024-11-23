@@ -8,7 +8,6 @@ namespace UI.GameScene
     {
         [SerializeField] private CanvasGroup _panelInitialUnactive;
         [SerializeField] private ScrollViewAnimator _scrollViewAnimator;
-        [SerializeField] private GameObject _grid;
         [SerializeField] private float _fadeDuration = 0.5f;
 
         private void Awake()
@@ -20,7 +19,6 @@ namespace UI.GameScene
         {
             TogglePanel(_panelInitialUnactive);
             _scrollViewAnimator.Toggle(_fadeDuration);
-            _grid.SetActive(!_grid.activeSelf);
         }
 
         private void TogglePanel(CanvasGroup panel)
