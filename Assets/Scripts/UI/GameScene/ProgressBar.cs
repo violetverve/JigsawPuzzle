@@ -14,18 +14,23 @@ namespace UI.GameScene
         private void OnEnable()
         {
             ProgressManager.ProgressUpdated += HandleProgressUpdate;
+            ProgressManager.ProgressLoaded += HandleProgressLoad;
         }
 
         private void OnDisable()
         {
             ProgressManager.ProgressUpdated -= HandleProgressUpdate;
+            ProgressManager.ProgressLoaded -= HandleProgressUpdate;
         }
 
-        private void HandleProgressUpdate(int collectedPieces, int piecesNumber)
+        private void HandleProgressLoad(float progress)
         {
-            var updatedValue = (float)collectedPieces / piecesNumber;
+            _slider.value = progress;
+        }
 
-            _slider.DOValue(updatedValue, _slideDuration);
+        private void HandleProgressUpdate(float progress)
+        {
+            _slider.DOValue(progress, _slideDuration);
         }
     }
 

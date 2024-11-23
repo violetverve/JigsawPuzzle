@@ -11,7 +11,9 @@ namespace GameManagement
 
         public static Action EdgesCollected;
         public static Action Win;
-        public static Action<int, int> ProgressUpdated;
+
+        public static Action<float> ProgressUpdated;
+        public static Action<float> ProgressLoaded;
 
         private int _numberOfPieces;
         private float _lastMilestone = 0f;
@@ -43,7 +45,8 @@ namespace GameManagement
         {
             SetNumberOfPieces(level.GridSO);
 
-            ProgressUpdated?.Invoke(save.CollectedPieceSaves.Count, _numberOfPieces);
+            var progress = CalculateProgressPercent(save.CollectedPieceSaves.Count, _numberOfPieces);
+            ProgressLoaded?.Invoke(progress);
         }
 
         private void HandleProgressUpdate(int numberOfPiecesCollected, int numberOfEdgesCollected)
@@ -51,7 +54,9 @@ namespace GameManagement
             CheckForMilestones(numberOfPiecesCollected);
             CheckIfEdgesCollected(numberOfEdgesCollected);
 
-            ProgressUpdated?.Invoke(numberOfPiecesCollected, _numberOfPieces);
+            var progress = CalculateProgressPercent(numberOfPiecesCollected, _numberOfPieces);
+            ProgressUpdated?.Invoke(progress);
+
         }
 
         public void SetNumberOfPieces(GridSO grid)
@@ -92,7 +97,12 @@ namespace GameManagement
                 _edgesCollected = true;
             }
         }
-    
+
+        private float CalculateProgressPercent(int collectedPieces, int piecesNumber)
+        {
+            return (float)collectedPieces / piecesNumber;
+        }
+
 
     }
 }
