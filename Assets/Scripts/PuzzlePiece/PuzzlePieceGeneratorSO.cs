@@ -14,6 +14,10 @@ namespace PuzzlePiece
         [SerializeField] private int _pointsPerSpline = 40;
         [SerializeField] private Material _outlineMaterial;
         [SerializeField] private float _outlineWidth = 0.01f;
+
+        // Test special shape in-build
+        [SerializeField] private SplineContainer _specialShape;
+
         private Dictionary<PieceConfiguration, Mesh> _meshCache = new Dictionary<PieceConfiguration, Mesh>();
 
 
