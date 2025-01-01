@@ -507,7 +507,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _loadTime: 4
-  _slideDuration: 0.5
 --- !u!1 &833426758
 GameObject:
   m_ObjectHideFlags: 0

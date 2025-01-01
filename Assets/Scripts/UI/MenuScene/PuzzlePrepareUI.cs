@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using GameManagement.Difficulty;
 using DG.Tweening;
+using PuzzleData;
 
 namespace UI.MenuScene
 {
@@ -13,8 +14,7 @@ namespace UI.MenuScene
         [SerializeField] private ScrollRect _scrollRect;
         [SerializeField] private RectTransform _contentPanel;
         [SerializeField] private RectTransform _sampleListItem;
-        [SerializeField] private Image _previewImage;
-        [SerializeField] private Sprite _secretPuzzleSprite;
+        [SerializeField] private PuzzlePanelUI _puzzlePreview;
 
         [SerializeField] private HorizontalLayoutGroup _horizontalLayoutGroup;
 
@@ -163,9 +163,9 @@ namespace UI.MenuScene
             gameObject.SetActive(false);
         }
 
-        public void SetPreviewImage(Sprite sprite, bool isSecret)
+        public void LoadPreviewPanel(PuzzleSO puzzle)
         {
-            _previewImage.sprite = isSecret ? _secretPuzzleSprite : sprite;
+            _puzzlePreview.LoadPuzzlePanel(puzzle);
         }
     }
 }

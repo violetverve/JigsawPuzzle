@@ -10,22 +10,29 @@ namespace UI.MenuScene
         [SerializeField] private Image _puzzleUIImage;
         [SerializeField] private GameObject _lockImage;
         [SerializeField] private ProgressTag _progressTag;
-        [SerializeField] private Button _panelButton;
-        [SerializeField] private Sprite _secretSprite;
+        [SerializeField] private Image _secretLevel;
+        [SerializeField] private ColorPaletteSO _colorPalette;
+
         private int _puzzleID;
         private bool _locked;
         private bool _inProgress;
         private float _progressPercentage;
 
+        public int PuzzleID => _puzzleID;
+
         public void LoadPuzzlePanel(PuzzleSO puzzle)
         {
+            _secretLevel.gameObject.SetActive(puzzle.IsSecret);
+
             if (puzzle.IsSecret)
             {
-                _puzzleUIImage.sprite = _secretSprite;
+                _puzzleUIImage.sprite = null;
+                _puzzleUIImage.color = _colorPalette.GetColor(puzzle.Id);
             }
             else
             {
                 _puzzleUIImage.sprite = puzzle.PuzzleImage;
+                _puzzleUIImage.color = Color.white;
             }
 
             _locked = puzzle.IsLocked;
@@ -72,8 +79,6 @@ namespace UI.MenuScene
             _locked = locked;
             _lockImage.SetActive(_locked);
         }
-
-        public int PuzzleID => _puzzleID;
     }
 }
 

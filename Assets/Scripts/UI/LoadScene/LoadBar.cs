@@ -10,10 +10,8 @@ namespace UI.LoadScene
         [SerializeField] private Slider _slider;
         [SerializeField] AnimationCurve _loadCurve;
         [SerializeField] private float _loadTime = 3.5f;
-        [SerializeField] private float _slideDuration = 0.5f;
 
         public static Action LoadCompleted;
-
 
         private void Start()
         {
@@ -23,8 +21,6 @@ namespace UI.LoadScene
         private void RunAnimation(float duration)
         {
             _slider.value = 0;
-            //DOTween.To(() => _slider.value, x => _slider.value = x, 1, duration)
-            //    .SetEase(_loadCurve);
 
             DOTween.To(GetSliderValue, SetSliderValue, 1, duration)
                 .SetEase(_loadCurve)
@@ -40,11 +36,6 @@ namespace UI.LoadScene
         {
             _slider.value = value;
         }
-
-        //private void ProgressUpdate(float progress)
-        //{
-        //    _slider.DOValue(progress, _slideDuration);
-        //}
 
         private void OnLoadComplete()
         {

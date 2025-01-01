@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _grid: {fileID: 11400000, guid: 878dd60e74a1da14e8e0878e94c72df2, type: 2}
   _reward: 500
+  _tournamentReward: 20

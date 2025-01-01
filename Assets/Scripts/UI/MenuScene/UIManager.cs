@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Player;
 using System;
 using PuzzleData;
@@ -189,8 +187,8 @@ namespace UI.MenuScene
         public void LoadPuzzleDifficultyChooser(int puzzleID)
         {
             PuzzleSO puzzle = _puzzles.GetPuzzleByID(puzzleID);
-            
-            _puzzlePrepareUI.SetPreviewImage(puzzle.PuzzleImage, puzzle.IsSecret);
+
+            _puzzlePrepareUI.LoadPreviewPanel(puzzle);
             _puzzlePrepareUI.gameObject.SetActive(true);
             _currentPuzzleSO = puzzle;   
         }
