@@ -7017,7 +7017,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _panelInitialUnactive: {fileID: 891330880}
   _scrollViewAnimator: {fileID: 293246564}
-  _grid: {fileID: 1690346331}
   _fadeDuration: 0.5
 --- !u!114 &783174029
 MonoBehaviour:
@@ -9602,7 +9601,7 @@ MonoBehaviour:
   _puzzlePieceGenerator: {fileID: 11400000, guid: e344d7e503172e74c85635fe7ca218ee, type: 2}
   _gridField: {fileID: 867313947}
   _material: {fileID: -876546973899608171, guid: 83d704565a28f444d9779c151a5cf401, type: 3}
-  _secretImageTexture: {fileID: 2800000, guid: a91de73cb8316b94cb1bc77e190821e7, type: 3}
+  _secretImageTexture: {fileID: 2800000, guid: 4b15a8716134c08498e5fa6105241dbc, type: 3}
 --- !u!4 &1690346333
 Transform:
   m_ObjectHideFlags: 0
