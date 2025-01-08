@@ -14,12 +14,14 @@ namespace GameManagement
     {
         [SerializeField] private GridManager _gridManager;
         [SerializeField] private ScrollViewController _scrollViewController;
+        [SerializeField] private ProgressManager _progressManager;
 
         private void OnEnable()
         {
             GridInteractionController.OnStateChanged += HandleStateChanged;
             ScrollViewController.StateChanged += HandleStateChanged;
             GridManager.GridGenerated += HandleStateChanged;
+            ProgressManager.EdgesCollected += HandleStateChanged;
         }
 
         private void OnDisable()
@@ -27,6 +29,7 @@ namespace GameManagement
             GridInteractionController.OnStateChanged -= HandleStateChanged;
             ScrollViewController.StateChanged -= HandleStateChanged;
             GridManager.GridGenerated -= HandleStateChanged;
+            ProgressManager.EdgesCollected -= HandleStateChanged;
         }
 
         private void HandleStateChanged()
@@ -60,7 +63,7 @@ namespace GameManagement
 
 
             var puzzleSave = new PuzzleSave(id, gridSide, rotationEnabled, piecesConfiguration,
-                snappableSaves, collectedPieceSaves, scrollPieceSaves);
+                snappableSaves, collectedPieceSaves, scrollPieceSaves, _progressManager.AreEdgesCollected);
 
             PlayerData.Instance.AddSavedPuzzle(puzzleSave);
         }

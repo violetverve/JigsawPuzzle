@@ -7,21 +7,22 @@ namespace GameManagement
 {
     public class ProgressManager : MonoBehaviour
     {
+        private readonly float[] _milestones = { 0.25f, 0.5f, 0.75f };
+
         [SerializeField] private ProgressNotification _edgesCollectedNotification;
-
-        public static Action EdgesCollected;
-        public static Action Win;
-
-        public static Action<float> ProgressUpdated;
-        public static Action<float> ProgressLoaded;
-
         private int _numberOfPieces;
         private float _lastMilestone = 0f;
         private int _numberOfEdges;
         private bool _edgesCollected = false;
 
-        private readonly float[] _milestones = { 0.25f, 0.5f, 0.75f };
+        public static Action EdgesCollected;
+        public static Action Win;
+        public static Action<float> ProgressUpdated;
+        public static Action<float> ProgressLoaded;
+        public static Action<bool> EdgesCollectedLoaded;
         
+        public bool AreEdgesCollected => _edgesCollected;
+
         private void OnEnable()
         {
             GridInteractionController.OnProgressUpdate += HandleProgressUpdate;
@@ -45,6 +46,9 @@ namespace GameManagement
         {
             SetNumberOfPieces(level.GridSO);
 
+            _edgesCollected = save.EdgesCollected;
+            EdgesCollectedLoaded?.Invoke(_edgesCollected);
+
             var progress = CalculateProgressPercent(save.CollectedPieceSaves.Count, _numberOfPieces);
             ProgressLoaded?.Invoke(progress);
         }
@@ -56,7 +60,6 @@ namespace GameManagement
 
             var progress = CalculateProgressPercent(numberOfPiecesCollected, _numberOfPieces);
             ProgressUpdated?.Invoke(progress);
-
         }
 
         public void SetNumberOfPieces(GridSO grid)

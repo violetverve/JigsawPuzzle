@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 6227361}
   - component: {fileID: 6227362}
   m_Layer: 5
-  m_Name: ProgressNotifications
+  m_Name: ProgressManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -364,6 +364,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gridManager: {fileID: 1690346335}
   _scrollViewController: {fileID: 293246562}
+  _progressManager: {fileID: 6227362}
 --- !u!1 &68959338
 GameObject:
   m_ObjectHideFlags: 0
@@ -9166,6 +9167,7 @@ MonoBehaviour:
   _gridManager: {fileID: 1690346335}
   _scrollViewController: {fileID: 293246562}
   _scrollViewAnimator: {fileID: 293246564}
+  _toggleButton: {fileID: 1617035933}
   _duration: 0.5
 --- !u!1 &1620812345
 GameObject:

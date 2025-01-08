@@ -5,6 +5,7 @@ using PuzzlePiece;
 using Grid;
 using System.Linq;
 using System.Collections.Generic;
+using GameManagement;
 
 namespace UI.GameScene
 {
@@ -13,8 +14,37 @@ namespace UI.GameScene
         [SerializeField] private GridManager _gridManager;
         [SerializeField] private ScrollViewController _scrollViewController;
         [SerializeField] private ScrollViewAnimator _scrollViewAnimator;
+        [SerializeField] private Toggle _toggleButton;
         [SerializeField] private float _duration = 0.5f;
         private Vector3 _initialScale;
+
+        private bool _toggleOn = false;
+
+        private void OnEnable()
+        {
+            ProgressManager.EdgesCollectedLoaded += HandleEdgesCollectedLoaded;
+            ProgressManager.EdgesCollected += HandleEdgesCollected;
+        }
+
+        private void OnDisable()
+        {
+            ProgressManager.EdgesCollectedLoaded -= HandleEdgesCollectedLoaded;
+            ProgressManager.EdgesCollected -= HandleEdgesCollected;
+        }
+
+        private void HandleEdgesCollectedLoaded(bool edgesCollected)
+        {
+            if (edgesCollected)
+            {
+                HandleEdgesCollected();
+            }
+        }
+
+        private void HandleEdgesCollected()
+        {
+            _toggleButton.isOn = false;
+            _toggleButton.interactable = false;
+        }
 
         public void Toggle()
         {

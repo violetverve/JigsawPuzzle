@@ -102,6 +102,11 @@ namespace Grid
             _collectedPieces = pieces;
         }
 
+        public int GetCollectedEdgePiecesCount()
+        {
+            return GetEdgePieces(_collectedPieces).Count;
+        }
+
         private void UpdateCompletedPieces(List<Piece> pieces)
         {
             _collectedPieces.AddRange(pieces);

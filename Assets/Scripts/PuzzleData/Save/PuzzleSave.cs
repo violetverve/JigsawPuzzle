@@ -18,7 +18,8 @@ namespace PuzzleData.Save
         private List<Vector2IntS> _collectedPieceSaves;
         private List<SnappableSave> _snappableSaves;
         private List <ScrollPieceSave> _scrollPieceSaves;
- 
+        private bool _edgesCollected;
+
         public int Id => _id;
         public int GridSide => _gridSide;
         public bool RotationEnabled => _rotationEnabled;
@@ -26,10 +27,11 @@ namespace PuzzleData.Save
         public List<Vector2IntS> CollectedPieceSaves => _collectedPieceSaves;
         public List<SnappableSave> SnappableSaves => _snappableSaves;
         public List<ScrollPieceSave> ScrollPieceSaves => _scrollPieceSaves;
+        public bool EdgesCollected => _edgesCollected;
 
 
         [JsonConstructor]
-        public PuzzleSave(int id, int gridSide, bool rotationEnabled, List<List<PieceConfigurationSave>> pieceConfigurationList, List<SnappableSave> snappableSaves = null, List<Vector2IntS> collectedPieceSaves = null, List<ScrollPieceSave> scrollPieceSaves = null)
+        public PuzzleSave(int id, int gridSide, bool rotationEnabled, List<List<PieceConfigurationSave>> pieceConfigurationList, List<SnappableSave> snappableSaves = null, List<Vector2IntS> collectedPieceSaves = null, List<ScrollPieceSave> scrollPieceSaves = null, bool edgesCollected = false)
         {
             _id = id;
             _gridSide = gridSide;
@@ -38,9 +40,10 @@ namespace PuzzleData.Save
             _snappableSaves = snappableSaves;
             _collectedPieceSaves = collectedPieceSaves;
             _scrollPieceSaves = scrollPieceSaves;
+            _edgesCollected = edgesCollected;
         }
 
-        public PuzzleSave(int id, int gridSide, bool rotationEnabled, PieceConfiguration[,] pieceConfiguration, List<SnappableSave> snappableSaves, List<Vector2IntS> collectedPieceSaves, List<ScrollPieceSave> scrollPieceSaves)
+        public PuzzleSave(int id, int gridSide, bool rotationEnabled, PieceConfiguration[,] pieceConfiguration, List<SnappableSave> snappableSaves, List<Vector2IntS> collectedPieceSaves, List<ScrollPieceSave> scrollPieceSaves, bool edgesCollected)
         {
             _id = id;
             _gridSide = gridSide;
@@ -49,6 +52,7 @@ namespace PuzzleData.Save
             _snappableSaves = snappableSaves;
             _collectedPieceSaves = collectedPieceSaves;
             _scrollPieceSaves = scrollPieceSaves;
+            _edgesCollected = edgesCollected;
         }
 
 
