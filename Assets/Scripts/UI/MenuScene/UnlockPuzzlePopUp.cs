@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Player;
 using PuzzleData;
-using DG.Tweening;
+using UI.MenuScene.Puzzle;
 
 namespace UI.MenuScene
 {

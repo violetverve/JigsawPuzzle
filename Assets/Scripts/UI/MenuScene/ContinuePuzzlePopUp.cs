@@ -1,7 +1,6 @@
 using UnityEngine;
 using PuzzleData;
-using Player;
-using DG.Tweening;
+using UI.MenuScene.Puzzle;
 
 namespace UI.MenuScene
 {
@@ -9,8 +8,6 @@ namespace UI.MenuScene
     {
         [SerializeField] private PuzzlePanelUI _puzzleImagePanel;
         private int _puzzleId;
-
-
 
         public void ActivatePopUp(PuzzleSO puzzle)
         {

@@ -2573,7 +2573,7 @@ MonoBehaviour:
   m_Elasticity: 0.5
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 5
   m_Viewport: {fileID: 735230129}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -4445,7 +4445,7 @@ MonoBehaviour:
   m_Elasticity: 0.5
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 0.75
+  m_ScrollSensitivity: 5
   m_Viewport: {fileID: 1172992067}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -7175,6 +7175,10 @@ PrefabInstance:
       propertyPath: m_PixelsPerUnitMultiplier
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5033385332797417399, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6248203707155035647, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -7265,7 +7269,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7343556628578245170, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8446423177238286214, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
       propertyPath: m_IsActive
@@ -7275,9 +7279,26 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 67bfc93a6c2e8564f965d2436486da97, type: 3}
+    - target: {fileID: 8571102992433832122, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8571102992433832122, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8571102992433832122, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8571102992433832122, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 6173616615212980840, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
+    - {fileID: 7850389798942915681, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
@@ -7288,7 +7309,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &1839886192 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5396409232486693858, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8112418033161291607, guid: 5b7d3d8625b1f844f88f2b670a9f629b, type: 3}
   m_PrefabInstance: {fileID: 1839886190}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

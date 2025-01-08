@@ -7,6 +7,7 @@ using GameManagement;
 using UnityEngine.SceneManagement;
 using GameManagement.Difficulty;
 using System.Linq; 
+using UI.MenuScene.Puzzle;
 
 namespace UI.MenuScene
 {
