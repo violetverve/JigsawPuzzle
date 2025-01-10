@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using PuzzlePiece.Features;
 using PuzzlePiece;
-
+using System;
 
 namespace Grid {
 
@@ -11,7 +11,6 @@ namespace Grid {
         [SerializeField] private PuzzlePieceGeneratorSO _puzzlePieceGenerator;
         [SerializeField] private GridField _gridField;
         [SerializeField] private Material _material;
-        [SerializeField] private Texture _secretImageTexture;
 
         private GridSO _gridSO;
         private float _pieceScale;
@@ -19,15 +18,16 @@ namespace Grid {
         private float _cellSize;
         private PieceConfiguration[,] _pieceConfigurations;
         private List<Piece> _generatedPieces = new List<Piece>();
-        public List<Piece> GeneratedPieces => _generatedPieces;
-        public PieceConfiguration[,] PieceConfigurations => _pieceConfigurations;
         private Vector3 _startPosition;
 
+        public List<Piece> GeneratedPieces => _generatedPieces;
+        public PieceConfiguration[,] PieceConfigurations => _pieceConfigurations;
+        public static event Action GridGenerated;
 
         public void InitializeGrid(GridSO gridSO, Sprite image, bool isSecret, PieceConfiguration[,] pieceConfigurations = null)
         {
             _gridSO = gridSO;
-            _material.mainTexture = isSecret ? _secretImageTexture : image.texture;
+            _material.mainTexture = image.texture;
             _cellSize = _gridField.CellSize;
 
             if (pieceConfigurations == null)
@@ -44,8 +44,10 @@ namespace Grid {
             _pieceScale = _cellSize / _pieceSize;
 
             _startPosition = CalculateStartPosition();
-
+            
             GenerateGrid();
+
+            GridGenerated?.Invoke();
         }
 
         private void GeneratePieceConfigurations()
@@ -153,7 +155,7 @@ namespace Grid {
 
         private FeatureType GetRandomFeature()
         {
-            return (FeatureType)Random.Range(0, 2);
+            return (FeatureType)UnityEngine.Random.Range(0, 2);
         }
 
         // To be used in puzzle preview

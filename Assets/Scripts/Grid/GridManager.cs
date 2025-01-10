@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UI.GameScene;
@@ -6,6 +5,7 @@ using GameManagement;
 using PuzzlePiece;
 using PuzzleData.Save;
 using System;
+using System.Linq;
 
 namespace Grid
 {   
@@ -88,6 +88,25 @@ namespace Grid
         public List<ISnappable> GetSnappables()
         {
             return _gridInteractionController.Snappables;
+        }
+
+        public List<Piece> GetGeneratedPieces()
+        {
+            return _gridGenerator.GeneratedPieces;
+        }
+
+        public List<Piece> GetCollectedPieces()
+        {
+            return _gridInteractionController.CollectedPieces;
+        }
+
+        public List<Piece> GetNotCollectedPieces()
+        {
+            var notCollectedPieces = GetGeneratedPieces()
+                .Except(GetCollectedPieces())
+                .ToList();
+
+            return notCollectedPieces;
         }
 
     }
