@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameManagement;
-using System;
 using DG.Tweening;
 using UnityEngine.UI;
-using TMPro;
 using GameManagement.Difficulty;
 
 namespace UI.GameScene.Win
@@ -18,12 +16,14 @@ namespace UI.GameScene.Win
         [SerializeField] private RectTransform _gridFrameRectTransform;
         [SerializeField] private Image _puzzleImage;
         [SerializeField] private CanvasGroup _backgroundGroup;
+        [SerializeField] private CanvasGroup _frontGroup;
         [SerializeField] private Button _nextButton;
         [SerializeField] private ParticleSystem _confetti;
-        [SerializeField] private ParticleSystem _shine;
+        [SerializeField] private List<ParticleSystem> _shines;
         [SerializeField] private RewardPopUp _rewardPopUp;
         [SerializeField] private DifficultyManagerSO _difficultyManager;
         [SerializeField] private float _animationDuration = 0.8f;
+        [SerializeField] private float _lightShineDuration = 0.3f;
         [SerializeField] private LevelManager _levelManager;
         private int _reward;
 
@@ -69,6 +69,7 @@ namespace UI.GameScene.Win
                 .Append(_gridFrame.DOFade(1, _animationDuration))
                 .AppendCallback(AnimateGridAndFrame)
                 .Append(_backgroundGroup.DOFade(1, _animationDuration))
+                .Append(_frontGroup.DOFade(1, _lightShineDuration))
                 .AppendCallback(PlayEffects);
         }
 
@@ -82,7 +83,7 @@ namespace UI.GameScene.Win
         private void PlayEffects()
         {
             _confetti.Play();
-            _shine.Play();
+            _shines.ForEach(shine => shine.Play());
         }
 
         private void SetupGrid()
