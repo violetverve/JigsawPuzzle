@@ -4,17 +4,33 @@ using TMPro;
 using DG.Tweening;
 using Player;
 using UI;
+using JigsawPuzzles.Services.Ads;
+using UnityEngine.UI;
 
 namespace UI.GameScene.Win
 {
     public class RewardPopUp : MonoBehaviour
     {
         [SerializeField] private Transform _rewardPopUpWindow;
-        [SerializeField] private TextMeshProUGUI _prizeText;
         [SerializeField] private CoinsCollectAnimator _coinsCollectAnimator;
         [SerializeField] private RewardTag _rewardTag;
+        [SerializeField] private int _rewardMultiplier = 3;
+
+        [SerializeField] private Button _rewardedClaimButton;
+        [SerializeField] private Button _claimButton;
+
         private int _reward;
-    
+
+        private void OnEnable()
+        {
+           AdsManager.Instance.RewardedAdWatched += HandleRewardedAdWatched;
+        }
+
+        private void OnDisable()
+        {
+            AdsManager.Instance.RewardedAdWatched -= HandleRewardedAdWatched;
+        }
+
         private void Start()
         {
             AnimateRewardPopUp();
@@ -52,6 +68,50 @@ namespace UI.GameScene.Win
         private void LoadUIScene()
         {
             SceneManager.LoadScene("UIScene");
+        }
+
+        public void Claim()
+        {
+            SetClaimButtonsInteractible(false);
+
+            ClaimPrize();
+        }
+
+        public void ClaimRewarded()
+        {
+            if (AdsManager.Instance.IsRewardedAdAvailable())
+            {
+                AdsManager.Instance.ShowRewarded();
+
+                SetClaimButtonsInteractible(false);
+            }
+            else
+            {
+                HandleRewardedAdWatched();
+            }
+        }
+
+        private void HandleRewardedAdWatched()
+        {
+            Sequence rewardSequence = DOTween.Sequence();
+
+            rewardSequence
+                .Append(_rewardTag.GetPumpSequence(_rewardMultiplier, _reward))
+                .AppendCallback(MultiplyReward)
+                .AppendCallback(ClaimPrize);
+
+            rewardSequence.Play();
+        }
+
+        private void MultiplyReward()
+        {
+            _reward *= _rewardMultiplier;
+        }
+
+        private void SetClaimButtonsInteractible(bool interactible)
+        {
+            _claimButton.interactable = interactible;
+            _rewardedClaimButton.interactable = interactible;
         }
 
     }
