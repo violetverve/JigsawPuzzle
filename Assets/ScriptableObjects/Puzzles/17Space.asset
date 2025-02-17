@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 17Space
   m_EditorClassIdentifier: 
   _id: 17
-  _name: Space
-  _puzzleMaterial: {fileID: 0}
   _puzzleImage: {fileID: 21300000, guid: 8e640b9f08b96fa478cfb6ece8ac1c2a, type: 3}
   _isLocked: 0
+  _isSecret: 0
+  _category: 10

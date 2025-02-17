@@ -21,6 +21,14 @@ namespace UI.MenuScene.Puzzle
 
         public void LoadPuzzlePanel(PuzzleSO puzzle)
         {
+            bool previouslyUsed = _puzzleID != 0;
+            
+            if (previouslyUsed) 
+            {
+                _progressTag?.gameObject.SetActive(false);
+                _lockImage?.SetActive(false);
+            }
+
             _puzzleID = puzzle.Id;
             _locked = puzzle.IsLocked;
             _inProgress = false;
@@ -33,6 +41,8 @@ namespace UI.MenuScene.Puzzle
 
             _lockImage.SetActive(_locked);
         }
+
+
 
         private void LoadSecretLevel(PuzzleSO puzzle)
         {

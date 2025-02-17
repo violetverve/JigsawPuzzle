@@ -16,3 +16,4 @@ MonoBehaviour:
   _puzzleImage: {fileID: 21300000, guid: a1e50c05e0a751f4b85ce53e5e015496, type: 3}
   _isLocked: 1
   _isSecret: 0
+  _category: 5

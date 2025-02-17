@@ -13,10 +13,6 @@ namespace UI.MenuScene
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] private List<ButtonTMP> _panelsButtons;
-
-        [Space]
-
         [SerializeField] private PuzzleList _puzzles;
         [SerializeField] private GameObject _puzzleParent;
         [SerializeField] private PuzzlePanelUI _puzzlePrefab;
@@ -42,7 +38,6 @@ namespace UI.MenuScene
         private List<PuzzlePanelUI> _puzzlePanels = new List<PuzzlePanelUI>();
 
         public static Action<GameObject> OnCrossClick;
-        public static Action<ButtonTMP> OnPanelsChange;
         public static Action<int> OnPanelClick;
         public static Action<int> OnPuzzleUnlocked;
         public static Action<int> OnPuzzleContinue;
@@ -50,7 +45,6 @@ namespace UI.MenuScene
 
         private void OnEnable()
         {
-            OnPanelsChange += TurnIterectableButton;
             OnCrossClick += CloseWindow;
             OnPanelClick += LoadPuzzleDifficultyChooser;
             PuzzlePrepareUI.ScrollActiveItemChanged += SetCurrentDifficulty;
@@ -61,7 +55,6 @@ namespace UI.MenuScene
 
         private void OnDisable()
         {
-            OnPanelsChange -= TurnIterectableButton;
             OnCrossClick -= CloseWindow;
             OnPanelClick -= LoadPuzzleDifficultyChooser;
             PuzzlePrepareUI.ScrollActiveItemChanged -= SetCurrentDifficulty;
@@ -164,18 +157,6 @@ namespace UI.MenuScene
         }
 
         #region MenuButtonsInteraction
-        private void TurnIterectableButton(ButtonTMP button)
-        {
-            foreach (var panelButton in _panelsButtons)
-            {
-                if (panelButton == button)
-                {
-                    panelButton.SetInteractable(false);
-                    continue;
-                }
-                panelButton.SetInteractable(true);
-            }
-        }
 
         private void CloseWindow(GameObject ToClose)
         {

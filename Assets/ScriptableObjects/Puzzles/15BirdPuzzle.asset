@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 15BirdPuzzle
   m_EditorClassIdentifier: 
   _id: 15
-  _name: Bird
-  _puzzleMaterial: {fileID: 0}
   _puzzleImage: {fileID: 21300000, guid: 034c64d4c4e58224b8411f52fcce8f15, type: 3}
   _isLocked: 1
+  _isSecret: 0
+  _category: 7

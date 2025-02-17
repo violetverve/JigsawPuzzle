@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using JigsawPuzzles.UI.MenuScene.Categories;
 
 namespace PuzzleData
 {
@@ -10,12 +11,13 @@ namespace PuzzleData
         [SerializeField] private int _id;
         [SerializeField] private Sprite _puzzleImage;
         [SerializeField] private bool _isLocked;
-        [SerializeField] private bool _isSecret = false;
+        [SerializeField] private PuzzleCategory _category;
 
         public int Id => _id;
         public Sprite PuzzleImage => _puzzleImage;
         public bool IsLocked => _isLocked;
-        public bool IsSecret => _isSecret;
+        public bool IsSecret => _category == PuzzleCategory.Secret;
+        public PuzzleCategory Category => _category;
     }
 }
 
